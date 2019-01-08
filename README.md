@@ -1,5 +1,5 @@
 # Blacksmith
-A program for viewing, extrracting, and converting Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep textures and 3D models. It is in early stages, and this repo will be updated constantly with additional support.
+A program for viewing, extracting, and converting Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep textures and 3D models. It is in early stages, and this repo will be updated constantly with additional support.
 
 `For now, only texture viewing and extraction of Assassin's Creed: Odyssey textures is supported.`
 
