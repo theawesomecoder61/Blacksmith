@@ -25,5 +25,3 @@ Blacksmith is licensed under the MIT License.
 You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
-
-2018-2019 by theawesomecoder61
