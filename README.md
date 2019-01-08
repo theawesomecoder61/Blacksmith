@@ -1,10 +1,10 @@
 # Blacksmith
-A program for viewing, extracting, and converting Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep textures and 3D models. It is in early stages, and this repo will be updated constantly with additional support.
+A program for viewing, extracting, and converting textures and 3D models from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. It is in early stages, and this repo will be updated constantly with additional support.
 
 `For now, only texture viewing and extraction of Assassin's Creed: Odyssey textures is supported.`
 
-## Remember Anvil_NeXT?
-Blacksmith serves as a successor to Anvil_NeXT, because development has seemingly ceased. I intended for functionality to be identical to Anvil_NeXT.
+### Remember ARchive_neXt?
+Blacksmith serves as a successor to ARchive_neXt, because development has seemingly ceased, and does not support the two latest Assassin's Creed games or Steep. I intended for functionality to be identical to ARchive_neXt.
 
 ## Supported Games
 PC versions only of:
@@ -18,10 +18,10 @@ PC versions only of:
   - 3D models (conversion to: .obj)
   - textures (conversion to: .dds, .png)
 
-## License
-Blacksmith is licensed under the MIT License.
-
 ## Building
 You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
+
+## License
+Blacksmith is licensed under the MIT License.
