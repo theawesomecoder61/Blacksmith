@@ -18,6 +18,9 @@ PC versions only of:
   - 3D models (conversion to: .obj)
   - textures (conversion to: .dds, .png)
 
+## License
+Blacksmith is licensed under the MIT License.
+
 ## Building
 You will need:
 - Visual Studio 2017
