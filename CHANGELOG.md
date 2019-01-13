@@ -4,5 +4,6 @@
   - Assassin's Creed: Odyssey
     - primitive **texture** support (extraction)
     - primitive **3D model** support (viewing)
+      - only geometry (no bones, skinning, nor UVs)
   - Assassin's Creed: Origins
     - primitive **texture** support (extraction)
