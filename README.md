@@ -23,5 +23,8 @@ You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
 
+## Changelog
+[View the changelog here.](https://github.com/theawesomecoder61/Blacksmith/blob/master/Changelog.md)
+
 ## License
 Blacksmith is licensed under the MIT License.
