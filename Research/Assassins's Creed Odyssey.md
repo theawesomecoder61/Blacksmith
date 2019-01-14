@@ -45,7 +45,7 @@ Oodle
 | int    | fileType        | 4            |
 | TopMip | topMip0         | 28           |
 |        | <skip 81 bytes> |              |
-| TopMip | topMip1         | 8            |
+| TopMip | topMip1         | 28           |
 |        | <skip 25 bytes> |              |
 
 ### Image Data
