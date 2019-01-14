@@ -38,5 +38,8 @@ You will need:
 ## License
 Blacksmith is licensed under the MIT License.
 
+## Forum Thread/Discussion
+[Blacksmith on Xentax](http://forum.xentax.com/viewtopic.php?f=10&t=19324&p=147450)
+
 ## Third-Party Software
 Coming eventually
