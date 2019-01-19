@@ -19,13 +19,16 @@ PC versions only of:
 - Steep (eventually)
 
 ## Functionality
-- Once this project picks up, the goals are: viewing and extraction of
+- Once this project picks up, the goals are: viewing and extraction of:
   - .forge files
   - 3D models (conversion to: .obj, .dae)
   - textures (conversion to: .dds, .png)
+- Also:
+  - creation of filelists from .forge files
+  - extract all from .forge files
   
 ## Downloads
-[Found here.](https://github.com/theawesomecoder61/Blacksmith/releases) I provided a x64 version of Blacksmith. This makes since because these three games are x64 only.
+[Found here.](https://github.com/theawesomecoder61/Blacksmith/releases) I built a x64 version of Blacksmith, only because these three games are x64 only.
 
 ## Changelog
 [View the changelog here.](https://github.com/theawesomecoder61/Blacksmith/blob/master/Changelog.md)
@@ -35,11 +38,11 @@ You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
 
-## License
-Blacksmith is licensed under the MIT License.
-
 ## Forum Thread/Discussion
 [Blacksmith on Xentax](http://forum.xentax.com/viewtopic.php?f=10&t=19324&p=147450)
+
+## License
+Blacksmith is licensed under the MIT License.
 
 ## Third-Party Software
 Coming eventually
