@@ -34,9 +34,9 @@ Oodle
 |------|----------------|--------------|
 | int  | width          |            4 |
 | int  | height         |            4 |
-|      | <skip 4 bytes> |              |
-| int  | dxt            |            4 |
 |      | <skip 8 bytes> |              |
+| int  | dxt            |            4 |
+|      | <skip 4 bytes> |              |
 | int  | mipmaps        |            4 |
 
 ### Texture Map Block
