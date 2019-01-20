@@ -1,0 +1,121 @@
+﻿- - - - - - - - - - - - - - - - - -
+|                                 |
+|    Assassin's Creed: Odyssey    |
+|       by Ubisoft Montreal       |
+|                                 |
+| - - - - - - - - - - - - - - - - |
+|                                 |
+|       Research and notes        |
+|      by theawesomecoder61       |
+|                                 |
+- - - - - - - - - - - - - - - - - -
+
+- - - - - - - - - - - - - - - - - -
+|              Notes              |
+| > Unless otherwise specified,   |
+|   assume all imageData is DDS   |
+|   image data.                   |
+| > I am not a professional at    |
+|   reverse-engineering files, so |
+|   if I make a mistake, please   |
+|   make a pull request.          |
+- - - - - - - - - - - - - - - - - -
+
+- - - - - - - - - - - - - - - - - -
+|        Compression: Oodle       |
+- - - - - - - - - - - - - - - - - -
+
+- - - - - - - - - - - - - - - - - - - - - -
+|              Datafile Header            |
+| - - - - - - - - - - - - - - - - - - - - |
+| Type		Name			Size (bytes)  |
+| - - - - - - - - - - - - - - - - - - - - |
+| int		resourceType	4			  |
+| int		fileSize		4			  |
+| int		fileNameSize	4			  |
+| char[]	fileName		fileNameSize  |
+|             <skip 2 bytes>			  |
+| int64		fileID			8			  |
+- - - - - - - - - - - - - - - - - - - - - -
+
+- - - - - - - - - - - - - - - - - - - - - - - -
+|                     Model                   | WIP
+| - - - - - - - - - - - - - - - - - - - - - - |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| |              Compiled Mesh              | |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Type		Name			Size (bytes)| |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | ???			???				???         | |
+| - - - - - - - - - - - - - - - - - - - - - - |
+|                                             |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| |                  Vertex                 | |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Type		Name			Size (bytes)| |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | uint16		x				2           | |
+| | uint16		y				2           | |
+| | uint16		z				2           | |
+| |				<skip 10 bytes>			    | |
+| | uint16		u				2           | | (u, v are texture coordinates/UV mappings)
+| | uint16		v				2           | |
+| - - - - - - - - - - - - - - - - - - - - - - |
+|                                             |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| |                  Face                   | |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Type		Name			Size (bytes)| |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | uint16		y				2           | |
+| | uint16		x				2           | |
+| | uint16		z				2           | |
+| - - - - - - - - - - - - - - - - - - - - - - |
+|                                             |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| |               Vertex Table              | |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Type		Name			Size (bytes)| |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Vertex[]	vertices		compiledMesh.num2 / 20 | |
+| - - - - - - - - - - - - - - - - - - - - - - |
+- - - - - - - - - - - - - - - - - - - - - - - -
+
+- - - - - - - - - - - - - - - - - - - - - -
+|                 Mipmap                  | (the actual mipmap image data)
+| - - - - - - - - - - - - - - - - - - - - |
+| Type		Name			Size (bytes)  |
+| - - - - - - - - - - - - - - - - - - - - |
+| byte[]	imageData		fileSize	  | (fileSize from Datafile Header)
+- - - - - - - - - - - - - - - - - - - - - -
+
+- - - - - - - - - - - - - - - - - - - - - - - -
+|                  Texture Map                |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| |             Mipmap (Properties)         | | (this block does not appear before the Actual Texture Map block)
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Type		Name			Size (bytes)| |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | int			width			4           | |
+| | int			height			4           | |
+| |				<skip 8 bytes>			    | |
+| | int			dxt				4           | |
+| |				<skip 4 bytes>			    | |
+| | int			mipmaps			4           | |
+| - - - - - - - - - - - - - - - - - - - - - - |
+|                                             |
+| - - - - - - - - - - - - - - - - - - - - - - |
+| |           Actual Texture Map            | |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| | Type		Name			Size (bytes)| |
+| | - - - - - - - - - - - - - - - - - - - - | |
+| |	int			fileType		4			| |
+| |	Mipmap		mipmap0			28			| | (Mipmap, the table above this table)
+| |				<skip 81 bytes>			    | |
+| |	Mipmap		mipmap1			28			| |
+| |				<skip 25 bytes>			    | |
+| |	int			dataSize		4			| |
+| |	byte[]		imageData		dataSize	| |
+| - - - - - - - - - - - - - - - - - - - - - - |
+- - - - - - - - - - - - - - - - - - - - - - - -

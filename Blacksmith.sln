@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blacksmith", "Blacksmith\Blacksmith.csproj", "{237C0454-6416-49D8-9BED-E0705EA9F0C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Debug|x64.ActiveCfg = Debug|x64
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Debug|x64.Build.0 = Debug|x64
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Debug|x86.ActiveCfg = Debug|x86
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Debug|x86.Build.0 = Debug|x86
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Release|x64.ActiveCfg = Release|x64
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Release|x64.Build.0 = Release|x64
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Release|x86.ActiveCfg = Release|x86
+		{237C0454-6416-49D8-9BED-E0705EA9F0C7}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE9A7D20-1A64-472A-BB90-71C04DC3DD58}
+	EndGlobalSection
+EndGlobal
