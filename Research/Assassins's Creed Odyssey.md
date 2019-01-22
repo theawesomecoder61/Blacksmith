@@ -23,6 +23,16 @@ Oodle
 
 ---
 
+## DXT Type/Compression/FourCC
+|  Value   | DXT Type |
+|----------|----------|
+|     0, 7 | DXT0     |
+|  1, 2, 3 | DXT1     |
+|        4 | DXT3     |
+| 5, 6, 12 | DXT5     |
+| 8, 9, 16 | DX10     |
+
+
 ## Texture Map
 ### Structure
 - Header
