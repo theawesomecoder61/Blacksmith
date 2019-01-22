@@ -15,12 +15,26 @@ Oodle
 ## Header
 |  Type  |      Name      |     Size     | Notes |
 |--------|----------------|--------------|-------|
-| int    | resource       | 4            |       |
+| [Resource Type](#resource-type)    | resourceType   | 4            |       |
 | int    | fileSize       | 4            |       |
 | int    | fileNameSize   | 4            |       |
 | char[] | fileName       | fileNameSize |       |
 |        | <skip 2 bytes> |              |       |
 | int64  | fileID         | 8            | fileID is the same from this file's entry in the .forge Index Table |
+
+---
+
+## Resource Type
+This is always found at the first 4 bytes of decompressed data. Other Resource Types can appear in the same file, for example, in mesh files. Here is a selection of the most important Resource Types.
+
+|   Value    | Resource Type |
+|------------|---------------|
+| 0xFC9E1595 | Compiled Mesh |
+| 0x85C817C3 | Material      |
+| 0x415D9568 | Mesh          |
+| 0x1D4B87A3 | Mipmap        |
+| 0xA2B7E917 | Texture Map   |
+| 0xD70E6670 | Texture Set   |
 
 ---
 
@@ -49,7 +63,7 @@ Whatever you call it, DXT Type, DXT compression, fourCC, etc.
 | int  | width          |            4 |
 | int  | height         |            4 |
 |      | <skip 8 bytes> |              |
-| [DXT](#dxt)  | dxt            |            4 |
+| [DXT](#dxt) | dxt |                4 |
 |      | <skip 4 bytes> |              |
 | int  | mipmaps        |            4 |
 
@@ -57,9 +71,9 @@ Whatever you call it, DXT Type, DXT compression, fourCC, etc.
 |  Type  |      Name       | Size (bytes) |
 |--------|-----------------|--------------|
 | int    | fileType        | 4            |
-| [TopMip](#topmip) | topMip0         | 28           |
+| [TopMip](#topmip) | topMip0 | 28        |
 |        | <skip 81 bytes> |              |
-| [TopMip](#topmip) | topMip1         | 28           |
+| [TopMip](#topmip) | topMip1 | 28        |
 |        | <skip 25 bytes> |              |
 
 ### Image Data
