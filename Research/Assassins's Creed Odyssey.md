@@ -24,41 +24,42 @@ Oodle
 
 ---
 
-## DXT Type
-Whatever you call it, DXT compression, fourCC, etc.
+## DXT
+Whatever you call it, DXT Type, DXT compression, fourCC, etc.
 
-|  Value   | DXT Type |
-|----------|----------|
-|     0, 7 | DXT0     |
-|  1, 2, 3 | DXT1     |
-|        4 | DXT3     |
-| 5, 6, 12 | DXT5     |
-| 8, 9, 16 | DX10     |
+|  Value   |  DXT |
+|----------|------|
+|     0, 7 | DXT0 |
+|  1, 2, 3 | DXT1 |
+|        4 | DXT3 |
+| 5, 6, 12 | DXT5 |
+| 8, 9, 16 | DX10 |
 
+---
 
-## Texture Map
+## Texture Map file
 ### Structure
 - [Header](#header)
-- Texture Map Block
+- [Texture Map](#texture-map)
 - [Image Data](#image-data)
 
-### TopMip Properties Block
+### TopMip
 | Type |      Name      | Size (bytes) |
 |------|----------------|--------------|
 | int  | width          |            4 |
 | int  | height         |            4 |
 |      | <skip 8 bytes> |              |
-| int  | dxt            |            4 |
+| [DXT](#dxt)  | dxt            |            4 |
 |      | <skip 4 bytes> |              |
 | int  | mipmaps        |            4 |
 
-### Texture Map Block
+### Texture Map
 |  Type  |      Name       | Size (bytes) |
 |--------|-----------------|--------------|
 | int    | fileType        | 4            |
-| TopMip | topMip0         | 28           |
+| [TopMip](#topmip) | topMip0         | 28           |
 |        | <skip 81 bytes> |              |
-| TopMip | topMip1         | 28           |
+| [TopMip](#topmip) | topMip1         | 28           |
 |        | <skip 25 bytes> |              |
 
 ### Image Data
@@ -69,7 +70,7 @@ Whatever you call it, DXT compression, fourCC, etc.
 
 ---
 
-## TopMip
+## TopMip file
 ### Structure
 - [Header](#header)
 - [Image Data Alt](#image-data-alt)
