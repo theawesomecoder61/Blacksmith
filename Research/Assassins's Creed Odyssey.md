@@ -3,7 +3,7 @@ Research by theawesomecoder61.
 
 ### How to interpret this documentation
 - Forgive me if this documentation is confusing. This is my first time doing this.
-- If a struct has been spelt out, it will not be repeated. Therefore, you must look for the struct elsewhere in this documentation.
+- If a struct has been spelt out, it will not be repeated. Use the links to jump to that struct.
 
 ## Notes
 - In the raw data extracted from the forge, you should take each Data Chunk data, decompress it, and merge it with the other decompressed data. This is because the maximum decompressed data size for each Data Chunk is 262144 bytes (0x00 0x00 0x04 0x00).
