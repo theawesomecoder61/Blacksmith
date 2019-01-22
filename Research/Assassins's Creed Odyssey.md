@@ -76,6 +76,7 @@ Whatever you call it, DXT compression, fourCC, etc.
 
 ### Image Data Alt
 This is different than the Image Data block above. This one lacks an int before the imageData.
+
 |  Type  |      Name       | Size (bytes) | Notes |
 |--------|-----------------|--------------|-------|
 | byte[] | imageData       | fileSize | fileSize from the Header |
