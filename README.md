@@ -43,6 +43,7 @@ You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
 - SlimDX
+- OpenTK
 
 ## Forum Thread/Discussion
 [Blacksmith on Xentax](http://forum.xentax.com/viewtopic.php?f=10&t=19324&p=147450)
