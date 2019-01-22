@@ -2,11 +2,12 @@
 Research by theawesomecoder61.
 
 ### How to interpret this documentation
-- Forgive me if this documentation is confusing,. This is my first time doing this.
-- If a struct has been spelt out, it will not be repeated. Thus, you must look for the struct elsewhere in the documentation.
+- Forgive me if this documentation is confusing. This is my first time doing this.
+- If a struct has been spelt out, it will not be repeated. Therefore, you must look for the struct elsewhere in this documentation.
 
 ## Notes
 - In the raw data extracted from the forge, you should take each Data Chunk data, decompress it, and merge it with the other decompressed data. This is because the maximum decompressed data size for each Data Chunk is 262144 bytes (0x00 0x00 0x04 0x00).
+- **THIS DOCUMENTATION IS UNFINISHED.**
 
 ## Compression
 Oodle
@@ -23,7 +24,9 @@ Oodle
 
 ---
 
-## DXT Type/Compression/FourCC
+## DXT Type
+Whatever you call it, DXT compression, fourCC, etc.
+
 |  Value   | DXT Type |
 |----------|----------|
 |     0, 7 | DXT0     |
@@ -35,9 +38,9 @@ Oodle
 
 ## Texture Map
 ### Structure
-- Header
+- [Header](#header)
 - Texture Map Block
-- Image Data
+- [Image Data](#image-data)
 
 ### TopMip Properties Block
 | Type |      Name      | Size (bytes) |
@@ -59,19 +62,20 @@ Oodle
 |        | <skip 25 bytes> |              |
 
 ### Image Data
-|  Type  |      Name       | Size (bytes) |
-|--------|-----------------|--------------|
-| int    | imageDataSize   | 4            |
-| byte[] | imageData       | imageDataSize|
+|  Type  |      Name       | Size (bytes)  |
+|--------|-----------------|---------------|
+| int    | imageDataSize   | 4             |
+| byte[] | imageData       | imageDataSize |
 
 ---
 
 ## TopMip
 ### Structure
-- Header
-- Image Data Block
+- [Header](#header)
+- [Image Data Alt](#image-data-alt)
 
-### Image Data
+### Image Data Alt
+This is different than the Image Data block above. This one lacks an int before the imageData.
 |  Type  |      Name       | Size (bytes) | Notes |
 |--------|-----------------|--------------|-------|
 | byte[] | imageData       | fileSize | fileSize from the Header |
