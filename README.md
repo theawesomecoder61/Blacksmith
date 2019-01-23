@@ -18,7 +18,8 @@ Blacksmith tries to serve as a successor to ARchive_neXt, since development has 
 PC versions only of:
 - Assassin's Creed: Odyssey
 - Assassin's Creed: Origins
-- Steep (eventually; the compression is a barricade for now)
+- Steep (eventually)
+  - (I figured out the compression!)
 
 ## Functionality
 - Once this project picks up, the goals are viewing and extraction of:
