@@ -5,6 +5,7 @@
 | Diffuse      | 🗸                        | 🗸                        | X     |
 | Normal       | 🗸                        | 🗸                        | X     |
 | Mask         | 🗸                        | 🗸                        | X     |
+| Specular     | 🗸                        | 🗸                        | X     |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -17,6 +18,7 @@
 ## Changelog
 ### Version 1.1 (1/22/2019)
 - Support for ***viewing of textures*** in Odyssey & Origins
+- Initial Steep support!
 - Support for `.log` files (viewable in the Text Viewer)
 - Gave functionality to the Create Filelist menu
   - Go in the Settings to change the output (tabs, commas)
