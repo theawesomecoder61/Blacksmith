@@ -17,13 +17,13 @@
 
 ## Changelog
 ### Version 1.1 (1/23/2019)
-- Initial Steep support!
-  - metaphorically, I just broke ground for Steep support (do not expect full texture support until Version 1.2)
+- Initial Steep support! (do not expect full texture support until Version 1.2)
 - Support for ***viewing of textures*** in Odyssey & Origins
 - Support for `.log` files (viewable in the Text Viewer)
 - Gave functionality to the `Create Filelist` and `Extract All` context menus
-  - Go in the Settings to change the output of the filelist (tabs, commas)
+  - Go in the Settings to change the output of the filelist with tabs or commas
 - Added `Tools > Decompress File` (where you can decompress an extracted file)
+- Change the background color of the Image Viewer (in the Settings)
 - Updated the version of texconv
 - More preparation for the 3D Viewer (no word on its release)
 - The Source Code menu takes you to this repo (instead of crashing)
