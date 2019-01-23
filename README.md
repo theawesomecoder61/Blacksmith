@@ -29,7 +29,12 @@ PC versions only of:
 - Also:
   - creation of filelists from .forge files
   - extract all from .forge files
-  
+
+## Usage (first time)
+1. Download the latest version from below.
+2. Upon opening Blacksmith, click `Settings` and set the game paths and temporary path.
+3. All done
+
 ## Downloads
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
 
