@@ -10,7 +10,7 @@ A program for viewing, extracting, and converting textures and 3D models from As
 ----
 
 ### Remember ARchive_neXt?
-Blacksmith serves as a successor to ARchive_neXt, since development has seemingly ceased, and does not support the two latest Assassin's Creed games or Steep. I intended for functionality of Blacksmith to be identical of that of ARchive_neXt.
+Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games or Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
 
 ![Early Blacksmith](https://i.imgur.com/gKAsTIz.jpg)
 
@@ -19,26 +19,37 @@ PC versions only of:
 - Assassin's Creed: Odyssey
 - Assassin's Creed: Origins
 - Steep (eventually)
+  - (I figured out the compression!)
 
 ## Functionality
-- Once this project picks up, the goals are: viewing and extraction of:
+- Once this project picks up, the goals are viewing and extraction of:
   - .forge files
   - 3D models (conversion to: .obj, .dae)
   - textures (conversion to: .dds, .png)
 - Also:
   - creation of filelists from .forge files
   - extract all from .forge files
-  
+
+## Usage (first time)
+1. Download the latest version from below.
+2. Upon opening Blacksmith, click `Settings` and set the game paths and temporary path.
+3. All done
+
 ## Downloads
-[Found here.](https://github.com/theawesomecoder61/Blacksmith/releases) I built a x64 version of Blacksmith, only because these three games are x64 only.
+[Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
 
 ## Changelog
 [View the changelog here.](https://github.com/theawesomecoder61/Blacksmith/blob/master/Changelog.md)
+
+## Research
+Are you curious about the file structures of these games and my discoveries? Check out the [Research folder](https://github.com/theawesomecoder61/Blacksmith/tree/master/Research).
 
 ## Building
 You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
+- SlimDX
+- OpenTK
 
 ## Forum Thread/Discussion
 [Blacksmith on Xentax](http://forum.xentax.com/viewtopic.php?f=10&t=19324&p=147450)
