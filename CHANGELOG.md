@@ -24,7 +24,8 @@
 ### Version 1.1 [CURRENT VERSION] (1/23/2019)
 - Added
   - Initial Steep support! (do not expect full texture support until Version 1.2)
-  - Support for ***viewing of textures*** in Odyssey & Origins
+  - Support for ***viewing of textures*** in Odyssey
+  - *Partial* upport for ***viewing of textures*** in Origins
   - Support for `.log` files (viewable in the Text Viewer)
   - Functionality to the `Create Filelist` and `Extract All` context menus
     - Go in the Settings to change the output of the filelist with tabs or commas
