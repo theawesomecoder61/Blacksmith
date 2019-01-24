@@ -117,26 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBoxDescription.Text" xml:space="preserve">
-    <value>Blacksmith is a successor to ARchive_neXt whose functionality is similar to ARchive_neXt. It is compatible with Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep.
-
-Third-Party Software:
-&gt; DevIL
-&gt; DevIL.NET
-&gt; lzo
-&gt; oodle
-&gt; OodleSharp
-&gt; texconv
-
-Credits:
-&gt; Clark Young - the picture to the left (found on Unsplash)
-&gt; MichaelDarkAngel - creating ARchive_neXt (perhaps the best tool for extracting from Assassin's Creed games) and his research
-&gt; The Xentax community - additional research and support
-&gt; Ubisoft - creating lovely models and textures
-
-Yes, I did all the research for the supported games. I spent hours upon hours understanding and testing the structures of models and textures from these games.
-
-Copyright Notice:
-AnvilNext, Assassin's Creed franchise, and Steep are properties of Ubisoft. I have no affiliation with the development of any of these software or with Ubisoft. This tool is intended for users to extract files for personal use (i.e., renders, 3D prints, etc.).</value>
-  </data>
+  <metadata name="folderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="colorDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>180, 17</value>
+  </metadata>
 </root>

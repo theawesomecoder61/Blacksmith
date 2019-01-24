@@ -5,26 +5,20 @@ namespace Blacksmith.Compressions
     public static class LZO
     {
 #if WIN32
-        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, ExactSpelling = false)]
-        private static extern int lzo1c_1_compress(byte[] src, ushort src_len, byte[] dst, ref ushort dst_len, byte[] wrkmem);
+        [DllImport(LzoDll32Bit, EntryPoint = "__lzo_init_v2", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int __lzo_init_v2_32(uint v, int s1, int s2, int s3, int s4, int s5, int s6, int s7, int s8, int s9);
 
-        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, ExactSpelling = false, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, CallingConvention = CallingConvention.Cdecl)]
         private static extern int lzo1c_decompress_safe(byte[] src, int src_len, byte[] dst, ref int dst_len, byte[] wrkmem);
+#else
+        [DllImport("Binaries\\x64\\lzo2_64.dll")]
+        private static extern int __lzo_init_v2(uint v, int s1, int s2, int s3, int s4, int s5, int s6, int s7, int s8, int s9);
 
-        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, ExactSpelling = false)]
-        private static extern int lzo1x_1_compress(byte[] src, ushort src_len, byte[] dst, ref ushort dst_len, byte[] wrkmem);
-
-        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, ExactSpelling = false, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int lzo1x_decompress_safe(byte[] src, ushort src_len, byte[] dst, ref ushort dst_len, byte[] wrkmem);
-
-        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, ExactSpelling = false)]
-        private static extern int lzo2a_1_compress(byte[] src, ushort src_len, byte[] dst, ref ushort dst_len, byte[] wrkmem);
-
-        [DllImport("Binaries\\x86\\lzo.dll", CharSet = CharSet.None, ExactSpelling = false, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int lzo2a_decompress_safe(byte[] src, ushort src_len, byte[] dst, ref ushort dst_len, byte[] wrkmem);
+        [DllImport("Binaries\\x64\\lzo2_64.dll")]
+        private static extern int lzo1c_decompress(byte[] src, int src_len, byte[] dst, ref int dst_len, byte[] wrkmem);
 #endif
 
-        private static byte[] workMem = new byte[checked(65536)];
+        private static byte[] workMem = new byte[16384L * 4];
 
         public enum Algorithm
         {
@@ -34,16 +28,18 @@ namespace Blacksmith.Compressions
             LZO1C = 5
         }
 
-        public static byte[] Decompress(Algorithm algorithm, byte[] input, ushort decompressedSize)
+        public static byte[] Decompress(byte[] input, ushort decompressedSize)
         {
+#if WIN32
+            if (__lzo_init_v2_32(1, -1, -1, -1, -1, -1, -1, -1, -1, -1) != 0)
+#else
+            if (__lzo_init_v2(1, -1, -1, -1, -1, -1, -1, -1, -1, -1) != 0)
+#endif
+            return new byte[]{};
+
             byte[] output = new byte[decompressedSize];
             int outputSize = decompressedSize;
-            /*if (algorithm < Algorithm.LZO2A) // LZO1X
-                lzo1x_decompress_safe(input, (ushort)input.Length, output, ref outputSize, null);
-            else if (algorithm == Algorithm.LZO2A) // LZO2A
-                lzo2a_decompress_safe(input, (ushort)input.Length, output, ref outputSize, null);
-            else // LZO1C
-                lzo1c_decompress_safe(input, input.Length, output, ref outputSize, null);*/
+            lzo1c_decompress(input, input.Length, output, ref outputSize, workMem);
             return output;
         }
     }

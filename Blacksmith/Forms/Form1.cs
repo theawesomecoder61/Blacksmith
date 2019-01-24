@@ -1,3 +1,4 @@
+using Blacksmith.Compressions;
 using Blacksmith.Enums;
 using Blacksmith.FileTypes;
 using Blacksmith.Games;
@@ -7,20 +8,14 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.ES20;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 /*
- * Steep fans, I myself am one and I understand your ferocity that Steep is not supported yet, though it
- * is referenced numerous times in the code. Until I figure out what the heck Ubisoft Annecy did with
- * these files, Steep support will not be ready.
- * 
- * Steep is Ubisoft Annecy's first big project, and they decided to use a compression no other AnvilNext
- * game used, LZO1C. Ubisoft Montreal and Ubisoft Paris used LZO1X (a much better and more well-known 
- * compression algorithm) for the Assassin's Creed games (save for Origins and Odyssey), Rainbow Six
- * Siege, & Ghost Recon: Wildlands.
- * 
- * I will surely update Blacksmith once I figure out this stupid compression and Steep's file structures.
+ * Steep fans, I finally figured out Steep's compression. The game uses zstd.
  * 
  * Sincerely, Andrew M. (theawesomecoder61)
  */
@@ -35,6 +30,10 @@ namespace Blacksmith
         private Forge currentForge;
         //private SceneView scene;
         private GameWindow scene;
+
+        private EntryTreeNode odysseyNode;
+        private EntryTreeNode originsNode;
+        private EntryTreeNode steepNode;
 
         // Tag structure:
         // <path to forge>|<entry name>~<subentry name>
@@ -59,38 +58,8 @@ namespace Blacksmith
             // load the games' directories into the tree view
             LoadGamesIntoTreeView();
 
-            //
-            // two decompression tests
-            //
-
-            /*byte[] acOdWhiteTexture = new byte[]
-            {
-                    0x8C, 0x02, 0x00, 0x6E, 0xFF, 0x0D, 0x17, 0xE9, 0xB7, 0xA2, 0xF3, 0x00,
-                    0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x57, 0x68, 0x69, 0x74, 0x65, 0x54, 0x65, 0x78, 0x74, 0x75,
-                    0x72, 0x65, 0x00, 0x01, 0x21, 0x00, 0x91, 0x00, 0x22, 0x00, 0xF4, 0x04, 0x00, 0x00, 0x00, 0x84,
-                    0xF1, 0x01, 0x9C, 0x00, 0x18, 0x00, 0xF2, 0x01, 0x00, 0xB1, 0xF2, 0x0B, 0x00, 0xD9, 0x01, 0xF8,
-                    0x16, 0x00, 0x54, 0x10, 0xB5, 0x52, 0x86, 0x13, 0x00, 0xF1, 0x01, 0x01, 0x15, 0x00, 0x32, 0x00,
-                    0x02, 0x2B, 0x00, 0x04, 0xE9, 0x7F, 0x23, 0x13, 0x5D, 0x00, 0xE4, 0x07, 0x00, 0x00, 0x00, 0x6D,
-                    0x00, 0xE0, 0x71, 0x00, 0xF0, 0xE9, 0xF5, 0x40, 0x00, 0x00, 0x00, 0xFF, 0xF9, 0x24, 0x09, 0xFF,
-                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
-            };
-            Console.WriteLine(acOdWhiteTexture.Length);
-            Oodle.Decompress(acOdWhiteTexture, acOdWhiteTexture.Length, 268);*/
-            //Odyssey.ReadFile(@"C:\Users\pinea\Desktop\ACOdyssey datapc\WhiteTexture");
-
-            /*byte[] stpWhiteTexture = new byte[]
-            {
-                0x28, 0xB5, 0x2F, 0xFD, 0x20, 0xD5, 0x8D, 0x02, 0x00, 0xB4, 0x02, 0x17, 0xE9, 0xB7, 0xA2, 0xBC,
-                0x00, 0x00, 0x00, 0x0C, 0x57, 0x68, 0x69, 0x74, 0x65, 0x54, 0x65, 0x78, 0x74, 0x75, 0x72, 0x65,
-                0x00, 0x21, 0x00, 0x17, 0xE9, 0xB7, 0xA2, 0x01, 0x04, 0x00, 0x00, 0x00, 0x01, 0x0B, 0x05, 0xE9,
-                0x7F, 0x23, 0x13, 0x07, 0x40, 0xFF, 0x10, 0x00, 0x74, 0x25, 0x71, 0xC1, 0xE1, 0x44, 0x28, 0x81,
-                0x80, 0x11, 0x10, 0x00, 0x70, 0x9D, 0x0A, 0x04, 0x0C, 0xCC, 0x34, 0x0E, 0x00, 0xBB, 0xC1, 0x56,
-                0x2C, 0x6A, 0xC6, 0x75, 0xC3, 0xE1, 0x0E, 0x15, 0x70, 0xE5
-            };
-            LZO.Decompress(LZO.Algorithm.LZO1C, stpWhiteTexture, 213).ToList().ForEach(x =>
-            {
-                Console.WriteLine(x.ToString("X2"));
-            });*/
+            // load settings
+            LoadSettings();
 
             /*scene = new SceneView
             {
@@ -159,8 +128,9 @@ namespace Blacksmith
                         EntryTreeNode node = new EntryTreeNode
                         {
                             Text = name,
-                            Tag = string.Format("{0}{1}{2}", curNode.Tag, FORGE_ENTRY_IDENTIFIER, name), // set the tag of this file's tree node
-                            Size = currentForge.FileEntries[i].IndexTable.RawDataSize
+                            Tag = $"{curNode.Tag}{FORGE_ENTRY_IDENTIFIER}{name}", // set the tag of this file's tree node
+                            Size = currentForge.FileEntries[i].IndexTable.RawDataSize,
+                            Game = curNode.Game
                         };
                         node.Nodes.Add(new EntryTreeNode()); // add empty node (for entry's contents)
                         curNode.Nodes.Add(node);
@@ -175,9 +145,8 @@ namespace Blacksmith
             // forge entry
             else if (tag.Contains(FORGE_ENTRY_IDENTIFIER) && !tag.Contains(FORGE_SUBENTRY_IDENTIFIER))
             {
-                // extract, if the entry has an empty node or if data as a file does not exist
-                if (curNode.Nodes.Count == 1 && curNode.Nodes[0].Text == ""
-                    && !File.Exists(Helpers.GetTempPath(text)))
+                // extract, if the entry has an empty node
+                if (curNode.Nodes.Count == 1 && curNode.Nodes[0].Text == "")
                 {
                     BeginMarquee();
 
@@ -187,7 +156,10 @@ namespace Blacksmith
                         byte[] rawData = currentForge.GetRawData(entry);
                         Helpers.WriteToTempFile(text, rawData);
 
-                        Odyssey.ReadFile(Helpers.GetTempPath(text));
+                        if (curNode.Game == Game.ODYSSEY || curNode.Game == Game.ORIGINS)
+                            Odyssey.ReadFile(Helpers.GetTempPath(text));
+                        else
+                            Steep.ReadFile(Helpers.GetTempPath(text));
                     }, () =>
                     {
                         EndMarquee();
@@ -195,22 +167,28 @@ namespace Blacksmith
                         // remove nodes
                         curNode.Nodes.Clear();
 
-                        string combined = $"{Helpers.GetTempPath(text)}-combined";
-
-                        // look for supported resource types
-                        using (Stream stream = new FileStream(combined, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        // look for supported resource types. steep stays out, for now (because it causes crashes).
+                        string combined = $"{Helpers.GetTempPath(text)}.dec";
+                        if (curNode.Game != Game.STEEP)
                         {
-                            using (BinaryReader reader = new BinaryReader(stream))
+                            if (File.Exists(combined))
                             {
-                                // create nodes based on located resource types
-                                foreach (Helpers.ResourceLocation loc in Helpers.LocateResourceIdentifiers(reader))
+                                using (Stream stream = new FileStream(combined, FileMode.Open, FileAccess.Read, FileShare.Read))
                                 {
-                                    curNode.Nodes.Add(new EntryTreeNode
+                                    using (BinaryReader reader = new BinaryReader(stream))
                                     {
-                                        Text = loc.Type.ToString(),
-                                        Tag = string.Format("{0}{1}{2}", tag, FORGE_SUBENTRY_IDENTIFIER, loc.Type.ToString()),
-                                        ResourceType = loc.Type
-                                    });
+                                        // create nodes based on located resource types
+                                        foreach (Helpers.ResourceLocation loc in Helpers.LocateResourceIdentifiers(reader))
+                                        {
+                                            curNode.Nodes.Add(new EntryTreeNode
+                                            {
+                                                Text = loc.Type.ToString(),
+                                                Tag = $"{tag}{FORGE_SUBENTRY_IDENTIFIER}{loc.Type.ToString()}",
+                                                ResourceType = loc.Type,
+                                                Game = curNode.Game
+                                            });
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -245,27 +223,32 @@ namespace Blacksmith
             if (e.Button == MouseButtons.Right)
             {
                 EntryTreeNode node = (EntryTreeNode)treeView.GetNodeAt(e.Location);
-                if (node == null || node.Tag == null)
+                EntryTreeNode sNode = (EntryTreeNode)treeView.SelectedNode;
+                if (node == null || node.Tag == null || sNode == null)
+                {
+                    treeNodeContextMenuStrip.Close();
                     return;
+                }
 
                 string text = node.Text;
                 string tag = (string)node.Tag;
 
-                if (tag.EndsWith(".forge")) // forge file
+                // if the user right-clicked on a game folder node, close the context menu
+                if (node == odysseyNode || node == originsNode || node == steepNode ||
+                    sNode == odysseyNode || sNode == originsNode || sNode == steepNode)
+                    treeNodeContextMenuStrip.Close();
+                
+                if (tag.EndsWith(".forge") && node.Nodes.Count > 1) // forge file
                 {
-                    UpdateContextMenu(false, true);
+                    UpdateContextMenu(false, false, true);
                 }
                 else // forge entry/subentry
                 {
-                    // forge subentry
+                    // forge entry
                     if (tag.Contains(FORGE_ENTRY_IDENTIFIER) && !tag.Contains(FORGE_SUBENTRY_IDENTIFIER))
-                    {
-                        UpdateContextMenu(true, false);
-                    }
+                        UpdateContextMenu(true, true, false);
                     else
-                    {
-                        UpdateContextMenu(false, false);
-                    }
+                        UpdateContextMenu(false, false, false);
                 }
             }
         }
@@ -281,14 +264,12 @@ namespace Blacksmith
             string tag = (string)node.Tag;
             long size = node.Size;
             ResourceType type = node.ResourceType;
-            Console.WriteLine(tag);
 
             // reset the picture box and rich text box
             // ToDo: empty 3D viewer
             pictureBox.ImageLocation = "";
             richTextBox.Text = "";
-
-            // retrieve the file names the forge
+            
             if (tag.Contains(".forge"))
             {
                 if (text.EndsWith(".forge")) // forge file
@@ -304,29 +285,44 @@ namespace Blacksmith
                     // forge subentry
                     if (tag.Contains(FORGE_ENTRY_IDENTIFIER) && tag.Contains(FORGE_SUBENTRY_IDENTIFIER))
                     {
-                        /*if (type == ResourceType.MIPMAP)
+                        if (type == ResourceType.TEXTURE_MAP)
                         {
                             string parentText = Helpers.GetTempPath(parent.Text);
-                            string dds = Odyssey.ExtractMipMap(parentText);
-                            tabControl.SelectedIndex = 1;
+                            if (node.Game == Game.ODYSSEY || node.Game == Game.ORIGINS)
+                            {
+                                Odyssey.ExtractTextureMap(parentText, currentForge, () =>
+                                {
+                                    if (File.Exists($"{Helpers.GetTempPath(parent.Text)}.png"))
+                                        pictureBox.Image = Image.FromFile($"{Helpers.GetTempPath(parent.Text)}.png");
+                                    else if (File.Exists($"{Helpers.GetTempPath(parent.Text)}_TopMip_0.png"))
+                                        pictureBox.Image = Image.FromFile($"{Helpers.GetTempPath(parent.Text)}_TopMip_0.png");
+                                    pictureBox.Refresh();
+                                    tabControl.SelectedIndex = 1;
 
-                            //scene.DisplayTexture(dds);
+                                    imageDimensStatusLabel.Text = $"Dimensions: {pictureBox.Image.Width}x{pictureBox.Image.Height}";
+                                });
+                            }
+                            else
+                            {
+                                /*Steep.ExtractTextureMap(parentText, currentForge, new EventHandler(delegate (object s, EventArgs a)
+                                {
+                                    pictureBox.Image = Image.FromFile($"{Helpers.GetTempPath(parent.Text)}.png");
+                                    tabControl.SelectedIndex = 1;
+                                }));*/
+                            }
                         }
-                        else*/ if (type == ResourceType.TEXTURE_MAP)
-                        {
-                            string parentText = Helpers.GetTempPath(parent.Text);
-                            Odyssey.ExtractTextureMap(parentText, currentForge);
-                        }
-                        tabControl.SelectedIndex = 1;
                     }
                 }
             }
-            else if (node.Text.EndsWith(".png"))
+            else if (text.EndsWith(".png"))
             {
                 pictureBox.ImageLocation = tag;
+                pictureBox.Refresh();
+                imageDimensStatusLabel.Text = $"Dimensions: {pictureBox.Image.Width}x{pictureBox.Image.Height}";
+
                 tabControl.SelectedIndex = 1;
             }
-            else if (node.Text.EndsWith(".ini") || node.Text.EndsWith(".txt"))
+            else if (text.EndsWith(".ini") || text.EndsWith(".txt") || text.EndsWith(".log"))
             {
                 richTextBox.Text = string.Join("\n", File.ReadAllLines(tag));
                 tabControl.SelectedIndex = 2;
@@ -337,18 +333,30 @@ namespace Blacksmith
 
             // update size status label
             if (size > -1)
-                sizeStatusLabel.Text = "Size: " + Helpers.BytesToString(size);
-
-            // update the status labels for the picture box
-            if (pictureBox.Image != null)
-                imageDimensStatusLabel.Text = string.Format("Dimensions: {0}x{1}", pictureBox.Image.Width, pictureBox.Image.Height);
+                sizeStatusLabel.Text = $"Size: {Helpers.BytesToString(size)}";
         }
         #endregion
 
         #region Context menu
+        // Convert
+        private void convertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView.SelectedNode == null)
+                return;
+
+            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+            string text = node.Text;
+
+            MessageBox.Show("Expect the conversion feature in Version 1.2.", "Sorry");
+        }
+        // end Convert
+
         // Datafile
         private void saveRawDataAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (treeView.SelectedNode == null)
+                return;
+
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
             saveFileDialog.FileName = node.Text;
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -367,16 +375,20 @@ namespace Blacksmith
                 {
                     MessageBox.Show("Done");
                 }
-            }
-        }
 
+            }
+
+    
         private void saveDecompressedDataAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BeginMarquee();
+            if (treeView.SelectedNode == null)
+                return;
 
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
             string text = node.Text;
             byte[] decompressedData = null;
+
+            BeginMarquee();
 
             Helpers.DoBackgroundWork(() =>
             {
@@ -387,7 +399,7 @@ namespace Blacksmith
             {
                 EndMarquee();
 
-                saveFileDialog.FileName = node.Text;
+                saveFileDialog.FileName = $"{node.Text}.dec";
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     try
@@ -410,12 +422,45 @@ namespace Blacksmith
         // Forge
         private void createFilelistToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (currentForge != null)
+            {
+                string filelist = currentForge.CreateFilelist();
+                if (filelist.Length > 0)
+                {
+                    using (SaveFileDialog dialog = new SaveFileDialog())
+                    {
+                        dialog.FileName = $"{currentForge.Name}-filelist.txt";
+                        dialog.Filter = "Text files|*.txt|All files|*.*";
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            File.WriteAllText(dialog.FileName, filelist);
+                            MessageBox.Show("Created filelist.", "Done");
+                        }
+                    }
+                }
+            }
         }
 
         private void extractAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (currentForge != null && currentForge.FileEntries.Length > 0)
+            {
+                using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        BeginMarquee();
+                        Parallel.ForEach(currentForge.FileEntries, (fe) =>
+                        {
+                            string name = fe.NameTable.Name;
+                            byte[] data = currentForge.GetRawData(fe);
+                            File.WriteAllBytes(Path.Combine(dialog.SelectedPath, name), data);
+                        });
+                        EndMarquee();
+                        MessageBox.Show($"Extracted all of {currentForge.Name}.", "Done");
+                    }
+                }
+            }
         }
         // end Forge
         #endregion
@@ -427,6 +472,41 @@ namespace Blacksmith
             Application.Exit();
         }
         #endregion
+        #region Tools
+        private void decompressFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (Stream stream = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        using (BinaryReader reader = new BinaryReader(stream))
+                        {
+                            long secondRawData = Helpers.LocateRawDataIdentifier(reader)[1];
+                            if (secondRawData > 0)
+                            {
+                                reader.BaseStream.Seek(10, SeekOrigin.Current); // ignore everything until the compression byte
+                                byte compression = reader.ReadByte();
+                                if (compression == 0x08)
+                                {
+                                    if (Odyssey.ReadFile(dialog.FileName))
+                                        MessageBox.Show("Decompressed file successfully. Check the folder where the compressed file is located.", "Done");
+                                }
+                                else if (compression == 0x05)
+                                {
+                                    if (Steep.ReadFile(dialog.FileName))
+                                        MessageBox.Show("Decompressed file successfully. Check at the folder where the compressed file is located.", "Done");
+                                }
+                                else
+                                    MessageBox.Show("Unknown compression type.", "Failure");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
         #region Settings
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -434,7 +514,13 @@ namespace Blacksmith
             // refresh the tree view when the Settings window is about to close
             settings.FormClosing += new FormClosingEventHandler((object o, FormClosingEventArgs args) =>
             {
+                // ToDo: add Properties.Settings event handler here, so that I can detect when a game path was changed
+
+                // reload games in the tree view
                 LoadGamesIntoTreeView();
+
+                // update settings
+                LoadSettings();
             });
             settings.ShowDialog();
         }
@@ -442,11 +528,12 @@ namespace Blacksmith
         #region More
         private void sourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("");
+            Process.Start("https://github.com/theawesomecoder61/Blacksmith");
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Not yet implemented");
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -462,34 +549,43 @@ namespace Blacksmith
             treeView.Nodes.Clear();
 
             // Odyssey
-            EntryTreeNode odysseyNode = new EntryTreeNode
+            odysseyNode = new EntryTreeNode
             {
-                Text = "Assassin's Creed: Odyssey"
+                Text = "Assassin's Creed: Odyssey",
+                Game = Game.ODYSSEY
             };
             treeView.Nodes.Add(odysseyNode);
             if (!string.IsNullOrEmpty(Properties.Settings.Default.odysseyPath))
                 PopulateTreeView(Properties.Settings.Default.odysseyPath, odysseyNode);
 
             // Origins
-            EntryTreeNode originsNode = new EntryTreeNode
+            originsNode = new EntryTreeNode
             {
-                Text = "Assassin's Creed: Origins"
+                Text = "Assassin's Creed: Origins",
+                Game = Game.ORIGINS
             };
             treeView.Nodes.Add(originsNode);
             if (!string.IsNullOrEmpty(Properties.Settings.Default.originsPath))
                 PopulateTreeView(Properties.Settings.Default.originsPath, originsNode);
 
             // Steep
-            EntryTreeNode steepNode = new EntryTreeNode
+            steepNode = new EntryTreeNode
             {
-                Text = "Steep"
+                Text = "Steep",
+                Game = Game.STEEP
             };
             treeView.Nodes.Add(steepNode);
             if (!string.IsNullOrEmpty(Properties.Settings.Default.steepPath))
                 PopulateTreeView(Properties.Settings.Default.steepPath, steepNode);
         }
 
-        public void PopulateTreeView(string dir, TreeNode parent)
+        public void LoadSettings()
+        {
+            // ToDo: add the clear/bg color of 3D viewer
+            imagePanel.BackColor = Properties.Settings.Default.imageBG;
+        }
+
+        public void PopulateTreeView(string dir, EntryTreeNode parent)
         {
             foreach (string file in Directory.GetFileSystemEntries(dir))
             {
@@ -498,7 +594,8 @@ namespace Blacksmith
                 {
                     Text = Path.GetFileName(file),
                     Tag = Path.Combine(dir, file), // tree node tags for files contain the file's path,
-                    Size = Directory.Exists(file) ? 0 : info.Length // directories have no size
+                    Size = Directory.Exists(file) ? 0 : info.Length, // directories have no size,
+                    Game = parent.Game
                 };
 
                 if (Directory.Exists(file) || Helpers.IsSupportedFile(Path.GetExtension(file)))
@@ -531,10 +628,12 @@ namespace Blacksmith
             toolStripProgressBar.Visible = false;
         }
 
-        public void UpdateContextMenu(bool enableDatafile, bool enableForge)
+        public void UpdateContextMenu(bool enableConvert, bool enableDatafile, bool enableForge/*, bool enableTexture*/)
         {
-            datafileToolStripMenuItem.Visible = enableDatafile;
-            forgeToolStripMenuItem.Visible = enableForge;
+            convertToolStripMenuItem.Enabled = enableConvert;
+            datafileToolStripMenuItem.Enabled = enableDatafile;
+            forgeToolStripMenuItem.Enabled = enableForge;
+            //textureToolStripMenuItem.Enabled = enableTexture;
         }
         #endregion
     }

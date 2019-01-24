@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -18,6 +19,7 @@ namespace Blacksmith
             steepTextBox.Text = Properties.Settings.Default.steepPath;
             tempTextBox.Text = Properties.Settings.Default.tempPath;
             deleteTempCheckbox.Checked = Properties.Settings.Default.deleteTemp;
+            filelistSeparatorComboBox.SelectedIndex = Properties.Settings.Default.useCSV ? 1 : 0;
         }
 
         #region Odyssey
@@ -73,14 +75,14 @@ namespace Blacksmith
         #region Steep
         private void steepTextBox_TextChanged(object sender, EventArgs e)
         {
-            SetTempPath(steepTextBox.Text);
+            SetSteepPath(steepTextBox.Text);
         }
 
         private void steepButton_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                SetTempPath(folderBrowserDialog.SelectedPath);
+                SetSteepPath(folderBrowserDialog.SelectedPath);
                 steepTextBox.Text = folderBrowserDialog.SelectedPath;
             }
         }
@@ -124,6 +126,46 @@ namespace Blacksmith
         private void deleteTempCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.deleteTemp = ((CheckBox)sender).Checked;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
+        #region Filelist output
+        private void filelistSeparatorComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.useCSV = filelistSeparatorComboBox.SelectedIndex == 1;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
+        #region 3D viewer bg color
+        private void threeDBGColorBtn_Click(object sender, EventArgs e)
+        {
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                SetImageBGColor(colorDialog.Color);
+            }
+        }
+
+        private void SetThreeeDBGColor(Color c)
+        {
+            Properties.Settings.Default.threeDBG = c;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
+        #region Image viewer bg color
+        private void imageBGColorBtn_Click(object sender, EventArgs e)
+        {
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                SetImageBGColor(colorDialog.Color);
+            }
+        }
+
+        private void SetImageBGColor(Color c)
+        {
+            Properties.Settings.Default.imageBG = c;
             Properties.Settings.Default.Save();
         }
         #endregion

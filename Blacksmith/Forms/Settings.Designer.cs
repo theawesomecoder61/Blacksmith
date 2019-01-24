@@ -47,7 +47,12 @@ namespace Blacksmith
             this.tempButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.filelistSeparatorComboBox = new System.Windows.Forms.ComboBox();
             this.deleteTempCheckbox = new System.Windows.Forms.CheckBox();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.threeDBGColorBtn = new System.Windows.Forms.Button();
+            this.imageBGColorBtn = new System.Windows.Forms.Button();
             this.groupBox.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -157,13 +162,12 @@ namespace Blacksmith
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 2);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(138, 13);
+            this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Steep (not implemented yet)";
+            this.label1.Text = "Steep";
             // 
             // steepTextBox
             // 
-            this.steepTextBox.Enabled = false;
             this.steepTextBox.Location = new System.Drawing.Point(6, 22);
             this.steepTextBox.Name = "steepTextBox";
             this.steepTextBox.Size = new System.Drawing.Size(260, 20);
@@ -172,7 +176,6 @@ namespace Blacksmith
             // 
             // steepButton
             // 
-            this.steepButton.Enabled = false;
             this.steepButton.Location = new System.Drawing.Point(272, 20);
             this.steepButton.Name = "steepButton";
             this.steepButton.Size = new System.Drawing.Size(75, 23);
@@ -220,13 +223,39 @@ namespace Blacksmith
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.imageBGColorBtn);
+            this.groupBox1.Controls.Add(this.threeDBGColorBtn);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.filelistSeparatorComboBox);
             this.groupBox1.Controls.Add(this.deleteTempCheckbox);
             this.groupBox1.Location = new System.Drawing.Point(380, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(220, 244);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Other";
+            this.groupBox1.Text = "Behavior/Appearance";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(8, 44);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(87, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Filelist Separator:";
+            // 
+            // filelistSeparatorComboBox
+            // 
+            this.filelistSeparatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.filelistSeparatorComboBox.FormattingEnabled = true;
+            this.filelistSeparatorComboBox.Items.AddRange(new object[] {
+            "Tabs",
+            "Commas (CSV)"});
+            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(101, 41);
+            this.filelistSeparatorComboBox.Name = "filelistSeparatorComboBox";
+            this.filelistSeparatorComboBox.Size = new System.Drawing.Size(113, 21);
+            this.filelistSeparatorComboBox.TabIndex = 0;
+            this.filelistSeparatorComboBox.SelectedIndexChanged += new System.EventHandler(this.filelistSeparatorComboBox_SelectedIndexChanged);
             // 
             // deleteTempCheckbox
             // 
@@ -238,6 +267,27 @@ namespace Blacksmith
             this.deleteTempCheckbox.Text = "Delete Temporary Files upon Closing";
             this.deleteTempCheckbox.UseVisualStyleBackColor = true;
             this.deleteTempCheckbox.CheckedChanged += new System.EventHandler(this.deleteTempCheckbox_CheckedChanged);
+            // 
+            // threeDBGColorBtn
+            // 
+            this.threeDBGColorBtn.Enabled = false;
+            this.threeDBGColorBtn.Location = new System.Drawing.Point(11, 68);
+            this.threeDBGColorBtn.Name = "threeDBGColorBtn";
+            this.threeDBGColorBtn.Size = new System.Drawing.Size(203, 23);
+            this.threeDBGColorBtn.TabIndex = 0;
+            this.threeDBGColorBtn.Text = "3D Viewer Background Color";
+            this.threeDBGColorBtn.UseVisualStyleBackColor = true;
+            this.threeDBGColorBtn.Click += new System.EventHandler(this.threeDBGColorBtn_Click);
+            // 
+            // imageBGColorBtn
+            // 
+            this.imageBGColorBtn.Location = new System.Drawing.Point(11, 97);
+            this.imageBGColorBtn.Name = "imageBGColorBtn";
+            this.imageBGColorBtn.Size = new System.Drawing.Size(203, 23);
+            this.imageBGColorBtn.TabIndex = 1;
+            this.imageBGColorBtn.Text = "Image Viewer Background Color";
+            this.imageBGColorBtn.UseVisualStyleBackColor = true;
+            this.imageBGColorBtn.Click += new System.EventHandler(this.imageBGColorBtn_Click);
             // 
             // Settings
             // 
@@ -292,5 +342,10 @@ namespace Blacksmith
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox deleteTempCheckbox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox filelistSeparatorComboBox;
+        private System.Windows.Forms.Button imageBGColorBtn;
+        private System.Windows.Forms.Button threeDBGColorBtn;
+        private System.Windows.Forms.ColorDialog colorDialog;
     }
 }

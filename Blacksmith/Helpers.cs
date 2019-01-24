@@ -12,7 +12,7 @@ namespace Blacksmith
 {
     public static class Helpers
     {
-        static string supportedFiles = @"(.forge|.pck|.png|.txt|.ini)";
+        static string supportedFiles = @"(.forge|.pck|.png|.txt|.ini|.log)";
 
         /// <summary>
         /// Returns if a file path is a supported file by Blacksmith.
@@ -288,7 +288,7 @@ namespace Blacksmith
             Console.WriteLine("DXT: " + dxtType.ToString());
 
             char[] dxtArr = { 'D', 'X', '\x0', '\x0' };
-            int pls = imageData.Length; // Math.Max(1, (width + 3) / 4) * 8;
+            int pls = imageData.Length; //655362 //Math.Max(1, (width + 3) / 4) * 8;
             using (FileStream stream = new FileStream(GetTempPath(fileName) + ".dds", FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
@@ -301,7 +301,7 @@ namespace Blacksmith
                     writer.Write(width); // width
                     writer.Write(pls); // pitch or linear size
                     writer.Write(0); // depth
-                    writer.Write(mipmapCount); // mipmap count
+                    writer.Write(1); // mipmap count, "1" for now
                     for (int i = 0; i < 11; i++) // reserved
                         writer.Write(0);
                     writer.Write(32); // size of PIXELFORMAT chunk
@@ -331,15 +331,17 @@ namespace Blacksmith
                 }
             }
         }
-
-        // FAILS because of the DDS
-        public static string ConvertDDSToPNG(string fileName)
+        
+        public static void ConvertDDSToPNG(string fileName)
         {
             string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
-            string args = string.Concat("-ft png -o ", GetTempPath(), " ", fileName);
-            Process.Start(texconv, args);
-            Console.WriteLine(args);
-            return fileName.Replace(".dds", ".png");
+            if (File.Exists(texconv))
+            {
+                string args = string.Concat("-ft png -f R8G8B8A8_UNORM -m 1 -o ", GetTempPath(), " ", fileName);
+                Process.Start(texconv, args);
+            }
+            else
+                MessageBox.Show("texconv is not found. Blacksmith needs it to convert the texture.", "Warning");
         }
 
         /// <summary>

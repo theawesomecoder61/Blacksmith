@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 // not Super Mario Odyssey!
 // Odyssey uses Oodle compression
@@ -13,17 +14,6 @@ namespace Blacksmith.Games
 {
     public class Odyssey
     {
-        public enum Compression
-        {
-            LZO1X = 0x0,
-            LZO1X_ = 0x1,
-            LZO2A = 0x2,
-            OODLE = 0x4,
-            LZO1C = 0x5,
-            OODLE_ = 0x7,
-            OODLE__ = 0x8
-        }
-
         #region Structs
         public struct HeaderBlock
         {
@@ -58,9 +48,9 @@ namespace Blacksmith.Games
         {
             public int Width { get; internal set; }
             public int Height { get; internal set; }
-            // skip 4 bytes
-            public DXT DXTType { get; internal set; }
             // skip 8 bytes
+            public DXT DXTType { get; internal set; }
+            // skip 4 bytes
             public int Mipmaps { get; internal set; }
         }
 
@@ -145,7 +135,7 @@ namespace Blacksmith.Games
             }
 
             // write all decompressed data chunks (stored in combinedData) to a combined file
-            Helpers.WriteToTempFile($"{fileName}-combined", combinedData.ToArray());
+            Helpers.WriteToTempFile($"{fileName}.dec", combinedData.ToArray());
 
             return true;
         }
@@ -217,20 +207,12 @@ namespace Blacksmith.Games
                 return data;
             }
         }
-
-        /// <summary>
-        /// Decompresses the file
-        /// </summary>
-        /// <param name="fileName"></param>
-        /*public void DecompressFile(string fileName)
-        {
-        }*/
         #endregion
 
         #region Datafile
         public static void ReadDatafile(string fileName)
         {
-            using (Stream stream = new FileStream($"{fileName}-combined", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -247,13 +229,12 @@ namespace Blacksmith.Games
         #endregion
 
         #region Textures
-        public static bool ExtractTextureMap(string fileName, Forge forge)
+        public static void ExtractTextureMap(string fileName, Forge forge, Action conversionCompleted)
         {
-            using (Stream stream = new FileStream($"{fileName}-combined", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    // this is omnipresent
                     DatafileHeader header = new DatafileHeader
                     {
                         ResourceType = reader.ReadInt32(),
@@ -262,7 +243,7 @@ namespace Blacksmith.Games
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
 
-                    // ignore the 2 bytes, file ID, and resource type identifier
+                    // ignore the 2 bytes, file ID, and resource type
                     reader.BaseStream.Seek(14, SeekOrigin.Current);
 
                     // toppmip 0
@@ -311,21 +292,27 @@ namespace Blacksmith.Games
                         };
 
                         byte[] mipmapData = reader.ReadBytes(map.DataSize);
+
+                        // write DDS file
                         Helpers.WriteTempDDS(fileName, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType);
+
+                        // convert DDS to PNG
+                        Helpers.ConvertDDSToPNG($"{Helpers.GetTempPath(fileName)}.dds");
                     }
                 }
             }
 
-            return true;
+            Thread.Sleep(1000);
+            conversionCompleted();
         }
 
-        private static string ExtractTopMip(string fileName, TopMip topMip)
+        private static void ExtractTopMip(string fileName, TopMip topMip)
         {
             /*
              * Diffuse maps = DXT1
-             * Normal maps = DX10 w/ BC7
+             * Normal maps = DX10 w/ BC7_UNORM
              */
-            using (Stream stream = new FileStream($"{fileName}-combined", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -343,14 +330,11 @@ namespace Blacksmith.Games
 
                     // write DDS file
                     Helpers.WriteTempDDS(fileName, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType);
+
+                    // convert DDS to PNG
+                    Helpers.ConvertDDSToPNG(string.Format("{0}.dds", Helpers.GetTempPath(fileName)));
                 }
             }
-
-            return string.Format("{0}.dds", Helpers.GetTempPath(fileName)); // Helpers.ConvertDDSToPNG();
-        }
-
-        public static void FindTopMip()
-        {
         }
         #endregion
 
@@ -358,9 +342,9 @@ namespace Blacksmith.Games
         #endregion
 
         #region Models
-        public static string ExtractModel(string fileName)
+        public static void ExtractModel(string fileName)
         {
-            using (Stream stream = new FileStream($"{fileName}-combined", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream($"{fileName}-.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -373,11 +357,9 @@ namespace Blacksmith.Games
                     };
                     file.FileName = reader.ReadChars(file.FileNameSize);
 
-                    // WIP
+                    // ToDo: implement the model stuff
                 }
             }
-
-            return "";
         }
         #endregion
     }

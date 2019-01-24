@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Blacksmith.FileTypes
@@ -8,6 +9,7 @@ namespace Blacksmith.FileTypes
     public class Forge
     {
         public string Path { get; private set; }
+        public string Name { get; private set; }
         public HeaderBlock Header { get; private set; }
         public DataHeader1Block DataHeader1 { get; private set; }
         public DataHeader2Block DataHeader2 { get; private set; }
@@ -77,6 +79,7 @@ namespace Blacksmith.FileTypes
         public Forge(string path)
         {
             Path = path;
+            Name = System.IO.Path.GetFileNameWithoutExtension(Path);
         }
 
         /// <summary>
@@ -207,6 +210,28 @@ namespace Blacksmith.FileTypes
                 }
             }
             return data;
+        }
+
+        /// <summary>
+        /// Creates a filelist
+        /// </summary>
+        public string CreateFilelist()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (FileEntries != null && FileEntries.Length > 0)
+            {
+                sb.Append("Name\tOffset\tSize\tFile ID from Index Table\n");
+                foreach (FileEntry entry in FileEntries)
+                {
+                    if (Properties.Settings.Default.useCSV)
+                        sb.AppendFormat("{0},{1},{2},{3}\n", entry.NameTable.Name, entry.IndexTable.OffsetToRawDataTable, entry.IndexTable.RawDataSize, entry.IndexTable.FileDataID);
+                    else
+                        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\n", entry.NameTable.Name, entry.IndexTable.OffsetToRawDataTable, entry.IndexTable.RawDataSize, entry.IndexTable.FileDataID);
+                }
+                return sb.ToString();
+            }
+            else
+                return "";
         }
 
         /// <summary>

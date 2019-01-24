@@ -32,6 +32,8 @@ namespace Blacksmith
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.decompressFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sourceCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,11 +60,12 @@ namespace Blacksmith
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip2 = new System.Windows.Forms.StatusStrip();
             this.imageDimensStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.imagePanel = new System.Windows.Forms.Panel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.convertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -80,7 +83,7 @@ namespace Blacksmith
             this.toolStripContainer2.ContentPanel.SuspendLayout();
             this.toolStripContainer2.SuspendLayout();
             this.statusStrip2.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.imagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +93,7 @@ namespace Blacksmith
             this.menuStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.toolsToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.moreToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -113,6 +117,21 @@ namespace Blacksmith
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.decompressFileToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // decompressFileToolStripMenuItem
+            // 
+            this.decompressFileToolStripMenuItem.Name = "decompressFileToolStripMenuItem";
+            this.decompressFileToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.decompressFileToolStripMenuItem.Text = "Decompress File";
+            this.decompressFileToolStripMenuItem.Click += new System.EventHandler(this.decompressFileToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -246,10 +265,11 @@ namespace Blacksmith
             // treeNodeContextMenuStrip
             // 
             this.treeNodeContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.convertToolStripMenuItem,
             this.datafileToolStripMenuItem,
             this.forgeToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
-            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(115, 48);
+            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(181, 92);
             // 
             // datafileToolStripMenuItem
             // 
@@ -339,7 +359,7 @@ namespace Blacksmith
             // 
             // toolStripContainer2.ContentPanel
             // 
-            this.toolStripContainer2.ContentPanel.Controls.Add(this.panel1);
+            this.toolStripContainer2.ContentPanel.Controls.Add(this.imagePanel);
             this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(556, 421);
             this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer2.LeftToolStripPanelVisible = false;
@@ -368,16 +388,16 @@ namespace Blacksmith
             this.imageDimensStatusLabel.Size = new System.Drawing.Size(92, 17);
             this.imageDimensStatusLabel.Text = "Dimensions: 0x0";
             // 
-            // panel1
+            // imagePanel
             // 
-            this.panel1.AutoScroll = true;
-            this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.panel1.Controls.Add(this.pictureBox);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(556, 421);
-            this.panel1.TabIndex = 1;
+            this.imagePanel.AutoScroll = true;
+            this.imagePanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.imagePanel.Controls.Add(this.pictureBox);
+            this.imagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imagePanel.Location = new System.Drawing.Point(0, 0);
+            this.imagePanel.Name = "imagePanel";
+            this.imagePanel.Size = new System.Drawing.Size(556, 421);
+            this.imagePanel.TabIndex = 1;
             // 
             // pictureBox
             // 
@@ -411,6 +431,13 @@ namespace Blacksmith
             this.richTextBox.Size = new System.Drawing.Size(556, 443);
             this.richTextBox.TabIndex = 0;
             this.richTextBox.Text = "";
+            // 
+            // convertToolStripMenuItem
+            // 
+            this.convertToolStripMenuItem.Name = "convertToolStripMenuItem";
+            this.convertToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.convertToolStripMenuItem.Text = "Convert";
+            this.convertToolStripMenuItem.Click += new System.EventHandler(this.convertToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -448,8 +475,8 @@ namespace Blacksmith
             this.toolStripContainer2.PerformLayout();
             this.statusStrip2.ResumeLayout(false);
             this.statusStrip2.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.imagePanel.ResumeLayout(false);
+            this.imagePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -484,7 +511,7 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripContainer toolStripContainer2;
         private System.Windows.Forms.StatusStrip statusStrip2;
         private System.Windows.Forms.ToolStripStatusLabel imageDimensStatusLabel;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel imagePanel;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ToolStripMenuItem forgeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createFilelistToolStripMenuItem;
@@ -492,6 +519,9 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripMenuItem datafileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveRawDataAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveDecompressedDataAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem decompressFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertToolStripMenuItem;
     }
 }
 

@@ -35,7 +35,7 @@ namespace Blacksmith
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, 3);
             }
         }
 

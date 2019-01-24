@@ -82,5 +82,41 @@ namespace Blacksmith.Properties {
                 this["deleteTemp"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool useCSV {
+            get {
+                return ((bool)(this["useCSV"]));
+            }
+            set {
+                this["useCSV"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ControlDark")]
+        public global::System.Drawing.Color imageBG {
+            get {
+                return ((global::System.Drawing.Color)(this["imageBG"]));
+            }
+            set {
+                this["imageBG"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ControlDark")]
+        public global::System.Drawing.Color threeDBG {
+            get {
+                return ((global::System.Drawing.Color)(this["threeDBG"]));
+            }
+            set {
+                this["threeDBG"] = value;
+            }
+        }
     }
 }
