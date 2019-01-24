@@ -5,7 +5,7 @@ A program for viewing, extracting, and converting textures and 3D models from As
 
 ----
 
-***For now, only (texture extraction) from Assassin's Creed: Odyssey and Origins is supported.***
+***For now, only (texture extraction and viewing) from Assassin's Creed: Odyssey and Origins are supported.***
 
 ----
 
