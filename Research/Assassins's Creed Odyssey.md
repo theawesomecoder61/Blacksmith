@@ -33,6 +33,7 @@ This is always found at the first 4 bytes of decompressed data. Other Resource T
 | 0x85C817C3 | Material      |
 | 0x415D9568 | Mesh          |
 | 0x1D4B87A3 | Mipmap        |
+| 0x24AECB7C | Skeleton      |
 | 0xA2B7E917 | Texture Map   |
 | 0xD70E6670 | Texture Set   |
 
