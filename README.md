@@ -18,8 +18,7 @@ Blacksmith tries to serve as a successor to ARchive_neXt, since development has 
 PC versions only of:
 - Assassin's Creed: Odyssey
 - Assassin's Creed: Origins
-- Steep (eventually)
-  - (I figured out the compression!)
+- Steep
 
 ## Functionality
 - Once this project picks up, the goals are viewing and extraction of:
@@ -30,10 +29,16 @@ PC versions only of:
   - creation of filelists from .forge files
   - extract all from .forge files
 
-## Usage (first time)
+## First Time Setup
 1. Download the latest version from below.
-2. Upon opening Blacksmith, click `Settings` and set the game paths and temporary path.
-3. All done
+2. Upon opening Blacksmith, click `Settings` and set the Game Paths and Temporary Path.
+
+## Usage
+1. After setting the game paths, click the plus icon next to a game (on the left) to see all of the game's files.
+2. Click the plus icon next to a .forge and wait to see all of the .forge's entries.
+3. Click the plus icon next to a .forge entry to see all subentries.
+4. Doing this will extract and decompress that entry. The result is a `.dec` file found in the Temporary Path with the same name.
+5. If there is a `TEXTURE_MAP`, `MATERIAL`, or `MESH` subentry, Blacksmith will try to load these in either the 3D Viewer, Image Viewer, or Text Viewer.
 
 ## Downloads
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
