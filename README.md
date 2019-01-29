@@ -37,8 +37,9 @@ PC versions only of:
 1. After setting the game paths, click the plus icon next to a game (on the left) to see all of the game's files.
 2. Click the plus icon next to a .forge and wait to see all of the .forge's entries.
 3. Click the plus icon next to a .forge entry to see all subentries.
-4. Doing this will extract and decompress that entry. The result is a `.dec` file found in the Temporary Path with the same name.
-5. If there is a `TEXTURE_MAP`, `MATERIAL`, or `MESH` subentry, Blacksmith will try to load these in either the 3D Viewer, Image Viewer, or Text Viewer.
+> Doing this will extract and decompress that entry. The result is a `.dec` file found in the Temporary Path with the same name.
+
+> If there is a `TEXTURE_MAP`, `MATERIAL`, or `MESH` subentry, Blacksmith will try to load these in either the 3D Viewer, Image Viewer, or Text Viewer.
 
 ## Downloads
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
