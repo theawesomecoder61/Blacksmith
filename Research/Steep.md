@@ -71,9 +71,9 @@ Whatever you call it, DXT Type, DXT compression, fourCC, etc.
 |--------|-----------------|--------------|
 | int    | fileType        | 4            |
 | [TopMip](#topmip) | topMip0 | 28        |
-|        | <skip 57 bytes> |              |
+|        | <skip ?? bytes> |              |
 | [TopMip](#topmip) | topMip1 | 28        |
-|        | <skip 12 bytes> |              |
+|        | <skip ?? bytes> |              |
 
 ### Image Data
 |  Type  |      Name       | Size (bytes)  |
