@@ -26,6 +26,8 @@ Zstd
 ## Resource Type
 This is always found at the first 4 bytes of decompressed data. Other Resource Types can appear in the same file, for example, in mesh files. Here is a selection of the most important Resource Types.
 
+> These values are actually strings (names of the Resource Type without spaces) hashed with CRC32.
+
 |   Value    | Resource Type |
 |------------|---------------|
 | 0xFC9E1595 | Compiled Mesh |
