@@ -15,11 +15,18 @@
 | UV sets             | X                         | X                         | X     |
 | Skeleton & Skinning | X                         | X                         | X     |
 
+### Other
+|    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
+|------------|---------------------------|---------------------------|-------|
+| Soundpacks | X                      | X                         | X     |
+
 ## Changelog
-### Version 1.2 [planned features] (1/xx/2019)
+### Version 1.2 [planned features] (2/1/2019)
 - Added
-  - Support for ***conversion of textures*** in Odyssey & Origins.
-  - Support for ***viewing and conversion of textures*** in Steep
+  - Support for ***conversion of textures*** in Odyssey & Origins
+  - Partial support for ***viewing and conversion of textures*** in Steep
+  - *Full support for soundpacks (SOUNDS!)*
+  - A bunch of other changes that you'll like
 
 ### Version 1.1 [CURRENT VERSION] (1/23/2019)
 - Added
