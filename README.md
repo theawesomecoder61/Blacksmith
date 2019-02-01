@@ -21,11 +21,12 @@ PC versions only of:
 - Steep
 
 ## Functionality
-- Once this project picks up, the goals are viewing and extraction of:
+- The main featureres are viewing and extraction of:
   - .forge files
   - 3D models (conversion to: .obj, .dae)
   - textures (conversion to: .dds, .png)
 - Also:
+  - extraction of sounds from .pck files
   - creation of filelists from .forge files
   - extract all from .forge files
 
