@@ -1,3 +1,5 @@
+![Blacksmith icon](https://i.imgur.com/F3nfeLe.png)
+
 # Blacksmith
 A program for viewing, extracting, and converting textures and 3D models from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. It is in early stages, and this repo will be updated constantly with additional support.
 
@@ -65,4 +67,13 @@ You will need:
 Blacksmith is licensed under the MIT License.
 
 ## Third-Party Software
-Coming eventually
+- libzstd
+- lzo
+- oodle
+- OodleSharp
+- SlimDX
+- SlimDX.D3D11Control
+- texconv
+- Zstandard.Net
+
+Blacksmith icon by Krisada from the Noun Project
