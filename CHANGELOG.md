@@ -2,10 +2,11 @@
 ### Textures
 | Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |--------------|---------------------------|---------------------------|-------|
-| Diffuse      | 🗸                        | 🗸                        | X     |
-| Normal       | 🗸                        | 🗸                        | X     |
-| Mask         | 🗸                        | 🗸                        | X     |
-| Specular     | 🗸                        | 🗸                        | X     |
+| Diffuse      | 🗸                        | 🗸                        | 🗸     |
+| Normal       | 🗸                        | 🗸                        | 🗸     |
+| Mask         | 🗸                        | 🗸                        | 🗸     |
+| Specular     | 🗸                        | 🗸                        | 🗸     |
+| UI/HUD       | X                        | X                        | X     |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -18,7 +19,8 @@
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |------------|---------------------------|---------------------------|-------|
-| Soundpacks | X                      | X                         | X     |
+| Soundpacks | 🗸                         | 🗸                        | 🗸     |
+| Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
 ### Version 1.2 [planned features] (2/2/2019)
