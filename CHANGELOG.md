@@ -21,8 +21,9 @@
 | Soundpacks | X                      | X                         | X     |
 
 ## Changelog
-### Version 1.2 [planned features] (2/1/2019)
+### Version 1.2 [planned features] (2/2/2019)
 - Added
+  - Icon
   - Support for ***conversion of textures*** in Odyssey & Origins
   - Partial support for ***viewing and conversion of textures*** in Steep
   - *Full support for soundpacks (SOUNDS!)*
