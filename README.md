@@ -1,13 +1,13 @@
 ![Blacksmith icon](https://i.imgur.com/F3nfeLe.png)
 
 # Blacksmith
-A program for viewing, extracting, and converting textures and 3D models from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. It is in early stages, and this repo will be updated constantly with additional support.
+A program for viewing, extracting, and converting (textures, 3D models, and sounds) from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. It is in early stages, and this repo will be updated constantly with additional support.
 
 `Note: Blacksmith is NOT a repacker.`
 
 ----
 
-***For now, only (texture extraction and viewing) from Assassin's Creed: Odyssey and Origins are supported.***
+***Check the [Current Support section](https://github.com/theawesomecoder61/Blacksmith/blob/master/CHANGELOG.md#current-support) to see what is supported.***
 
 ----
 
@@ -23,14 +23,15 @@ PC versions only of:
 - Steep
 
 ## Functionality
-- The main featureres are viewing and extraction of:
+- The main features are viewing and extraction of:
   - .forge files
-  - 3D models (conversion to: .obj, .dae)
-  - textures (conversion to: .dds, .png)
+  - 3D models (conversion to: .dae, .obj)
+  - textures (conversion to: .bmp, .dds, .png, .tga)
+  - sounds (conversion to .ogg)
 - Also:
-  - extraction of sounds from .pck files
+  - extraction of sounds and soundbanks from .pck files
   - creation of filelists from .forge files
-  - extract all from .forge files
+  - extract all entries from .forge files
 
 ## First Time Setup
 1. Download the latest version from below.
@@ -57,8 +58,8 @@ Are you curious about the file structures of these games and my discoveries? Che
 You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
-- SlimDX
-- OpenTK
+
+(built on Windows 10 Home 64-bit)
 
 ## Forum Thread/Discussion
 [Blacksmith on Xentax](http://forum.xentax.com/viewtopic.php?f=10&t=19324&p=147450)
