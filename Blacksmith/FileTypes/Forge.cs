@@ -17,6 +17,7 @@ namespace Blacksmith.FileTypes
 
         private IndexTable[] Indices;
         private NameTable[] Names;
+        private bool isFullyRead;
 
         public class HeaderBlock
         {
@@ -80,6 +81,7 @@ namespace Blacksmith.FileTypes
         {
             Path = path;
             Name = System.IO.Path.GetFileNameWithoutExtension(Path);
+            isFullyRead = false;
         }
 
         /// <summary>
@@ -178,6 +180,8 @@ namespace Blacksmith.FileTypes
                     {
                         return x.NameTable.Name.CompareTo(y.NameTable.Name);
                     }));
+
+                    isFullyRead = true;
                 }
             }
         }
@@ -213,6 +217,26 @@ namespace Blacksmith.FileTypes
         }
 
         /// <summary>
+        /// Returns the raw data with an offset and size
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public byte[] GetRawData(long offset, int size)
+        {
+            byte[] data = new byte[size];
+            using (Stream stream = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    reader.BaseStream.Seek(offset, SeekOrigin.Begin); // the checksum is ignored
+                    data = reader.ReadBytes(size);
+                }
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Creates a filelist
         /// </summary>
         public string CreateFilelist()
@@ -234,11 +258,14 @@ namespace Blacksmith.FileTypes
                 return "";
         }
 
+        public bool IsFullyRead() => isFullyRead;
+
         /// <summary>
         /// Sets everything to null, basically dumping the resources used by the forge's fields
         /// </summary>
         public void Dump()
         {
+            isFullyRead = false;
             Path = "";
             Header = null;
             DataHeader1 = null;

@@ -71,14 +71,14 @@ namespace Blacksmith.Compressions
             return outputBuffer;
         }
 
-        public static byte[] Decompress(byte[] buffer, int size, int uncompressedSize)
+        public static byte[] Decompress(byte[] buffer, int uncompressedSize)
         {
             byte[] decompressedBuffer = new byte[uncompressedSize];
 
 #if WIN32
-            int decompressedCount = OodleLZ_Decompress(buffer, size, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
+            int decompressedCount = OodleLZ_Decompress(buffer, buffer.Length, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
 #else
-            int decompressedCount = OodleLZ_Decompress(buffer, size, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
+            int decompressedCount = OodleLZ_Decompress(buffer, buffer.Length, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
 #endif
 
             // if decompressed size and uncompressed size match, the data was not compressed from the start

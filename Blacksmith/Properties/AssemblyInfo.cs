@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Blacksmith")]
-[assembly: AssemblyDescription("The new .forge file explorer, successor to ARchive_neXt.")]
+[assembly: AssemblyDescription("The .forge file explorer for AC: Odyssey, Origins, and Steep.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Andrew M.")]
+[assembly: AssemblyCompany("theawesomecoder61/Andrew M.")]
 [assembly: AssemblyProduct("Blacksmith")]
-[assembly: AssemblyCopyright("Copyright © Andrew M. 2018")]
-[assembly: AssemblyTrademark("Steep and the Assassin's Creed franchise are properties of Ubisoft.")]
+[assembly: AssemblyCopyright("")]
+[assembly: AssemblyTrademark("Assassin's Creed franchise and Steep are properties of Ubisoft.")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]

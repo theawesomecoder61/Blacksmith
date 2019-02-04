@@ -6,6 +6,7 @@ namespace Blacksmith
     public class EntryTreeNode : TreeNode
     {
         public Game Game;
+        public long Offset;
         public string Path;
         public ResourceType ResourceType = ResourceType._NONE;
         public long Size = -1;

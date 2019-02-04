@@ -1,4 +1,4 @@
-namespace Blacksmith
+namespace Blacksmith.Forms
 {
     partial class Settings
     {

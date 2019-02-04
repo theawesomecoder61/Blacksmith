@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Blacksmith
+namespace Blacksmith.Forms
 {
     partial class AboutBox : Form
     {

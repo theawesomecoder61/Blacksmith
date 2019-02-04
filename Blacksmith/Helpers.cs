@@ -3,26 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
+
+// an assortment of helping functions
 
 namespace Blacksmith
 {
     public static class Helpers
     {
-        static string supportedFiles = @"(.forge|.pck|.png|.txt|.ini|.log)";
+        public const string TEXTURE_CONVERSION_FORMATS = "Targa|*.tga|Portable Network Graphics|*.png|Tagged Image File Format|*.tif|Joint Photographic Experts Group|*.jpg|All files|*.*";
+        private const string SUPPORTED_FILES = @"(.forge|.pck|.png|.txt|.ini|.log)";
 
         /// <summary>
         /// Returns if a file path is a supported file by Blacksmith.
         /// </summary>
         /// <param name="file">File path</param>
         /// <returns></returns>
-        public static bool IsSupportedFile(string file)
-        {
-            return Regex.Matches(file, supportedFiles).Count > 0;
-        }
+        public static bool IsSupportedFile(string file) => Regex.Matches(file, SUPPORTED_FILES).Count > 0;
 
         /// <summary>
         /// Returns the path to the currently selected tree node
@@ -101,7 +105,7 @@ namespace Blacksmith
         /// <summary>
         /// Returns the offsets of where 0x33 0xAA 0xFB 0x57 0x99 0xFA 0x04 0x10 can be found in a raw data file
         /// </summary>
-        /// <param name="reader">Binary reader containing the raw data file</param>
+        /// <param name="reader"></param>
         /// <returns></returns>
         public static long[] LocateRawDataIdentifier(BinaryReader reader)
         {
@@ -145,60 +149,33 @@ namespace Blacksmith
         /// <summary>
         /// Returns the offsets of any supported resource type
         /// </summary>
-        /// <param name="reader">Binary reader containing the raw data file</param>
+        /// <param name="reader"></param>
         /// <returns></returns>
         public static ResourceLocation[] LocateResourceIdentifiers(BinaryReader reader)
         {
             List<ResourceLocation> locs = new List<ResourceLocation>();
             long originalPos = reader.BaseStream.Position;
 
-            reader.BaseStream.Position = 0; // do not skip the first 4 bytes
+            reader.BaseStream.Position = 0;
             //while (reader.BaseStream.Position <= reader.BaseStream.Length - 8)
             //{
-                uint i = reader.ReadUInt32();
-                ResourceType type = ResourceType._NONE;
-                switch (ResourceTypeExtensions.GetResourceType(i))
-                {
-                    case ResourceType.COMPILED_MESH:
-                        type = ResourceType.COMPILED_MESH;
-                        break;
-                    case ResourceType.MATERIAL:
-                        type = ResourceType.MATERIAL;
-                        break;
-                    case ResourceType.MESH:
-                        type = ResourceType.MESH;
-                        break;
-                    case ResourceType.MIPMAP:
-                        type = ResourceType.MIPMAP;
-                        break;
-                    case ResourceType.TEXTURE_MAP:
-                        type = ResourceType.TEXTURE_MAP;
-                        break;
-                    case ResourceType.TEXTURE_SET:
-                        type = ResourceType.TEXTURE_SET;
-                        break;
-                    default:
-                        //reader.BaseStream.Seek(-3, SeekOrigin.Current); // go back 3 bytes (if it were 4, infinite recursion)
-                        break;
-                }
-
-            Console.WriteLine("Found " + type.ToString());
-
-                if (type != ResourceType._NONE)
-                {
-                    locs.Add(new ResourceLocation
-                    {
-                        Type = type,
-                        Offset = reader.BaseStream.Position - 4 // get the offset 4 bytes from here
-                    });
-                }
             //}
+            
+            ResourceType type = ResourceTypeExtensions.GetResourceType(reader.ReadUInt32());
+            if (type != ResourceType._NONE)
+            {
+                locs.Add(new ResourceLocation
+                {
+                    Type = type,
+                    Offset = reader.BaseStream.Position // - 4 // get the offset 4 bytes from here
+                });
+            }
 
             reader.BaseStream.Position = originalPos;
             return locs.ToArray();
         }
 
-
+        //???
         public static int IndexOfBytes(byte[] array, byte[] pattern, int startIndex, int count)
         {
             int fidx = 0;
@@ -208,37 +185,41 @@ namespace Blacksmith
             });
             return (result < 0) ? -1 : result - fidx + 1;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //???
 
         /// <summary>
-        /// Writes data to a fileName located in the temporary path
+        /// Attempt to write to a file, if it is not already being accessed
         /// </summary>
-        /// <param name="fileName">File name, no directories</param>
+        /// <param name="fileName"></param>
         /// <param name="data"></param>
-        public static void WriteToTempFile(string fileName, byte[] data)
+        public static bool SafelyWriteBytes(string fileName, byte[] data)
         {
-            string tempPath = Properties.Settings.Default.tempPath;
-            if (!string.IsNullOrEmpty(tempPath))
-                File.WriteAllBytes(Path.Combine(tempPath, fileName), data);
+            if (false /*File.Exists(fileName)*/) // don't worry about this; experimental code
+            {
+                Stream stream = null;
+                try
+                {
+                    stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+                }
+                catch (IOException)
+                {
+                    return false;
+                }
+                finally
+                {
+                    if (stream != null && stream.Length > 0)
+                    {
+                        stream.Close();
+                        File.WriteAllBytes(fileName, data);
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                File.WriteAllBytes(fileName, data);
+                return true;
+            }
         }
 
         /// <summary>
@@ -246,19 +227,25 @@ namespace Blacksmith
         /// </summary>
         /// <param name="fileName">File name, no directories</param>
         /// <param name="data"></param>
-        public static void WriteToTempFile(string fileName, byte[][] data)
+        private static void WriteToTempFile(string fileName, byte[] data)
         {
             string tempPath = Properties.Settings.Default.tempPath;
-            if (string.IsNullOrEmpty(tempPath))
-                return;
+            if (!string.IsNullOrEmpty(tempPath))
+                SafelyWriteBytes(Path.Combine(tempPath, fileName), data);
+        }
 
-            List<byte> a = new List<byte>();
-            foreach (byte[] b in data)
-            {
-                foreach (byte c in b)
-                    a.Add(c);
-            }
-            File.WriteAllBytes(Path.Combine(tempPath, fileName), a.ToArray());
+        /// <summary>
+        /// Writes data to a fileName located wherever or the temporary path
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="data"></param>
+        /// <param name="writeToTempFolder"></param>
+        public static void WriteToFile(string fileName, byte[] data, bool writeToTempFolder)
+        {
+            if (writeToTempFolder)
+                WriteToTempFile(fileName, data);
+            else
+                SafelyWriteBytes(fileName, data);
         }
 
         /// <summary>
@@ -283,13 +270,14 @@ namespace Blacksmith
         /// <param name="height"></param>
         /// <param name="mipmapCount"></param>
         /// <param name="dxtType"></param>
-        public static void WriteTempDDS(string fileName, byte[] imageData, int width, int height, int mipmapCount, DXT dxtType)
+        /// <param name="completedAction"></param>
+        public static void WriteTempDDS(string fileName, byte[] imageData, int width, int height, int mipmapCount, DXT dxtType, Action completedAction)
         {
             Console.WriteLine("DXT: " + dxtType.ToString());
 
             char[] dxtArr = { 'D', 'X', '\x0', '\x0' };
-            int pls = imageData.Length; //655362 //Math.Max(1, (width + 3) / 4) * 8;
-            using (FileStream stream = new FileStream(GetTempPath(fileName) + ".dds", FileMode.Create, FileAccess.Write, FileShare.None))
+            int pls = imageData.Length; //Math.Max(1, (width + 3) / 4) * 8
+            using (FileStream stream = new FileStream($"{GetTempPath(fileName)}.dds", FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
@@ -330,18 +318,113 @@ namespace Blacksmith
                     writer.Write(imageData); // image data
                 }
             }
+
+            completedAction();
         }
-        
-        public static void ConvertDDSToPNG(string fileName)
+
+        /// <summary>
+        /// Converts a DDS texture with texconv. Has a callback if you wish to use it.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="completionAction"></param>
+        /// <param name="format"></param>
+        public static void ConvertDDS(string fileName, Action completionAction = null, string format = "png")
         {
             string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
             if (File.Exists(texconv))
             {
-                string args = string.Concat("-ft png -f R8G8B8A8_UNORM -m 1 -o ", GetTempPath(), " ", fileName);
-                Process.Start(texconv, args);
+                string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{GetTempPath()}\" \"{fileName}\"";
+                Console.WriteLine("{0} {1}", texconv, args);
+                Process p = Process.Start(texconv, args);
+                p.EnableRaisingEvents = true;
+                p.Exited += new EventHandler(delegate(object s, EventArgs a)
+                {
+                    completionAction?.Invoke();
+                });
             }
             else
-                MessageBox.Show("texconv is not found. Blacksmith needs it to convert the texture.", "Warning");
+                throw new Exception("texconv is not found. Blacksmith needs it to convert the texture.");
+        }
+
+        /// <summary>
+        /// Converts a DDS texture with texconv. Outputs to outputDir. Has a callback if you wish to use it.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="outputDir"></param>
+        /// <param name="completionAction"></param>
+        /// <param name="format"></param>
+        public static void ConvertDDS(string fileName, string outputDir, Action completionAction = null, string format = "png")
+        {
+            string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
+            if (File.Exists(texconv))
+            {
+                string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{outputDir}\" \"{fileName}\"";
+                Console.WriteLine("{0} {1}", texconv, args);
+                Process p = Process.Start(texconv, args);
+                p.EnableRaisingEvents = true;
+                p.Exited += new EventHandler(delegate (object s, EventArgs a)
+                {
+                    completionAction?.Invoke();
+                });
+            }
+            else
+                throw new Exception("texconv is not found. Blacksmith needs it to convert the texture.");
+        }
+
+        public static void ConvertWEMToOGG(string fileName)
+        {
+            string ww2ogg = string.Concat(Application.StartupPath, "\\Binaries\\x86\\ww2ogg.exe");
+            string bin = string.Concat(Application.StartupPath, "\\Binaries\\x86\\packed_codebooks_aoTuV_603.bin");
+            if (File.Exists(ww2ogg))
+            {
+                string args = $"--pcb \"{bin}\" \"{fileName}\"";
+                Console.WriteLine("{0} {1}", ww2ogg, args);
+                Process.Start(ww2ogg, args);
+            }
+            else
+                throw new Exception("ww2ogg is not found. Blacksmith needs it to convert the sound data.");
+        }
+
+        public static void RevorbOGG(string fileName)
+        {
+            string revorb = string.Concat(Application.StartupPath, "\\Binaries\\x86\\revorb.exe");
+            if (File.Exists(revorb))
+            {
+                string args = $"\"{fileName}\" \"{fileName.Replace(".ogg", "_c.ogg")}\"";
+                Console.WriteLine("{0} {1}", revorb, args);
+                Process p = Process.Start(revorb, args);
+                p.EnableRaisingEvents = true;
+                p.Exited += new EventHandler(delegate (object s, EventArgs a)
+                {
+                    Thread.Sleep(500);
+                    File.Delete(fileName);
+                    File.Move(fileName.Replace(".ogg", "_c.ogg"), fileName.Replace("_c.ogg", ".ogg")); // rename the converted ogg file (seems redundant, but we're actually "replacing" the raw file with the converted file)
+                });
+            }
+            else
+                throw new Exception("revorb is not found. Blacksmith needs it to convert the sound data.");
+        }
+
+        public static void ExtractBNK(string fileName)
+        {
+            string bnkextr = string.Concat(Application.StartupPath, "\\Binaries\\x86\\bnkextr.exe");
+            if (File.Exists(bnkextr))
+            {
+                string args = $"\"{fileName}\"";
+                Console.WriteLine("{0} {1}", bnkextr, args);
+
+                // create dir for the soundbank
+                string dir = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
+                Directory.CreateDirectory(dir);
+
+                // set working dir temporarily
+                string workingDir = Directory.GetCurrentDirectory();
+                Directory.SetCurrentDirectory(dir);
+                Process.Start(bnkextr, args);
+                Directory.SetCurrentDirectory(workingDir);
+            }
+            else
+                throw new Exception("revorb is not found. Blacksmith needs it to convert the sound data.");
         }
 
         /// <summary>
@@ -389,5 +472,40 @@ namespace Blacksmith
             });
             worker.RunWorkerAsync();
         }
+
+        public static List<Form> GetOpenForms() => Application.OpenForms.Cast<Form>().ToList();
+        
+        public static Bitmap ZoomImage(Image img, double zoomLevel = 1)
+        {
+            int newWidth = (int)(img.Height * zoomLevel);
+            int newHeight = (int)(img.Width * zoomLevel);
+            
+            Bitmap b = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppArgb);
+            b.SetResolution(img.HorizontalResolution, img.VerticalResolution);
+            
+            Graphics g = Graphics.FromImage(b);
+            g.Clear(Properties.Settings.Default.imageBG);
+            g.InterpolationMode = InterpolationMode.Default;
+            g.DrawImage(img, new Rectangle(0, 0, newWidth, newHeight), new Rectangle(0, 0, img.Width, img.Height), GraphicsUnit.Pixel);
+            g.Dispose();
+
+            return b;
+        }
+
+        /// <summary>
+        /// Returns if the magic matches the comparison
+        /// </summary>
+        /// <param name="magic"></param>
+        /// <param name="comparison"></param>
+        /// <returns></returns>
+        public static bool MagicMatches(byte[] magic, byte[] comparison) => magic[0] == comparison[0] &&
+                magic[1] == comparison[1] &&
+                magic[2] == comparison[2] &&
+                magic[3] == comparison[3];
+
+        public static bool MagicMatches(char[] magic, char[] comparison) => magic[0] == comparison[0] &&
+                magic[1] == comparison[1] &&
+                magic[2] == comparison[2] &&
+                magic[3] == comparison[3];
     }
 }

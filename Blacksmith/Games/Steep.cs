@@ -1,8 +1,11 @@
 using Blacksmith.Compressions;
 using Blacksmith.Enums;
+using Blacksmith.FileTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace Blacksmith.Games
 {
@@ -38,7 +41,7 @@ namespace Blacksmith.Games
             public char[] FileName { get; internal set; }
         }
 
-        public struct TopMip
+        public struct Mip // Steep does not have TopMips, rather Mips
         {
             public int Width { get; internal set; }
             public int Height { get; internal set; }
@@ -62,71 +65,86 @@ namespace Blacksmith.Games
         }
         #endregion
 
+        /// <summary>
+        /// Reads a file extracted from the forge file and writes all its decompressed data chunks to a file
+        /// </summary>
+        /// <param name="fileName"></param>
         public static bool ReadFile(string fileName)
         {
-            string name = Path.GetFileNameWithoutExtension(fileName);
-            List<byte[]> combinedData = new List<byte[]>();
-            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            return ReadFile(fileName, true);
+        }
+
+        public static bool ReadFile(string inputFileName, bool writeToTemp, string outputFileName = null)
+        {
+            string name = Path.GetFileNameWithoutExtension(inputFileName);
+            using (MemoryStream combinedStream = new MemoryStream())
             {
-                using (BinaryReader reader = new BinaryReader(stream))
+                using (Stream stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
-                    long x = identifierOffsets[1];
-
-                    // skip to this Raw Data Block's offset
-                    reader.BaseStream.Seek(x, SeekOrigin.Begin);
-
-                    // Header Block
-                    HeaderBlock header = new HeaderBlock
+                    using (BinaryReader reader = new BinaryReader(stream))
                     {
-                        Identifier = reader.ReadInt64(),
-                        Version = reader.ReadInt16(),
-                        Compression = (Compression)Enum.ToObject(typeof(Compression), reader.ReadByte())
-                    };
+                        long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
+                        Console.WriteLine(identifierOffsets[0]);
+                        Console.WriteLine(identifierOffsets[1]);
+                        long x = identifierOffsets[1];
 
-                    // skip 4 bytes
-                    reader.BaseStream.Seek(4, SeekOrigin.Current);
+                        // skip to this Raw Data Block's offset
+                        reader.BaseStream.Seek(x, SeekOrigin.Begin);
 
-                    // finish reading the Header Block
-                    header.BlockCount = reader.ReadInt32();
-
-                    // Block Indices
-                    BlockIndex[] indices = new BlockIndex[header.BlockCount];
-                    for (int i = 0; i < header.BlockCount; i++)
-                    {
-                        indices[i] = new BlockIndex
+                        // Header Block
+                        HeaderBlock header = new HeaderBlock
                         {
-                            UncompressedSize = reader.ReadInt32(),
-                            CompressedSize = reader.ReadInt32()
-                        };
-                    }
-
-                    // Data Chunks
-                    DataChunk[] chunks = new DataChunk[header.BlockCount];
-                    for (int i = 0; i < header.BlockCount; i++)
-                    {
-                        chunks[i] = new DataChunk
-                        {
-                            Checksum = reader.ReadInt32(),
-                            Data = reader.ReadBytes(indices[i].CompressedSize)
+                            Identifier = reader.ReadInt64(),
+                            Version = reader.ReadInt16(),
+                            Compression = (Compression)Enum.ToObject(typeof(Compression), reader.ReadByte())
                         };
 
-                        // if the compressedSize and uncompressedSize do not match, decompress data
-                        // otherwise, the data was not ever compressed
-                        byte[] decompressed = indices[i].CompressedSize == indices[i].UncompressedSize ?
-                            chunks[i].Data :
-                            Zstd.Decompress(chunks[i].Data, indices[i].UncompressedSize);
+                        // skip 4 bytes
+                        reader.BaseStream.Seek(4, SeekOrigin.Current);
 
-                        // add decompressed data to combinedData
-                        combinedData.Add(decompressed);
+                        // finish reading the Header Block
+                        header.BlockCount = reader.ReadInt32();
+
+                        // Block Indices
+                        BlockIndex[] indices = new BlockIndex[header.BlockCount];
+                        for (int i = 0; i < header.BlockCount; i++)
+                        {
+                            indices[i] = new BlockIndex
+                            {
+                                UncompressedSize = reader.ReadInt32(),
+                                CompressedSize = reader.ReadInt32()
+                            };
+                        }
+
+                        // Data Chunks
+                        DataChunk[] chunks = new DataChunk[header.BlockCount];
+                        for (int i = 0; i < header.BlockCount; i++)
+                        {
+                            chunks[i] = new DataChunk
+                            {
+                                Checksum = reader.ReadInt32(),
+                                Data = reader.ReadBytes(indices[i].CompressedSize)
+                            };
+
+                            // if the compressedSize and uncompressedSize do not match, decompress data
+                            // otherwise, the data was not ever compressed
+                            byte[] decompressed = indices[i].CompressedSize == indices[i].UncompressedSize ?
+                                chunks[i].Data :
+                                Zstd.Decompress(chunks[i].Data, indices[i].UncompressedSize);
+
+                            // add decompressed data to combinedData
+                            combinedStream.Write(decompressed, 0, decompressed.Length);
+                        }
                     }
                 }
+
+                // write all decompressed data chunks (stored in combinedData) to a combined file
+                Helpers.WriteToFile(writeToTemp ?
+                    $"{inputFileName}.dec" :
+                    outputFileName, combinedStream.ToArray(), writeToTemp);
+
+                return true;
             }
-
-            // write all decompressed data chunks (stored in combinedData) to a combined file
-            Helpers.WriteToTempFile($"{fileName}.dec", combinedData.ToArray());
-
-            return true;
         }
 
         public static byte[] ReadFile(byte[] rawData)
@@ -137,10 +155,9 @@ namespace Blacksmith.Games
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
-                    long x = identifierOffsets[1];
 
-                    // skip to this Raw Data Block's offset
-                    reader.BaseStream.Seek(x, SeekOrigin.Begin);
+                    // skip to the "important" Raw Data Block
+                    reader.BaseStream.Seek(identifierOffsets[1], SeekOrigin.Begin);
 
                     // Header Block
                     HeaderBlock header = new HeaderBlock
@@ -196,5 +213,112 @@ namespace Blacksmith.Games
                 return data;
             }
         }
+
+        #region Textures
+        public static void ExtractTextureMap(string fileName, Forge forge, Action completionAction)
+        {
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    DatafileHeader header = new DatafileHeader
+                    {
+                        ResourceType = reader.ReadInt32(),
+                        FileSize = reader.ReadInt32(),
+                        FileNameSize = reader.ReadInt32()
+                    };
+                    header.FileName = reader.ReadChars(header.FileNameSize);
+
+                    // ignore the 2 bytes, file ID, and resource type
+                    reader.BaseStream.Seek(14, SeekOrigin.Current);
+
+                    // pmip 0
+                    Mip mip0 = new Mip
+                    {
+                        Width = reader.ReadInt32(),
+                        Height = reader.ReadInt32()
+                    };
+                    reader.BaseStream.Seek(8, SeekOrigin.Current);
+                    mip0.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
+                    reader.BaseStream.Seek(4, SeekOrigin.Current);
+                    mip0.Mipmaps = reader.ReadInt32();
+
+                    reader.BaseStream.Seek(57, SeekOrigin.Current);
+
+                    // mip 1, ignored
+                    Mip mip1 = new Mip
+                    {
+                        Width = reader.ReadInt32(),
+                        Height = reader.ReadInt32()
+                    };
+                    reader.BaseStream.Seek(8, SeekOrigin.Current);
+                    mip1.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
+                    reader.BaseStream.Seek(4, SeekOrigin.Current);
+                    mip1.Mipmaps = reader.ReadInt32();
+
+                    // locate the two mips, if they exist
+                    if (forge.FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileName(fileName) + "_Mip")).Count() == 2)
+                    {
+                        Forge.FileEntry[] mipEntries = forge.FileEntries.Where(x => x.NameTable.Name == Path.GetFileName(fileName) + "_Mip0").ToArray();
+                        if (mipEntries.Length > 0)
+                        {
+                            Forge.FileEntry mipEntry = mipEntries[0];
+
+                            // extract, read, and create DDS images with the first mips
+                            byte[] rawData = forge.GetRawData(mipEntry);
+                            Helpers.WriteToFile(mipEntry.NameTable.Name, rawData, true);
+
+                            // read
+                            ReadFile(Helpers.GetTempPath(mipEntry.NameTable.Name));
+
+                            // extract
+                            ExtractTopMip(Helpers.GetTempPath(mipEntry.NameTable.Name), mip0, completionAction);
+                        }
+                    }
+                    else // mips do not exist. fear not! there is still image data found here. let us use that.
+                    {
+                        reader.BaseStream.Seek(12, SeekOrigin.Current);
+                        TextureMap map = new TextureMap
+                        {
+                            DataSize = reader.ReadInt32()
+                        };
+                        byte[] mipmapData = reader.ReadBytes(map.DataSize);
+
+                        // write DDS file
+                        Helpers.WriteTempDDS(fileName, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
+                        {
+                            Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
+                        });
+                    }
+                }
+            }
+        }
+
+        private static void ExtractTopMip(string fileName, Mip mip, Action completionAction)
+        {
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    DatafileHeader header = new DatafileHeader
+                    {
+                        ResourceType = reader.ReadInt32(),
+                        FileSize = reader.ReadInt32(),
+                        FileNameSize = reader.ReadInt32()
+                    };
+                    header.FileName = reader.ReadChars(header.FileNameSize);
+
+                    reader.BaseStream.Seek(18, SeekOrigin.Current);
+                    byte[] data = reader.ReadBytes(header.FileSize - 18);
+
+                    // write DDS file
+                    Helpers.WriteTempDDS(fileName, data, mip.Width, mip.Height, mip.Mipmaps, mip.DXTType, () =>
+                    {
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
+                    });
+                }
+            }
+        }
+        #endregion
     }
 }

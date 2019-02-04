@@ -76,14 +76,25 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\noun_Blacksmith_1124400.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenTK.3.0.1\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="NAudio, Version=1.8.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Binaries\x64\SlimDX.dll</HintPath>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <HintPath>..\packages\SlimDX.4.0.13.44\lib\NET40\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX.D3D11Control, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\SlimDX.D3D11Control.1.0.1\lib\net40\SlimDX.D3D11Control.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -108,6 +119,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BigEndianBinaryReader.cs" />
+    <Compile Include="FileTypes\PCK.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,17 +133,27 @@
     <Compile Include="EntryTreeNode.cs" />
     <Compile Include="Enums\Compression.cs" />
     <Compile Include="Enums\Game.cs" />
-    <Compile Include="RenderObject.cs" />
-    <Compile Include="SceneWindow.cs" />
+    <Compile Include="Forms\FindDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FindDialog.Designer.cs">
+      <DependentUpon>FindDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SoundpackBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SoundpackBrowser.Designer.cs">
+      <DependentUpon>SoundpackBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="ThreeD\Camera.cs" />
     <Compile Include="ThreeD\D3DScene.cs" />
     <Compile Include="Enums\DXT.cs" />
     <Compile Include="Enums\ResourceType.cs" />
     <Compile Include="FileTypes\Forge.cs" />
-    <Compile Include="Forms\Form1.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form1.Designer.cs">
+    <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\Odyssey.cs" />
@@ -153,12 +176,18 @@
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
     <Compile Include="ThreeD\RenderMesh.cs" />
-    <Compile Include="Vertex.cs" />
+    <None Include="Resources\noun_Blacksmith_1124400.ico" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form1.resx">
+    <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FindDialog.resx">
+      <DependentUpon>FindDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SoundpackBrowser.resx">
+      <DependentUpon>SoundpackBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -176,7 +205,13 @@
     <EmbeddedResource Include="Forms\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="OpenTK.dll.config" />
+    <Content Include="Binaries\x86\bnkextr.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Binaries\x86\packed_codebooks.bin" />
+    <Content Include="Binaries\x86\packed_codebooks_aoTuV_603.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -204,7 +239,13 @@
     <Content Include="Binaries\x86\oo2core_6_win32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Binaries\x86\revorb.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Binaries\x86\texconv.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Binaries\x86\ww2ogg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\blacksmith.jpg" />

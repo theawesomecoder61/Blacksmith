@@ -6,11 +6,14 @@ namespace Blacksmith.Enums
     {
         _NONE = 0,
         COMPILED_MESH = 1,
-        MATERIAL = 2,
-        MESH = 3,
-        MIPMAP = 4,
-        TEXTURE_MAP = 5,
-        TEXTURE_SET = 6
+        LOCALIZATION_DATA = 2,
+        LOCALIZATION_MANAGER = 3,
+        LOCALIZATION_PACKAGE = 4,
+        MATERIAL = 5,
+        MESH = 6,
+        MIPMAP = 7,
+        TEXTURE_MAP = 8,
+        TEXTURE_SET = 9
     }
 
     public static class ResourceTypeExtensions
@@ -19,6 +22,9 @@ namespace Blacksmith.Enums
         {
             "", // none
             "FC9E1595", // compiled mesh
+            "D28389B5", // localization data
+            "4A70DE43", // localization manager
+            "6E3C9C6F", // localization package
             "85C817C3", // material
             "415D9568", // mesh
             "1D4B87A3", // mipmap

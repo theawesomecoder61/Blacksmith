@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading;
 
 // not Super Mario Odyssey!
-// Odyssey uses Oodle compression
 
 namespace Blacksmith.Games
 {
@@ -75,69 +74,77 @@ namespace Blacksmith.Games
         /// <param name="fileName"></param>
         public static bool ReadFile(string fileName)
         {
-            string name = Path.GetFileNameWithoutExtension(fileName);
-            List<byte[]> combinedData = new List<byte[]>();
-            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            return ReadFile(fileName, true);
+        }
+
+        public static bool ReadFile(string inputFileName, bool writeToTemp, string outputFileName = null)
+        {
+            string name = Path.GetFileNameWithoutExtension(inputFileName);
+            using (MemoryStream combinedStream = new MemoryStream())
             {
-                using (BinaryReader reader = new BinaryReader(stream))
+                using (Stream stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
-                    long x = identifierOffsets[1];
-
-                    // skip to this Raw Data Block's offset
-                    reader.BaseStream.Seek(x, SeekOrigin.Begin);
-
-                    // Header Block
-                    HeaderBlock header = new HeaderBlock
+                    using (BinaryReader reader = new BinaryReader(stream))
                     {
-                        Identifier = reader.ReadInt64(),
-                        Version = reader.ReadInt16(),
-                        Compression = (Compression)Enum.ToObject(typeof(Compression), reader.ReadByte())
-                    };
+                        long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
+                        long x = identifierOffsets[1];
 
-                    // skip 4 bytes
-                    reader.BaseStream.Seek(4, SeekOrigin.Current);
+                        // skip to this Raw Data Block's offset
+                        reader.BaseStream.Seek(x, SeekOrigin.Begin);
 
-                    // finish reading the Header Block
-                    header.BlockCount = reader.ReadInt32();
-
-                    // Block Indices
-                    BlockIndex[] indices = new BlockIndex[header.BlockCount];
-                    for (int i = 0; i < header.BlockCount; i++)
-                    {
-                        indices[i] = new BlockIndex
+                        // Header Block
+                        HeaderBlock header = new HeaderBlock
                         {
-                            UncompressedSize = reader.ReadInt32(),
-                            CompressedSize = reader.ReadInt32()
-                        };
-                    }
-
-                    // Data Chunks
-                    DataChunk[] chunks = new DataChunk[header.BlockCount];
-                    for (int i = 0; i < header.BlockCount; i++)
-                    {
-                        chunks[i] = new DataChunk
-                        {
-                            Checksum = reader.ReadInt32(),
-                            Data = reader.ReadBytes(indices[i].CompressedSize)
+                            Identifier = reader.ReadInt64(),
+                            Version = reader.ReadInt16(),
+                            Compression = (Compression)Enum.ToObject(typeof(Compression), reader.ReadByte())
                         };
 
-                        // if the compressedSize and uncompressedSize do not match, decompress data
-                        // otherwise, the data was not ever compressed
-                        byte[] decompressed = indices[i].CompressedSize == indices[i].UncompressedSize ?
-                            chunks[i].Data :
-                            Oodle.Decompress(chunks[i].Data, indices[i].CompressedSize, indices[i].UncompressedSize);
+                        // skip 4 bytes
+                        reader.BaseStream.Seek(4, SeekOrigin.Current);
 
-                        // add decompressed data to combinedData
-                        combinedData.Add(decompressed);
+                        // finish reading the Header Block
+                        header.BlockCount = reader.ReadInt32();
+
+                        // Block Indices
+                        BlockIndex[] indices = new BlockIndex[header.BlockCount];
+                        for (int i = 0; i < header.BlockCount; i++)
+                        {
+                            indices[i] = new BlockIndex
+                            {
+                                UncompressedSize = reader.ReadInt32(),
+                                CompressedSize = reader.ReadInt32()
+                            };
+                        }
+
+                        // Data Chunks
+                        DataChunk[] chunks = new DataChunk[header.BlockCount];
+                        for (int i = 0; i < header.BlockCount; i++)
+                        {
+                            chunks[i] = new DataChunk
+                            {
+                                Checksum = reader.ReadInt32(),
+                                Data = reader.ReadBytes(indices[i].CompressedSize)
+                            };
+
+                            // if the compressedSize and uncompressedSize do not match, decompress data
+                            // otherwise, the data was not ever compressed
+                            byte[] decompressed = indices[i].CompressedSize == indices[i].UncompressedSize ?
+                                chunks[i].Data :
+                                Oodle.Decompress(chunks[i].Data, indices[i].UncompressedSize);
+
+                            // add decompressed data to combinedData
+                            combinedStream.Write(decompressed, 0, decompressed.Length);
+                        }
                     }
                 }
+
+                // write all decompressed data chunks (stored in combinedData) to a combined file
+                Helpers.WriteToFile(writeToTemp ? $"{inputFileName}.dec" :
+                    outputFileName, combinedStream.ToArray(), writeToTemp);
+
+                return true;
             }
-
-            // write all decompressed data chunks (stored in combinedData) to a combined file
-            Helpers.WriteToTempFile($"{fileName}.dec", combinedData.ToArray());
-
-            return true;
         }
 
         public static byte[] ReadFile(byte[] rawData)
@@ -192,7 +199,7 @@ namespace Blacksmith.Games
                         // otherwise, the data was not ever compressed
                         byte[] decompressed = indices[i].CompressedSize == indices[i].UncompressedSize ?
                             chunks[i].Data :
-                            Oodle.Decompress(chunks[i].Data, indices[i].CompressedSize, indices[i].UncompressedSize);
+                            Oodle.Decompress(chunks[i].Data, indices[i].UncompressedSize);
 
                         // add decompressed data to combinedData
                         combinedData.AddRange(decompressed);
@@ -229,7 +236,7 @@ namespace Blacksmith.Games
         #endregion
 
         #region Textures
-        public static void ExtractTextureMap(string fileName, Forge forge, Action conversionCompleted)
+        public static void ExtractTextureMap(string fileName, Forge forge, Action completionAction)
         {
             using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -259,7 +266,7 @@ namespace Blacksmith.Games
 
                     reader.BaseStream.Seek(81, SeekOrigin.Current);
 
-                    // topmip 1
+                    // topmip 1, ignored
                     TopMip mip1 = new TopMip
                     {
                         Width = reader.ReadInt32(),
@@ -277,11 +284,13 @@ namespace Blacksmith.Games
 
                         // extract, read, and create DDS images with the first topmips
                         byte[] rawData = forge.GetRawData(topMipEntry);
-                        Helpers.WriteToTempFile(topMipEntry.NameTable.Name, rawData);
+                        Helpers.WriteToFile(topMipEntry.NameTable.Name, rawData, true);
 
+                        // read
                         ReadFile(Helpers.GetTempPath(topMipEntry.NameTable.Name));
 
-                        ExtractTopMip(Helpers.GetTempPath(topMipEntry.NameTable.Name), mip0);
+                        // extract
+                        ExtractTopMip(Helpers.GetTempPath(topMipEntry.NameTable.Name), mip0, completionAction);
                     }
                     else // topmips do not exist. fear not! there is still image data found here. let us use that.
                     {
@@ -290,33 +299,24 @@ namespace Blacksmith.Games
                         {
                             DataSize = reader.ReadInt32()
                         };
-
                         byte[] mipmapData = reader.ReadBytes(map.DataSize);
 
                         // write DDS file
-                        Helpers.WriteTempDDS(fileName, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType);
-
-                        // convert DDS to PNG
-                        Helpers.ConvertDDSToPNG($"{Helpers.GetTempPath(fileName)}.dds");
+                        Helpers.WriteTempDDS(fileName, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
+                        {
+                            Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
+                        });
                     }
                 }
             }
-
-            Thread.Sleep(1000);
-            conversionCompleted();
         }
 
-        private static void ExtractTopMip(string fileName, TopMip topMip)
+        private static void ExtractTopMip(string fileName, TopMip topMip, Action completionAction)
         {
-            /*
-             * Diffuse maps = DXT1
-             * Normal maps = DX10 w/ BC7_UNORM
-             */
             using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    // this is omnipresent
                     DatafileHeader header = new DatafileHeader
                     {
                         ResourceType = reader.ReadInt32(),
@@ -329,10 +329,10 @@ namespace Blacksmith.Games
                     byte[] data = reader.ReadBytes(header.FileSize - 18);
 
                     // write DDS file
-                    Helpers.WriteTempDDS(fileName, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType);
-
-                    // convert DDS to PNG
-                    Helpers.ConvertDDSToPNG(string.Format("{0}.dds", Helpers.GetTempPath(fileName)));
+                    Helpers.WriteTempDDS(fileName, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType, () =>
+                    {
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
+                    });
                 }
             }
         }
@@ -344,11 +344,10 @@ namespace Blacksmith.Games
         #region Models
         public static void ExtractModel(string fileName)
         {
-            using (Stream stream = new FileStream($"{fileName}-.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    // this is omnipresent
                     DatafileHeader file = new DatafileHeader
                     {
                         ResourceType = reader.ReadInt32(),
@@ -358,6 +357,27 @@ namespace Blacksmith.Games
                     file.FileName = reader.ReadChars(file.FileNameSize);
 
                     // ToDo: implement the model stuff
+                }
+            }
+        }
+        #endregion
+
+        #region Localization
+        public static void ExtractLocalizationPackage(string fileName)
+        {
+            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    DatafileHeader file = new DatafileHeader
+                    {
+                        ResourceType = reader.ReadInt32(),
+                        FileSize = reader.ReadInt32(),
+                        FileNameSize = reader.ReadInt32()
+                    };
+                    file.FileName = reader.ReadChars(file.FileNameSize);
+
+                    // ToDo: implement the localization stuff
                 }
             }
         }

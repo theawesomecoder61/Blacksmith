@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace Blacksmith
+namespace Blacksmith.Forms
 {
     public partial class Settings : Form
     {
