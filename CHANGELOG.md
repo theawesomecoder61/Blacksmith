@@ -23,15 +23,33 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.2 [planned features] (2/2/2019)
+### Version 1.2 [CURRENT VERSION] (2/3/2019)
 - Added
-  - Icon
-  - Support for ***conversion of textures*** in Odyssey & Origins
-  - Partial support for ***viewing and conversion of textures*** in Steep
-  - *Full support for soundpacks (SOUNDS!)*
-  - A bunch of other changes that you'll like
+  - **Texture conversion support for all games**
+  - *Partial* Steep texture extraction and viewing support
+  - Blacksmith now has an icon! (credit to Krisada on the Noun Project)
+  - **Full support for .pck (soundpacks) and .bnk (soundbanks)**
+    > The soundpack contents will appear in the Soundpack Browser, where you can extract sounds
+  - Find menu and window (does not work yet)
+  - Texture context menu
+  - Zoom Level to the Image Viewer
+    > You can zoom on an image now
+  - Localization-related enums to the ResourceType class
+  - bnkextr, revorb, and ww2ogg
+  - NAudio and NAudio.Vorbis
+- Fixed
+  - Texture extraction/conversion occurs much quicker
+    > The Image Viewer becomes active with the texture already loaded
+  - Converted textures will not be converted again if the user clicks on the entry/subentry again
+- Updated
+  - x86 versions of lzo and Oodle are no longer included with the releases
+  - Entries already loaded will appear individually (especially with large .forge files)
+  - Assembly information
+  - The progress bar animates while using the Tools > Decompress File
+  - Decompress File now asks for a save location
+  - The Path status label will no longer show paths within .forge files
 
-### Version 1.1 [CURRENT VERSION] (1/23/2019)
+### Version 1.1 (1/23/2019)
 - Added
   - Initial Steep support! (do not expect full texture support until Version 1.2)
   - Support for ***viewing of textures*** in Odyssey
