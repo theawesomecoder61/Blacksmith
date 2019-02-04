@@ -26,6 +26,8 @@ Zstd
 ## Resource Type
 This is always found at the first 4 bytes of decompressed data. Other Resource Types can appear in the same file, for example, in mesh files. Here is a selection of the most important Resource Types.
 
+> These values are actually strings (names of the Resource Type without spaces) hashed with CRC32.
+
 |   Value    | Resource Type |
 |------------|---------------|
 | 0xFC9E1595 | Compiled Mesh |
@@ -71,9 +73,9 @@ Whatever you call it, DXT Type, DXT compression, fourCC, etc.
 |--------|-----------------|--------------|
 | int    | fileType        | 4            |
 | [TopMip](#topmip) | topMip0 | 28        |
-|        | <skip 57 bytes> |              |
+|        | <skip ?? bytes> |              |
 | [TopMip](#topmip) | topMip1 | 28        |
-|        | <skip 12 bytes> |              |
+|        | <skip ?? bytes> |              |
 
 ### Image Data
 |  Type  |      Name       | Size (bytes)  |

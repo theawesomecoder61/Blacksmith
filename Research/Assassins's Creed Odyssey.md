@@ -27,12 +27,15 @@ Oodle
 ## Resource Type
 This is always found at the first 4 bytes of decompressed data. Other Resource Types can appear in the same file, for example, in mesh files. Here is a selection of the most important Resource Types.
 
+> These values are actually strings (names of the Resource Type without spaces) hashed with CRC32.
+
 |   Value    | Resource Type |
 |------------|---------------|
 | 0xFC9E1595 | Compiled Mesh |
 | 0x85C817C3 | Material      |
 | 0x415D9568 | Mesh          |
 | 0x1D4B87A3 | Mipmap        |
+| 0x24AECB7C | Skeleton      |
 | 0xA2B7E917 | Texture Map   |
 | 0xD70E6670 | Texture Set   |
 
