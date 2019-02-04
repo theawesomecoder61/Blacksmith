@@ -52,7 +52,7 @@ PC versions only of:
 [View the changelog here.](https://github.com/theawesomecoder61/Blacksmith/blob/master/Changelog.md)
 
 ## Research
-Are you curious about the file structures of these games and my discoveries? Check out the [Research folder](https://github.com/theawesomecoder61/Blacksmith/tree/master/Research).
+Are you curious about the file structures of these games and my discoveries? Check out the [Wiki](https://github.com/theawesomecoder61/Blacksmith/wiki).
 
 ## Building
 You will need:
