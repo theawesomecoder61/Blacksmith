@@ -23,6 +23,17 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
+### Version 1.3 [POSSIBLE FEATURES] (2/XX/2019)
+*This is a list of possible features. The list is incomplete.*
+- Added
+  - **Full support for textures** for all games
+    > Includes UI/HUD textures
+- Fixed
+  - Find menu and window work properly
+- Updated
+  - Image Viewer
+    > The background is now a grid, zoom works on all images
+  - Image View background color removed from the Settings
 ### Version 1.2 [CURRENT VERSION] (2/3/2019)
 - Added
   - **Texture conversion support for all games**
