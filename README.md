@@ -72,8 +72,7 @@ Blacksmith is licensed under the MIT License.
 - lzo
 - oodle
 - OodleSharp
-- SlimDX
-- SlimDX.D3D11Control
+- OpenTK
 - texconv
 - Zstandard.Net
 
