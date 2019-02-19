@@ -6,7 +6,7 @@
 | Normal       | 🗸                        | 🗸                        | 🗸     |
 | Mask         | 🗸                        | 🗸                        | 🗸     |
 | Specular     | 🗸                        | 🗸                        | 🗸     |
-| UI/HUD       | X                        | X                        | X     |
+| UI/HUD       | 🗸                        | 🗸                       | 🗸     |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -23,18 +23,32 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.3 [POSSIBLE FEATURES] (2/XX/2019)
-*This is a list of possible features. The list is incomplete.*
+### Version 1.3 [CURRENT VERSION] (2/18/2019)
 - Added
-  - **Full support for textures** for all games
-    > Includes UI/HUD textures
-- Fixed
-  - Find menu and window work properly
+  - the 3D Viewer is all set to go
+  - preliminary Origins 3D models support
+  - extensions for decompressed data for each game (.acod, .acor, .stp)
 - Updated
-  - Image Viewer
-    > The background is now a grid, zoom works on all images
-  - Image View background color removed from the Settings
-### Version 1.2 [CURRENT VERSION] (2/3/2019)
+  - you are no longer able to set the background color of the Image Viewer because the background is now a grid
+  - images displayed in the Image Viewer will be centered
+  - images are now oriented correctly (rotated 180 degrees and flipped along the X-axis)
+  - I rewrote a chunk of the Form1 class
+  - **the loading of entries occurs much quicker (insanely fast!)**
+  - abandoned SlimDX in favor of OpenTK
+  - the 3D Viewer background color in the Settings window is enabled
+  - raw data is no logner written to a file
+  - deleted the ThreeD folder
+  - created a new 3D-related folder ("Three")
+  - Settings window more organized
+  - Help is now implemented
+  - the tree view and Soundpack Browser are temporarily disabled while entries are loading (to prevent the user from overworking the program)
+- Fixed
+  - all entries from each .forge are loaded
+  - zoom works with all images
+  - any issue that arises when you browse multiple .forge files at once
+  - a dozen of other issues are gone
+
+### Version 1.2 (2/3/2019)
 - Added
   - **Texture conversion support for all games**
   - *Partial* Steep texture extraction and viewing support
