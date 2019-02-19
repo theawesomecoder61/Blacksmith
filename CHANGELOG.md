@@ -26,7 +26,6 @@
 ### Version 1.3 [CURRENT VERSION] (2/18/2019)
 - Added
   - the 3D Viewer is all set to go
-  - preliminary Origins 3D models support
   - extensions for decompressed data for each game (.acod, .acor, .stp)
 - Updated
   - you are no longer able to set the background color of the Image Viewer because the background is now a grid
@@ -46,7 +45,6 @@
   - all entries from each .forge are loaded
   - zoom works with all images
   - any issue that arises when you browse multiple .forge files at once
-  - a dozen of other issues are gone
 
 ### Version 1.2 (2/3/2019)
 - Added
