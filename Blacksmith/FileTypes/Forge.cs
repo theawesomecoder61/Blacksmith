@@ -85,6 +85,26 @@ namespace Blacksmith.FileTypes
         }
 
         /// <summary>
+        /// Returns the number of entries [does not require Read()]
+        /// </summary>
+        /// <returns></returns>
+        public int GetEntryCount()
+        {
+            int ct = 0;
+            using (Stream stream = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    stream.Position = 13;
+                    ulong offsetToDataHeader = reader.ReadUInt64();
+                    stream.Position = (int)offsetToDataHeader;
+                    ct = reader.ReadInt32();
+                }
+            }
+            return ct;
+        }
+
+        /// <summary>
         /// Read data and populate the fields
         /// </summary>
         public void Read()

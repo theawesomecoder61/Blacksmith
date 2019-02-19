@@ -154,38 +154,40 @@ namespace Blacksmith
         public static ResourceLocation[] LocateResourceIdentifiers(BinaryReader reader)
         {
             List<ResourceLocation> locs = new List<ResourceLocation>();
-            long originalPos = reader.BaseStream.Position;
+            //long originalPos = reader.BaseStream.Position;
+            reader.BaseStream.Position = 0;            
 
-            reader.BaseStream.Position = 0;
-            //while (reader.BaseStream.Position <= reader.BaseStream.Length - 8)
-            //{
-            //}
-            
             ResourceType type = ResourceTypeExtensions.GetResourceType(reader.ReadUInt32());
             if (type != ResourceType._NONE)
             {
                 locs.Add(new ResourceLocation
                 {
-                    Type = type,
-                    Offset = reader.BaseStream.Position // - 4 // get the offset 4 bytes from here
+                    //Offset = reader.BaseStream.Position, // - 4 // get the offset 4 bytes from here
+                    Type = type
                 });
             }
 
-            reader.BaseStream.Position = originalPos;
+            //reader.BaseStream.Position = originalPos;
             return locs.ToArray();
         }
 
-        //???
+        /// <summary>
+        /// Returns the first index of where pattern is located in array with a count
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="pattern"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public static int IndexOfBytes(byte[] array, byte[] pattern, int startIndex, int count)
         {
             int fidx = 0;
             int result = Array.FindIndex(array, startIndex, count, (byte b) => {
                 fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
-                return (fidx == pattern.Length);
+                return fidx == pattern.Length;
             });
             return (result < 0) ? -1 : result - fidx + 1;
         }
-        //???
 
         /// <summary>
         /// Attempt to write to a file, if it is not already being accessed
@@ -194,7 +196,7 @@ namespace Blacksmith
         /// <param name="data"></param>
         public static bool SafelyWriteBytes(string fileName, byte[] data)
         {
-            if (false /*File.Exists(fileName)*/) // don't worry about this; experimental code
+            /*if (false /*File.Exists(fileName)*) // don't worry about this; experimental code
             {
                 Stream stream = null;
                 try
@@ -216,10 +218,10 @@ namespace Blacksmith
                 return true;
             }
             else
-            {
+            {*/
                 File.WriteAllBytes(fileName, data);
                 return true;
-            }
+            //}
         }
 
         /// <summary>
@@ -262,7 +264,7 @@ namespace Blacksmith
         public static string GetTempPath(string fileName) => Path.Combine(Properties.Settings.Default.tempPath, fileName);
 
         /// <summary>
-        /// Writes an entire DDS file to the temporary path using the fileName
+        /// Writes an entire .dds file to the temporary path using the fileName
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="imageData"></param>
@@ -277,46 +279,54 @@ namespace Blacksmith
 
             char[] dxtArr = { 'D', 'X', '\x0', '\x0' };
             int pls = imageData.Length; //Math.Max(1, (width + 3) / 4) * 8
-            using (FileStream stream = new FileStream($"{GetTempPath(fileName)}.dds", FileMode.Create, FileAccess.Write, FileShare.None))
+            try
             {
-                using (BinaryWriter writer = new BinaryWriter(stream))
+                using (FileStream stream = new FileStream($"{GetTempPath(fileName)}.dds", FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    foreach (char c in new char[]{ 'D', 'D', 'S', ' ' }) // DDS magic
-                        writer.Write(c);
-                    writer.Write(124); // size of DDS header
-                    writer.Write(659463); // flags
-                    writer.Write(height); // height
-                    writer.Write(width); // width
-                    writer.Write(pls); // pitch or linear size
-                    writer.Write(0); // depth
-                    writer.Write(1); // mipmap count, "1" for now
-                    for (int i = 0; i < 11; i++) // reserved
-                        writer.Write(0);
-                    writer.Write(32); // size of PIXELFORMAT chunk
-                    if (dxtType == 0 ? false : (int)dxtType != 7) // flags
-                        writer.Write(4);
-                    else
-                        writer.Write(64);
-                    foreach (char c in DXTExtensions.GetDXTAsChars((int)dxtType)) // DXT type/four CC
-                        writer.Write(c);
-                    for (int n = 0; n < 5; n++) // RGBBitCount, RBitMask, GBitMask, BBitMask, ABitMask
-                        writer.Write(0);
-                    writer.Write(4198408); // caps
-                    for (int i = 0; i < 4; i++) // caps2, caps3, caps4, reserved2
-                        writer.Write(0);
-                    if (dxtType.ToString().Contains("DX10")) // add the DX10 header, if necessary
+                    using (BinaryWriter writer = new BinaryWriter(stream))
                     {
-                        if (fileName.Contains("NormalMap")) // this stays until I devise a better tactic
-                            writer.Write(98); // normal maps use BC7_UNORM
+                        foreach (char c in new char[] { 'D', 'D', 'S', ' ' }) // DDS magic
+                            writer.Write(c);
+                        writer.Write(124); // size of DDS header
+                        writer.Write(659463); // flags
+                        writer.Write(height); // height
+                        writer.Write(width); // width
+                        writer.Write(pls); // pitch or linear size
+                        writer.Write(0); // depth
+                        writer.Write(1); // mipmap count, "1" for now
+                        for (int i = 0; i < 11; i++) // reserved
+                            writer.Write(0);
+                        writer.Write(32); // size of PIXELFORMAT chunk
+                        if (dxtType == 0 ? false : (int)dxtType != 7) // flags
+                            writer.Write(4);
                         else
-                            writer.Write(72); // all others use BC1_UNORM_SRGB
-                        writer.Write(3); // resourceDimension
-                        writer.Write(0); // miscFlags
-                        writer.Write(1); // array size
-                        writer.Write(0); // miscFlags2
+                            writer.Write(64);
+                        foreach (char c in DXTExtensions.GetDXTAsChars((int)dxtType)) // DXT type/four CC
+                            writer.Write(c);
+                        for (int n = 0; n < 5; n++) // RGBBitCount, RBitMask, GBitMask, BBitMask, ABitMask
+                            writer.Write(0);
+                        writer.Write(4198408); // caps
+                        for (int i = 0; i < 4; i++) // caps2, caps3, caps4, reserved2
+                            writer.Write(0);
+                        if (dxtType.ToString().Contains("DX10")) // add the DX10 header, if necessary
+                        {
+                            string fileNameNoExt = Path.GetFileNameWithoutExtension(fileName);
+                            if (fileNameNoExt.Contains("NormalMap") || fileNameNoExt.EndsWith("_Map")) // this stays until I devise a better tactic
+                                writer.Write(98); // normal maps
+                            else
+                                writer.Write(72); // all others use BC1_UNORM_SRGB
+                            writer.Write(3); // resourceDimension
+                            writer.Write(0); // miscFlags
+                            writer.Write(1); // array size
+                            writer.Write(0); // miscFlags2
+                        }
+                        writer.Write(imageData); // image data
                     }
-                    writer.Write(imageData); // image data
                 }
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show($"Could not create a dds file due an error:\n{e.Message}", "Failure");
             }
 
             completedAction();
@@ -347,7 +357,7 @@ namespace Blacksmith
         }
 
         /// <summary>
-        /// Converts a DDS texture with texconv. Outputs to outputDir. Has a callback if you wish to use it.
+        /// Converts a .dds texture with texconv. Outputs to outputDir. Has a callback if you wish to use it.
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="outputDir"></param>
@@ -371,6 +381,10 @@ namespace Blacksmith
                 throw new Exception("texconv is not found. Blacksmith needs it to convert the texture.");
         }
 
+        /// <summary>
+        /// Converts a .wem to .ogg
+        /// </summary>
+        /// <param name="fileName"></param>
         public static void ConvertWEMToOGG(string fileName)
         {
             string ww2ogg = string.Concat(Application.StartupPath, "\\Binaries\\x86\\ww2ogg.exe");
@@ -385,12 +399,16 @@ namespace Blacksmith
                 throw new Exception("ww2ogg is not found. Blacksmith needs it to convert the sound data.");
         }
 
+        /// <summary>
+        /// Fixes a .ogg
+        /// </summary>
+        /// <param name="fileName"></param>
         public static void RevorbOGG(string fileName)
         {
             string revorb = string.Concat(Application.StartupPath, "\\Binaries\\x86\\revorb.exe");
             if (File.Exists(revorb))
             {
-                string args = $"\"{fileName}\" \"{fileName.Replace(".ogg", "_c.ogg")}\"";
+                string args = $"\"{fileName}\" \"{fileName.Replace(".ogg", "_c.ogg")}\""; // look below for an explanation
                 Console.WriteLine("{0} {1}", revorb, args);
                 Process p = Process.Start(revorb, args);
                 p.EnableRaisingEvents = true;
@@ -405,6 +423,10 @@ namespace Blacksmith
                 throw new Exception("revorb is not found. Blacksmith needs it to convert the sound data.");
         }
 
+        /// <summary>
+        /// Extracts a soundbank
+        /// </summary>
+        /// <param name="fileName"></param>
         public static void ExtractBNK(string fileName)
         {
             string bnkextr = string.Concat(Application.StartupPath, "\\Binaries\\x86\\bnkextr.exe");
@@ -452,6 +474,12 @@ namespace Blacksmith
             worker.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Creates and starts a BackgroundWorker
+        /// </summary>
+        /// <param name="doWork"></param>
+        /// <param name="progressChanged"></param>
+        /// <param name="completed"></param>
         public static void DoBackgroundWork(Action doWork, ProgressChangedEventHandler progressChanged, Action completed)
         {
             BackgroundWorker worker = new BackgroundWorker
@@ -475,17 +503,23 @@ namespace Blacksmith
 
         public static List<Form> GetOpenForms() => Application.OpenForms.Cast<Form>().ToList();
         
+        /// <summary>
+        /// Rescales an image based on a zoomLevel multiplier
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="zoomLevel"></param>
+        /// <returns></returns>
         public static Bitmap ZoomImage(Image img, double zoomLevel = 1)
         {
-            int newWidth = (int)(img.Height * zoomLevel);
-            int newHeight = (int)(img.Width * zoomLevel);
+            int newWidth = (int)(img.Width * zoomLevel);
+            int newHeight = (int)(img.Height * zoomLevel);
             
             Bitmap b = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppArgb);
             b.SetResolution(img.HorizontalResolution, img.VerticalResolution);
             
             Graphics g = Graphics.FromImage(b);
-            g.Clear(Properties.Settings.Default.imageBG);
-            g.InterpolationMode = InterpolationMode.Default;
+            g.Clear(Color.Transparent);
+            g.InterpolationMode = InterpolationMode.Low;
             g.DrawImage(img, new Rectangle(0, 0, newWidth, newHeight), new Rectangle(0, 0, img.Width, img.Height), GraphicsUnit.Pixel);
             g.Dispose();
 
@@ -503,9 +537,32 @@ namespace Blacksmith
                 magic[2] == comparison[2] &&
                 magic[3] == comparison[3];
 
+        /// <summary>
+        /// Returns if the magic matches the comparison
+        /// </summary>
+        /// <param name="magic"></param>
+        /// <param name="comparison"></param>
+        /// <returns></returns>
         public static bool MagicMatches(char[] magic, char[] comparison) => magic[0] == comparison[0] &&
                 magic[1] == comparison[1] &&
                 magic[2] == comparison[2] &&
                 magic[3] == comparison[3];
+
+        /// <summary>
+        /// Counts the occurences of a string within another string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        public static int CountStringOccurrences(string text, string pattern)
+        {
+            int count = 0, i = 0;
+            while ((i = text.IndexOf(pattern, i)) != -1)
+            {
+                i += pattern.Length;
+                count++;
+            }
+            return count;
+        }
     }
 }

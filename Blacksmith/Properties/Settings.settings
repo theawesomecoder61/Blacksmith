@@ -20,11 +20,11 @@
     <Setting Name="useCSV" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="imageBG" Type="System.Drawing.Color" Scope="User">
+    <Setting Name="threeBG" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">ControlDark</Value>
     </Setting>
-    <Setting Name="threeDBG" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">ControlDark</Value>
+    <Setting Name="renderMode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

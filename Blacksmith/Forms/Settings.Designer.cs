@@ -41,7 +41,6 @@ namespace Blacksmith.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.steepTextBox = new System.Windows.Forms.TextBox();
             this.steepButton = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.tempTextBox = new System.Windows.Forms.TextBox();
             this.tempButton = new System.Windows.Forms.Button();
@@ -50,15 +49,19 @@ namespace Blacksmith.Forms
             this.label5 = new System.Windows.Forms.Label();
             this.filelistSeparatorComboBox = new System.Windows.Forms.ComboBox();
             this.deleteTempCheckbox = new System.Windows.Forms.CheckBox();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.threeDBGColorBtn = new System.Windows.Forms.Button();
-            this.imageBGColorBtn = new System.Windows.Forms.Button();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.renderModeComboBox = new System.Windows.Forms.ComboBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox
@@ -184,20 +187,10 @@ namespace Blacksmith.Forms
             this.steepButton.UseVisualStyleBackColor = true;
             this.steepButton.Click += new System.EventHandler(this.steepButton_Click);
             // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.label4);
-            this.panel4.Controls.Add(this.tempTextBox);
-            this.panel4.Controls.Add(this.tempButton);
-            this.panel4.Location = new System.Drawing.Point(18, 206);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(350, 50);
-            this.panel4.TabIndex = 1;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 2);
+            this.label4.Location = new System.Drawing.Point(9, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(101, 13);
             this.label4.TabIndex = 0;
@@ -205,7 +198,7 @@ namespace Blacksmith.Forms
             // 
             // tempTextBox
             // 
-            this.tempTextBox.Location = new System.Drawing.Point(6, 22);
+            this.tempTextBox.Location = new System.Drawing.Point(12, 36);
             this.tempTextBox.Name = "tempTextBox";
             this.tempTextBox.Size = new System.Drawing.Size(260, 20);
             this.tempTextBox.TabIndex = 0;
@@ -213,7 +206,7 @@ namespace Blacksmith.Forms
             // 
             // tempButton
             // 
-            this.tempButton.Location = new System.Drawing.Point(272, 20);
+            this.tempButton.Location = new System.Drawing.Point(278, 34);
             this.tempButton.Name = "tempButton";
             this.tempButton.Size = new System.Drawing.Size(75, 23);
             this.tempButton.TabIndex = 0;
@@ -223,22 +216,19 @@ namespace Blacksmith.Forms
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.imageBGColorBtn);
-            this.groupBox1.Controls.Add(this.threeDBGColorBtn);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.filelistSeparatorComboBox);
-            this.groupBox1.Controls.Add(this.deleteTempCheckbox);
-            this.groupBox1.Location = new System.Drawing.Point(380, 12);
+            this.groupBox1.Location = new System.Drawing.Point(380, 110);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(220, 244);
+            this.groupBox1.Size = new System.Drawing.Size(220, 48);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Behavior/Appearance";
+            this.groupBox1.Text = "Miscellaneous";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 44);
+            this.label5.Location = new System.Drawing.Point(8, 22);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(87, 13);
             this.label5.TabIndex = 0;
@@ -251,7 +241,7 @@ namespace Blacksmith.Forms
             this.filelistSeparatorComboBox.Items.AddRange(new object[] {
             "Tabs",
             "Commas (CSV)"});
-            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(101, 41);
+            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(101, 19);
             this.filelistSeparatorComboBox.Name = "filelistSeparatorComboBox";
             this.filelistSeparatorComboBox.Size = new System.Drawing.Size(113, 21);
             this.filelistSeparatorComboBox.TabIndex = 0;
@@ -260,7 +250,7 @@ namespace Blacksmith.Forms
             // deleteTempCheckbox
             // 
             this.deleteTempCheckbox.AutoSize = true;
-            this.deleteTempCheckbox.Location = new System.Drawing.Point(11, 19);
+            this.deleteTempCheckbox.Location = new System.Drawing.Point(12, 62);
             this.deleteTempCheckbox.Name = "deleteTempCheckbox";
             this.deleteTempCheckbox.Size = new System.Drawing.Size(198, 17);
             this.deleteTempCheckbox.TabIndex = 0;
@@ -270,32 +260,70 @@ namespace Blacksmith.Forms
             // 
             // threeDBGColorBtn
             // 
-            this.threeDBGColorBtn.Enabled = false;
-            this.threeDBGColorBtn.Location = new System.Drawing.Point(11, 68);
+            this.threeDBGColorBtn.Location = new System.Drawing.Point(11, 51);
             this.threeDBGColorBtn.Name = "threeDBGColorBtn";
             this.threeDBGColorBtn.Size = new System.Drawing.Size(203, 23);
             this.threeDBGColorBtn.TabIndex = 0;
-            this.threeDBGColorBtn.Text = "3D Viewer Background Color";
+            this.threeDBGColorBtn.Text = "Background Color";
             this.threeDBGColorBtn.UseVisualStyleBackColor = true;
             this.threeDBGColorBtn.Click += new System.EventHandler(this.threeDBGColorBtn_Click);
             // 
-            // imageBGColorBtn
+            // groupBox2
             // 
-            this.imageBGColorBtn.Location = new System.Drawing.Point(11, 97);
-            this.imageBGColorBtn.Name = "imageBGColorBtn";
-            this.imageBGColorBtn.Size = new System.Drawing.Size(203, 23);
-            this.imageBGColorBtn.TabIndex = 1;
-            this.imageBGColorBtn.Text = "Image Viewer Background Color";
-            this.imageBGColorBtn.UseVisualStyleBackColor = true;
-            this.imageBGColorBtn.Click += new System.EventHandler(this.imageBGColorBtn_Click);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.threeDBGColorBtn);
+            this.groupBox2.Controls.Add(this.renderModeComboBox);
+            this.groupBox2.Location = new System.Drawing.Point(380, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(220, 91);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "3D Viewer";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(12, 25);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(75, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Render Mode:";
+            // 
+            // renderModeComboBox
+            // 
+            this.renderModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.renderModeComboBox.FormattingEnabled = true;
+            this.renderModeComboBox.Items.AddRange(new object[] {
+            "Solid",
+            "Wireframe",
+            "Points"});
+            this.renderModeComboBox.Location = new System.Drawing.Point(93, 22);
+            this.renderModeComboBox.Name = "renderModeComboBox";
+            this.renderModeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.renderModeComboBox.TabIndex = 0;
+            this.renderModeComboBox.SelectedIndexChanged += new System.EventHandler(this.renderModeComboBox_SelectedIndexChanged);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.tempTextBox);
+            this.groupBox3.Controls.Add(this.deleteTempCheckbox);
+            this.groupBox3.Controls.Add(this.tempButton);
+            this.groupBox3.Location = new System.Drawing.Point(12, 206);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(362, 92);
+            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Temporary Files";
             // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 271);
+            this.ClientSize = new System.Drawing.Size(614, 309);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.panel4);
             this.Controls.Add(this.groupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -312,10 +340,12 @@ namespace Blacksmith.Forms
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -335,7 +365,6 @@ namespace Blacksmith.Forms
         private System.Windows.Forms.Button acOdButton;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button steepButton;
-        private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tempTextBox;
         private System.Windows.Forms.Button tempButton;
@@ -344,8 +373,11 @@ namespace Blacksmith.Forms
         private System.Windows.Forms.CheckBox deleteTempCheckbox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox filelistSeparatorComboBox;
-        private System.Windows.Forms.Button imageBGColorBtn;
         private System.Windows.Forms.Button threeDBGColorBtn;
         private System.Windows.Forms.ColorDialog colorDialog;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox renderModeComboBox;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

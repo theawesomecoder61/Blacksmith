@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 // not Super Mario Odyssey!
 
@@ -84,6 +83,9 @@ namespace Blacksmith.Games
             {
                 using (Stream stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
+                    if (stream.Length == 0)
+                        return false;
+
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
                         long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
@@ -140,7 +142,8 @@ namespace Blacksmith.Games
                 }
 
                 // write all decompressed data chunks (stored in combinedData) to a combined file
-                Helpers.WriteToFile(writeToTemp ? $"{inputFileName}.dec" :
+                Helpers.WriteToFile(writeToTemp ?
+                    $"{Path.GetFileNameWithoutExtension(inputFileName)}.dec" :
                     outputFileName, combinedStream.ToArray(), writeToTemp);
 
                 return true;
@@ -236,9 +239,9 @@ namespace Blacksmith.Games
         #endregion
 
         #region Textures
-        public static void ExtractTextureMap(string fileName, Forge forge, Action completionAction)
+        public static void ExtractTextureMap(string fileName, EntryTreeNode node, Action completionAction)
         {
-            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -278,12 +281,12 @@ namespace Blacksmith.Games
                     mip1.Mipmaps = reader.ReadInt32();
 
                     // locate the two topmips, if they exist
-                    if (forge.FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileName(fileName) + "_TopMip")).Count() == 2)
+                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileName(fileName) + "_TopMip")).Count() == 2)
                     {
-                        Forge.FileEntry topMipEntry = forge.FileEntries.Where(x => x.NameTable.Name == Path.GetFileName(fileName) + "_TopMip_0").First();
+                        Forge.FileEntry topMipEntry = node.GetForge().FileEntries.Where(x => x.NameTable.Name == Path.GetFileName(fileName) + "_TopMip_0").First();
 
                         // extract, read, and create DDS images with the first topmips
-                        byte[] rawData = forge.GetRawData(topMipEntry);
+                        byte[] rawData = node.GetForge().GetRawData(topMipEntry);
                         Helpers.WriteToFile(topMipEntry.NameTable.Name, rawData, true);
 
                         // read
@@ -313,7 +316,7 @@ namespace Blacksmith.Games
 
         private static void ExtractTopMip(string fileName, TopMip topMip, Action completionAction)
         {
-            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -344,7 +347,7 @@ namespace Blacksmith.Games
         #region Models
         public static void ExtractModel(string fileName)
         {
-            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -365,7 +368,7 @@ namespace Blacksmith.Games
         #region Localization
         public static void ExtractLocalizationPackage(string fileName)
         {
-            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {

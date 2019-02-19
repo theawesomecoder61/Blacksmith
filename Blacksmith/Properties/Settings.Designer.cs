@@ -98,24 +98,24 @@ namespace Blacksmith.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ControlDark")]
-        public global::System.Drawing.Color imageBG {
+        public global::System.Drawing.Color threeBG {
             get {
-                return ((global::System.Drawing.Color)(this["imageBG"]));
+                return ((global::System.Drawing.Color)(this["threeBG"]));
             }
             set {
-                this["imageBG"] = value;
+                this["threeBG"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ControlDark")]
-        public global::System.Drawing.Color threeDBG {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int renderMode {
             get {
-                return ((global::System.Drawing.Color)(this["threeDBG"]));
+                return ((int)(this["renderMode"]));
             }
             set {
-                this["threeDBG"] = value;
+                this["renderMode"] = value;
             }
         }
     }

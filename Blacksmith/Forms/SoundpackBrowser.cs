@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,12 +26,14 @@ namespace Blacksmith.Forms
             FileName = fileName;
             int entries = 0;
 
-            Helpers.DoBackgroundWork(() =>
+            dataGridView.Enabled = false; // prevent the user-induced damages
+            Thread t = new Thread(() =>
             {
                 folders = PCK.Read(FileName);
                 if (folders == null || folders.Length == 0)
                     return;
 
+                List<DataGridViewRow> rows = new List<DataGridViewRow>();
                 foreach (PCK.Folder folder in folders)
                 {
                     foreach (PCK.Entry entry in folder.Entries)
@@ -75,19 +78,22 @@ namespace Blacksmith.Forms
                             Value = entry.Path
                         };
                         row.Cells.Add(path);
-
-                        Invoke(new Action(() => {
-                                dataGridView.Rows.Add(row);
-                        }));
-
+                        
+                        rows.Add(row);
                         entries++;
                     }
                 }
-            }, () =>
-            {
-                entriesToolStripLabel.Text = $"Entries: {entries}";
-                foldersToolStripLabel.Text = $"Folders: {folders.Length}";
+
+                Invoke(new Action(() =>
+                {
+                    dataGridView.Rows.AddRange(rows.ToArray());
+                    entriesToolStripLabel.Text = $"Entries: {entries}";
+                    foldersToolStripLabel.Text = $"Folders: {folders.Length}";
+                    dataGridView.Enabled = true;
+                }));
             });
+
+            t.Start();
         }
 
         private void SoundpackBrowser_Load(object sender, System.EventArgs e)
@@ -113,12 +119,12 @@ namespace Blacksmith.Forms
             }
             else
             {
-                using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader(playingFile))
+                /*using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader(playingFile))
                 using (var waveOut = new NAudio.Wave.WaveOutEvent())
                 {
                     waveOut.Init(vorbisStream);
                     waveOut.Play();
-                }
+                }*/
             }
         }
 

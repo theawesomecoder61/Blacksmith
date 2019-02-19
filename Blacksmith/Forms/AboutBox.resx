@@ -120,14 +120,14 @@
   <data name="textBoxDescription.Text" xml:space="preserve">
     <value>Blacksmith is a successor to ARchive_neXt whose functionality is similar to ARchive_neXt. It is compatible with Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep.
 
-Third-Party Software:
+Third-Party/Open-Source Software:
 &gt; libzstd
 &gt; lzo
 &gt; oodle
 &gt; OodleSharp
-&gt; SlimDX
-&gt; SlimDX.D3D11Control
+&gt; OpenTK
 &gt; texconv
+&gt; ww2ogg
 &gt; Zstandard.Net
 
 Credits:

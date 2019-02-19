@@ -80,30 +80,33 @@
     <ApplicationIcon>Resources\noun_Blacksmith_1124400.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NAudio, Version=1.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
+    <Reference Include="ObjParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Binaries\x64\ObjParser.dll</HintPath>
     </Reference>
-    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
+    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.3.0.1\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.GLControl.3.0.1\lib\net20\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
-      <HintPath>..\packages\SlimDX.4.0.13.44\lib\NET40\SlimDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX.D3D11Control, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\SlimDX.D3D11Control.1.0.1\lib\net40\SlimDX.D3D11Control.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -119,7 +122,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BigEndianBinaryReader.cs" />
+    <Compile Include="Enums\EntryTreeNodeType.cs" />
+    <Compile Include="IO\BigEndianBinaryReader.cs" />
     <Compile Include="FileTypes\PCK.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
@@ -145,8 +149,14 @@
     <Compile Include="Forms\SoundpackBrowser.Designer.cs">
       <DependentUpon>SoundpackBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="ThreeD\Camera.cs" />
-    <Compile Include="ThreeD\D3DScene.cs" />
+    <Compile Include="Three\DynamicMesh.cs" />
+    <Compile Include="Three\RenderMode.cs" />
+    <Compile Include="Three\ShaderProgram.cs" />
+    <Content Include="Binaries\x64\ObjParser.dll" />
+    <Content Include="Form1 backup.cs">
+      <SubType>Form</SubType>
+    </Content>
+    <Content Include="Three\D3DScene.cs" />
     <Compile Include="Enums\DXT.cs" />
     <Compile Include="Enums\ResourceType.cs" />
     <Compile Include="FileTypes\Forge.cs" />
@@ -162,20 +172,26 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThreeD\MeshTexture.cs" />
-    <Compile Include="ThreeD\SceneView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ThreeD\SceneView.Designer.cs">
-      <DependentUpon>SceneView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Settings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
-    <Compile Include="ThreeD\RenderMesh.cs" />
+    <Compile Include="Three\Camera.cs" />
+    <Compile Include="Three\GLViewer.cs" />
+    <Compile Include="Three\OBJMesh.cs" />
+    <Content Include="Three\ThreeViewer.cs" />
+    <Compile Include="Three\Mesh.cs" />
+    <Content Include="Three\GLViewer backup.txt" />
+    <Content Include="Shaders\fs.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\fs_tex.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="OpenTK.dll.config" />
+    <None Include="Resources\grid.png" />
     <None Include="Resources\noun_Blacksmith_1124400.ico" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -199,9 +215,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ThreeD\SceneView.resx">
-      <DependentUpon>SceneView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +235,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Shaders\vs.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\teapot.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\vs_tex.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

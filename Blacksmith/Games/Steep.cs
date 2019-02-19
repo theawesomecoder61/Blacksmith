@@ -81,9 +81,15 @@ namespace Blacksmith.Games
             {
                 using (Stream stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
+                    if (stream.Length == 0)
+                        return false;
+
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
                         long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
+                        if (identifierOffsets.Length < 2)
+                            return false;
+
                         Console.WriteLine(identifierOffsets[0]);
                         Console.WriteLine(identifierOffsets[1]);
                         long x = identifierOffsets[1];
@@ -140,7 +146,7 @@ namespace Blacksmith.Games
 
                 // write all decompressed data chunks (stored in combinedData) to a combined file
                 Helpers.WriteToFile(writeToTemp ?
-                    $"{inputFileName}.dec" :
+                    $"{Path.GetFileNameWithoutExtension(inputFileName)}.dec" :
                     outputFileName, combinedStream.ToArray(), writeToTemp);
 
                 return true;
@@ -152,6 +158,9 @@ namespace Blacksmith.Games
             List<byte> combinedData = new List<byte>();
             using (Stream stream = new MemoryStream(rawData))
             {
+                if (stream.Length == 0)
+                    return null;
+
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
@@ -215,10 +224,13 @@ namespace Blacksmith.Games
         }
 
         #region Textures
-        public static void ExtractTextureMap(string fileName, Forge forge, Action completionAction)
+        public static void ExtractTextureMap(string fileName, EntryTreeNode node, Action completionAction)
         {
-            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
+                if (stream.Length == 0)
+                    return;
+
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     DatafileHeader header = new DatafileHeader
@@ -229,10 +241,12 @@ namespace Blacksmith.Games
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
 
-                    // ignore the 2 bytes, file ID, and resource type
+                    // ignore the 1 byte, file ID, resource type, and 1 extra byte
                     reader.BaseStream.Seek(14, SeekOrigin.Current);
 
-                    // pmip 0
+                    Console.WriteLine("BEGIN READING AT " + reader.BaseStream.Position);
+
+                    // mip 0
                     Mip mip0 = new Mip
                     {
                         Width = reader.ReadInt32(),
@@ -243,9 +257,9 @@ namespace Blacksmith.Games
                     reader.BaseStream.Seek(4, SeekOrigin.Current);
                     mip0.Mipmaps = reader.ReadInt32();
 
-                    reader.BaseStream.Seek(57, SeekOrigin.Current);
+                    reader.BaseStream.Seek(39, SeekOrigin.Current); // go to next mip
 
-                    // mip 1, ignored
+                    // mip 1
                     Mip mip1 = new Mip
                     {
                         Width = reader.ReadInt32(),
@@ -257,15 +271,15 @@ namespace Blacksmith.Games
                     mip1.Mipmaps = reader.ReadInt32();
 
                     // locate the two mips, if they exist
-                    if (forge.FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileName(fileName) + "_Mip")).Count() == 2)
+                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileName(fileName) + "_Mip")).Count() == 2)
                     {
-                        Forge.FileEntry[] mipEntries = forge.FileEntries.Where(x => x.NameTable.Name == Path.GetFileName(fileName) + "_Mip0").ToArray();
+                        Forge.FileEntry[] mipEntries = node.GetForge().FileEntries.Where(x => x.NameTable.Name == Path.GetFileName(fileName) + "_Mip0").ToArray();
                         if (mipEntries.Length > 0)
                         {
                             Forge.FileEntry mipEntry = mipEntries[0];
 
                             // extract, read, and create DDS images with the first mips
-                            byte[] rawData = forge.GetRawData(mipEntry);
+                            byte[] rawData = node.GetForge().GetRawData(mipEntry);
                             Helpers.WriteToFile(mipEntry.NameTable.Name, rawData, true);
 
                             // read
@@ -278,6 +292,7 @@ namespace Blacksmith.Games
                     else // mips do not exist. fear not! there is still image data found here. let us use that.
                     {
                         reader.BaseStream.Seek(12, SeekOrigin.Current);
+
                         TextureMap map = new TextureMap
                         {
                             DataSize = reader.ReadInt32()
@@ -285,7 +300,7 @@ namespace Blacksmith.Games
                         byte[] mipmapData = reader.ReadBytes(map.DataSize);
 
                         // write DDS file
-                        Helpers.WriteTempDDS(fileName, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
+                        Helpers.WriteTempDDS(fileName, mipmapData, mip1.Width, mip1.Height, mip1.Mipmaps, mip1.DXTType, () =>
                         {
                             Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
                         });
@@ -296,8 +311,11 @@ namespace Blacksmith.Games
 
         private static void ExtractTopMip(string fileName, Mip mip, Action completionAction)
         {
-            using (Stream stream = new FileStream($"{fileName}.dec", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
+                if (stream.Length == 0)
+                    return;
+
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     DatafileHeader header = new DatafileHeader

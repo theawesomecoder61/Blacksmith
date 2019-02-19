@@ -59,6 +59,7 @@ namespace Blacksmith
             this.createFilelistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertToAnotherFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -73,7 +74,6 @@ namespace Blacksmith
             this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.convertToAnotherFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -294,12 +294,12 @@ namespace Blacksmith
             this.forgeToolStripMenuItem,
             this.textureToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
-            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(181, 114);
+            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(117, 92);
             // 
             // convertToolStripMenuItem
             // 
             this.convertToolStripMenuItem.Name = "convertToolStripMenuItem";
-            this.convertToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.convertToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.convertToolStripMenuItem.Text = "Convert";
             this.convertToolStripMenuItem.Click += new System.EventHandler(this.convertToolStripMenuItem_Click);
             // 
@@ -309,7 +309,7 @@ namespace Blacksmith
             this.saveRawDataAsToolStripMenuItem,
             this.saveDecompressedDataAsToolStripMenuItem});
             this.datafileToolStripMenuItem.Name = "datafileToolStripMenuItem";
-            this.datafileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.datafileToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.datafileToolStripMenuItem.Text = "Datafile";
             // 
             // saveRawDataAsToolStripMenuItem
@@ -332,7 +332,7 @@ namespace Blacksmith
             this.createFilelistToolStripMenuItem,
             this.extractAllToolStripMenuItem});
             this.forgeToolStripMenuItem.Name = "forgeToolStripMenuItem";
-            this.forgeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.forgeToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.forgeToolStripMenuItem.Text = "Forge";
             // 
             // createFilelistToolStripMenuItem
@@ -355,8 +355,15 @@ namespace Blacksmith
             this.convertToAnotherFormatToolStripMenuItem,
             this.saveAsDDSToolStripMenuItem});
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
-            this.textureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.textureToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.textureToolStripMenuItem.Text = "Texture";
+            // 
+            // convertToAnotherFormatToolStripMenuItem
+            // 
+            this.convertToAnotherFormatToolStripMenuItem.Name = "convertToAnotherFormatToolStripMenuItem";
+            this.convertToAnotherFormatToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.convertToAnotherFormatToolStripMenuItem.Text = "Convert to Another Format";
+            this.convertToAnotherFormatToolStripMenuItem.Click += new System.EventHandler(this.convertToAnotherFormatToolStripMenuItem_Click);
             // 
             // saveAsDDSToolStripMenuItem
             // 
@@ -449,6 +456,7 @@ namespace Blacksmith
             // 
             this.imagePanel.AutoScroll = true;
             this.imagePanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.imagePanel.BackgroundImage = global::Blacksmith.Properties.Resources.grid;
             this.imagePanel.Controls.Add(this.pictureBox);
             this.imagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imagePanel.Location = new System.Drawing.Point(0, 0);
@@ -458,6 +466,7 @@ namespace Blacksmith
             // 
             // pictureBox
             // 
+            this.pictureBox.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(536, 413);
@@ -489,13 +498,6 @@ namespace Blacksmith
             this.richTextBox.TabIndex = 0;
             this.richTextBox.Text = "";
             // 
-            // convertToAnotherFormatToolStripMenuItem
-            // 
-            this.convertToAnotherFormatToolStripMenuItem.Name = "convertToAnotherFormatToolStripMenuItem";
-            this.convertToAnotherFormatToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.convertToAnotherFormatToolStripMenuItem.Text = "Convert to Another Format";
-            this.convertToAnotherFormatToolStripMenuItem.Click += new System.EventHandler(this.convertToAnotherFormatToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -508,6 +510,7 @@ namespace Blacksmith
             this.Text = "Blacksmith";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStripContainer.BottomToolStripPanel.ResumeLayout(false);

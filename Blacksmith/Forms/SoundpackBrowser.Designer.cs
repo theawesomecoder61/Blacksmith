@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.NameHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Size = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Offset = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsSoundbank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FolderID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,7 +69,7 @@
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.NameHash,
-            this.Size,
+            this.SizeCol,
             this.Offset,
             this.IsSoundbank,
             this.FolderID,
@@ -94,9 +94,9 @@
             // 
             // Size
             // 
-            this.Size.HeaderText = "Size";
-            this.Size.Name = "Size";
-            this.Size.ReadOnly = true;
+            this.SizeCol.HeaderText = "Size";
+            this.SizeCol.Name = "Size";
+            this.SizeCol.ReadOnly = true;
             // 
             // Offset
             // 
@@ -270,7 +270,7 @@
         private System.Windows.Forms.Button extractBtn;
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameHash;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Size;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn Offset;
         private System.Windows.Forms.DataGridViewTextBoxColumn IsSoundbank;
         private System.Windows.Forms.DataGridViewTextBoxColumn FolderID;

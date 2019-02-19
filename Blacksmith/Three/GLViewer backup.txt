@@ -1,0 +1,730 @@
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+
+namespace Blacksmith.Three
+{
+    public class GLViewer
+    {
+        public GLControl Control;
+        public Camera Camera;
+
+        private int id;
+        int vsID;
+        int fsID;
+
+        int attribute_vcol;
+        int attribute_vpos;
+        int uniform_mview;
+
+        int vbo_position;
+        int vbo_color;
+        int vbo_mview;
+
+        Vector3[] vertdata;
+        Vector3[] coldata;
+        Matrix4[] mviewdata;
+        int[] indicedata;
+        int ibo_elements;
+
+        Vector2 lastMousePos = new Vector2();
+
+
+        public GLViewer(GLControl control)
+        {
+            Control = control;
+            Camera = new Camera();
+
+            Control.KeyDown += OnKeyDown;
+            Control.MouseMove += OnMouseMove;
+
+            id = GL.CreateProgram();
+        }
+
+        public void Init(Color bg)
+        {
+            /*int w = Control.Width;
+            int h = Control.Height;
+            Control.MakeCurrent();
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(-w / 2, w / 2, -h / 2, h / 2, -1, 1);
+            GL.Viewport(0, 0, w, h);
+            GL.End();
+            Control.SwapBuffers();*/
+
+            GL.ClearColor(bg);
+
+            LoadShader(Path.GetDirectoryName(Application.ExecutablePath) + "\\vs.glsl", ShaderType.VertexShader, id, out vsID);
+            LoadShader(Path.GetDirectoryName(Application.ExecutablePath) + "\\fs.glsl", ShaderType.FragmentShader, id, out fsID);
+            GL.LinkProgram(id);
+
+            attribute_vpos = GL.GetAttribLocation(id, "vPosition");
+            attribute_vcol = GL.GetAttribLocation(id, "vColor");
+            uniform_mview = GL.GetUniformLocation(id, "modelview");
+
+            GL.GenBuffers(1, out vbo_position);
+            GL.GenBuffers(1, out vbo_color);
+            GL.GenBuffers(1, out vbo_mview);
+
+            if (attribute_vpos == -1 || attribute_vcol == -1 || uniform_mview == -1)
+            {
+                Console.WriteLine("Error binding attributes");
+            }
+
+            //
+
+            vertdata = new Vector3[] {
+                new Vector3(-0.8f, -0.8f,  -0.8f),
+                new Vector3(0.8f, -0.8f, -0.8f),
+                new Vector3(0.8f, 0.8f, -0.8f),
+                new Vector3(-0.8f, 0.8f, -0.8f),
+                new Vector3(-0.8f, -0.8f, 0.8f),
+                new Vector3(0.8f, -0.8f, 0.8f),
+                new Vector3(0.8f, 0.8f, 0.8f),
+                new Vector3(-0.8f, 0.8f, 0.8f)
+            };
+
+            coldata = new Vector3[] {
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0f, 0f, 1f),
+                new Vector3(0f,  1f, 0f),
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0f, 0f, 1f),
+                new Vector3(0f,  1f, 0f),
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0f, 0f, 1f)
+            };
+
+            mviewdata = new Matrix4[] {
+                Matrix4.Identity
+            };
+
+            indicedata = new int[] {
+                //front
+                0, 7, 3,
+                0, 4, 7,
+                //back
+                1, 2, 6,
+                6, 5, 1,
+                //left
+                0, 2, 1,
+                0, 3, 2,
+                //right
+                4, 5, 6,
+                6, 7, 4,
+                //top
+                2, 3, 6,
+                6, 3, 7,
+                //bottom
+                0, 1, 5,
+                0, 5, 4
+            };
+
+            GL.PointSize(5f);
+            GL.GenBuffers(1, out ibo_elements);
+        }
+
+        public void Render()
+        {
+            float time = 0;
+
+            Resize();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            //
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_color);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
+
+            mviewdata[0] = Camera.GetViewMatrix() * Matrix4.CreateTranslation(0, 0, -3.0f) * Matrix4.CreatePerspectiveFieldOfView(1.3f, Control.Width / (float)Control.Height, 1.0f, 40.0f);
+
+            GL.UniformMatrix4(uniform_mview, false, ref mviewdata[0]);
+
+            GL.UseProgram(id);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            //
+
+            GL.EnableVertexAttribArray(attribute_vpos);
+            GL.EnableVertexAttribArray(attribute_vcol);
+            GL.DrawElements(BeginMode.Triangles, indicedata.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DisableVertexAttribArray(attribute_vpos);
+            GL.DisableVertexAttribArray(attribute_vcol);
+
+            GL.Flush();
+
+            Control.SwapBuffers();
+
+            //
+            lastMousePos = new Vector2(Cursor.Position.X, Cursor.Position.Y);
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs args)
+        {
+            switch (args.KeyCode)
+            {
+                case Keys.W:
+                case Keys.Up:
+                    Camera.Move(0, 0.1f, 0);
+                    break;
+                case Keys.S:
+                case Keys.Down:
+                    Camera.Move(0, -0.1f, 0);
+                    break;
+                case Keys.A:
+                case Keys.Left:
+                    Camera.Move(-0.1f, 0, 0);
+                    break;
+                case Keys.D:
+                case Keys.Right:
+                    Camera.Move(0.1f, 0, 0);
+                    break;
+                case Keys.Q:
+                    Camera.Move(0, 0, 0.1f);
+                    break;
+                case Keys.E:
+                    Camera.Move(0, 0, -0.1f);
+                    break;
+                case Keys.Z:
+                    Camera.AddRotation(-15, 0);
+                    break;
+                case Keys.X:
+                    Camera.AddRotation(15, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs args)
+        {
+            Vector2 delta = lastMousePos - new Vector2(args.X, args.Y);
+            lastMousePos += delta;
+
+            //Camera.AddRotation(delta.X, delta.Y);
+            lastMousePos = new Vector2(args.X, args.Y);
+        }
+
+        private void Resize()
+        {
+            GL.Viewport(0, 0, Control.Width, Control.Height);
+        }
+
+        private void LoadShader(string filename, ShaderType type, int program, out int address)
+        {
+            address = GL.CreateShader(type);
+            using (StreamReader sr = new StreamReader(filename))
+            {
+                GL.ShaderSource(address, sr.ReadToEnd());
+            }
+            GL.CompileShader(address);
+            GL.AttachShader(program, address);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+
+namespace Blacksmith.Three
+{
+    public class GLViewer
+    {
+        public GLControl Control;
+        public Camera Camera;
+
+        private int id;
+        int vsID;
+        int fsID;
+
+        int attribute_vcol;
+        int attribute_vpos;
+        int uniform_mview;
+
+        int vbo_position;
+        int vbo_color;
+        int vbo_mview;
+
+        Vector3[] vertdata;
+        Vector3[] coldata;
+        Matrix4[] mviewdata;
+        int[] indicedata;
+        int ibo_elements;
+
+        Vector2 lastMousePos = new Vector2();
+
+
+        public GLViewer(GLControl control)
+        {
+            Control = control;
+            Camera = new Camera();
+
+            Control.KeyDown += OnKeyDown;
+            Control.MouseMove += OnMouseMove;
+
+            id = GL.CreateProgram();
+        }
+
+        public void Init(Color bg)
+        {
+            /*int w = Control.Width;
+            int h = Control.Height;
+            Control.MakeCurrent();
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(-w / 2, w / 2, -h / 2, h / 2, -1, 1);
+            GL.Viewport(0, 0, w, h);
+            GL.End();
+            Control.SwapBuffers();*/
+
+            GL.ClearColor(bg);
+
+            LoadShader(Path.GetDirectoryName(Application.ExecutablePath) + "\\vs.glsl", ShaderType.VertexShader, id, out vsID);
+            LoadShader(Path.GetDirectoryName(Application.ExecutablePath) + "\\fs.glsl", ShaderType.FragmentShader, id, out fsID);
+            GL.LinkProgram(id);
+
+            attribute_vpos = GL.GetAttribLocation(id, "vPosition");
+            attribute_vcol = GL.GetAttribLocation(id, "vColor");
+            uniform_mview = GL.GetUniformLocation(id, "modelview");
+
+            GL.GenBuffers(1, out vbo_position);
+            GL.GenBuffers(1, out vbo_color);
+            GL.GenBuffers(1, out vbo_mview);
+
+            if (attribute_vpos == -1 || attribute_vcol == -1 || uniform_mview == -1)
+            {
+                Console.WriteLine("Error binding attributes");
+            }
+
+            //
+
+            vertdata = new Vector3[] {
+                new Vector3(-0.8f, -0.8f,  -0.8f),
+                new Vector3(0.8f, -0.8f, -0.8f),
+                new Vector3(0.8f, 0.8f, -0.8f),
+                new Vector3(-0.8f, 0.8f, -0.8f),
+                new Vector3(-0.8f, -0.8f, 0.8f),
+                new Vector3(0.8f, -0.8f, 0.8f),
+                new Vector3(0.8f, 0.8f, 0.8f),
+                new Vector3(-0.8f, 0.8f, 0.8f)
+            };
+
+            coldata = new Vector3[] {
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0f, 0f, 1f),
+                new Vector3(0f,  1f, 0f),
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0f, 0f, 1f),
+                new Vector3(0f,  1f, 0f),
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0f, 0f, 1f)
+            };
+
+            mviewdata = new Matrix4[] {
+                Matrix4.Identity
+            };
+
+            indicedata = new int[] {
+                //front
+                0, 7, 3,
+                0, 4, 7,
+                //back
+                1, 2, 6,
+                6, 5, 1,
+                //left
+                0, 2, 1,
+                0, 3, 2,
+                //right
+                4, 5, 6,
+                6, 7, 4,
+                //top
+                2, 3, 6,
+                6, 3, 7,
+                //bottom
+                0, 1, 5,
+                0, 5, 4
+            };
+
+            GL.PointSize(5f);
+            GL.GenBuffers(1, out ibo_elements);
+        }
+
+        public void Render()
+        {
+            float time = 0;
+
+            Resize();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            //
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_color);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
+
+            mviewdata[0] = Camera.GetViewMatrix() * Matrix4.CreateTranslation(0, 0, -3.0f) * Matrix4.CreatePerspectiveFieldOfView(1.3f, Control.Width / (float)Control.Height, 1.0f, 40.0f);
+
+            GL.UniformMatrix4(uniform_mview, false, ref mviewdata[0]);
+
+            GL.UseProgram(id);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            //
+
+            GL.EnableVertexAttribArray(attribute_vpos);
+            GL.EnableVertexAttribArray(attribute_vcol);
+            GL.DrawElements(BeginMode.Triangles, indicedata.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DisableVertexAttribArray(attribute_vpos);
+            GL.DisableVertexAttribArray(attribute_vcol);
+
+            GL.Flush();
+
+            Control.SwapBuffers();
+
+            //
+            lastMousePos = new Vector2(Cursor.Position.X, Cursor.Position.Y);
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs args)
+        {
+            switch (args.KeyCode)
+            {
+                case Keys.W:
+                case Keys.Up:
+                    Camera.Move(0, 0.1f, 0);
+                    break;
+                case Keys.S:
+                case Keys.Down:
+                    Camera.Move(0, -0.1f, 0);
+                    break;
+                case Keys.A:
+                case Keys.Left:
+                    Camera.Move(-0.1f, 0, 0);
+                    break;
+                case Keys.D:
+                case Keys.Right:
+                    Camera.Move(0.1f, 0, 0);
+                    break;
+                case Keys.Q:
+                    Camera.Move(0, 0, 0.1f);
+                    break;
+                case Keys.E:
+                    Camera.Move(0, 0, -0.1f);
+                    break;
+                case Keys.Z:
+                    Camera.AddRotation(-15, 0);
+                    break;
+                case Keys.X:
+                    Camera.AddRotation(15, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs args)
+        {
+            Vector2 delta = lastMousePos - new Vector2(args.X, args.Y);
+            lastMousePos += delta;
+
+            //Camera.AddRotation(delta.X, delta.Y);
+            lastMousePos = new Vector2(args.X, args.Y);
+        }
+
+        private void Resize()
+        {
+            GL.Viewport(0, 0, Control.Width, Control.Height);
+        }
+
+        private void LoadShader(string filename, ShaderType type, int program, out int address)
+        {
+            address = GL.CreateShader(type);
+            using (StreamReader sr = new StreamReader(filename))
+            {
+                GL.ShaderSource(address, sr.ReadToEnd());
+            }
+            GL.CompileShader(address);
+            GL.AttachShader(program, address);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+/*public GLControl Control;
+public Camera Camera;
+public List<Mesh> Meshes;
+        
+private int vertexShaderHandle,
+            fragmentShaderHandle,
+            shaderProgramHandle,
+            modelviewMatrixLocation,
+            projectionMatrixLocation,
+            vaoHandle,
+            positionVboHandle,
+            normalVboHandle,
+            eboHandle;
+
+        /*private Vector3[] positionVboData = new Vector3[]{
+            new Vector3(-1.0f, -1.0f,  1.0f),
+            new Vector3( 1.0f, -1.0f,  1.0f),
+            new Vector3( 1.0f,  1.0f,  1.0f),
+            new Vector3(-1.0f,  1.0f,  1.0f),
+            new Vector3(-1.0f, -1.0f, -1.0f),
+            new Vector3( 1.0f, -1.0f, -1.0f),
+            new Vector3( 1.0f,  1.0f, -1.0f),
+            new Vector3(-1.0f,  1.0f, -1.0f)
+        };
+
+        private int[] indicesVboData = new int[]{
+            // front face
+            0, 1, 2, 2, 3, 0,
+            // top face
+            3, 2, 6, 6, 7, 3,
+            // back face
+            7, 6, 5, 5, 4, 7,
+            // left face
+            4, 0, 3, 3, 7, 4,
+            // bottom face
+            0, 1, 5, 5, 4, 0,
+            // right face
+            1, 5, 6, 6, 2, 1
+        };*
+
+        private Matrix4 projectionMatrix, modelviewMatrix;
+
+        public GLViewer(GLControl control)
+        {
+            Control = control;
+            Camera = new Camera();
+            Meshes = new List<Mesh>();
+
+            Control.KeyDown += OnKeyDown;
+        }
+
+        public void Init(Color bg)
+        {
+            CreateShaders();
+            CreateVBOs();
+            CreateVAOs();
+            
+            GL.Enable(EnableCap.DepthTest);
+            GL.ClearColor(bg);
+        }
+
+        private void CreateShaders()
+        {
+            vertexShaderHandle = GL.CreateShader(ShaderType.VertexShader);
+            fragmentShaderHandle = GL.CreateShader(ShaderType.FragmentShader);
+
+            // create program
+            shaderProgramHandle = GL.CreateProgram();
+
+            // load shaders
+            LoadShader(Path.GetDirectoryName(Application.ExecutablePath) + "\\vs.glsl", ShaderType.VertexShader, shaderProgramHandle, out vertexShaderHandle);
+            LoadShader(Path.GetDirectoryName(Application.ExecutablePath) + "\\fs.glsl", ShaderType.FragmentShader, shaderProgramHandle, out fragmentShaderHandle);
+            GL.LinkProgram(shaderProgramHandle);
+            GL.UseProgram(shaderProgramHandle);
+
+            // set uniforms
+            projectionMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_matrix");
+            modelviewMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "modelview_matrix");
+
+            float aspectRatio = Control.Width / (float)Control.Height;
+            Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, aspectRatio, 1, 100, out projectionMatrix);
+            modelviewMatrix = Matrix4.LookAt(new Vector3(0, 5, 1), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+
+            GL.UniformMatrix4(projectionMatrixLocation, false, ref projectionMatrix);
+            GL.UniformMatrix4(modelviewMatrixLocation, false, ref modelviewMatrix);
+        }
+
+        private void CreateVBOs()
+        {
+            GL.GenBuffers(1, out positionVboHandle);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, positionVboHandle);
+            //GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(positionVboData.Length * Vector3.SizeInBytes), positionVboData, BufferUsageHint.StaticDraw);
+
+            GL.GenBuffers(1, out normalVboHandle);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, normalVboHandle);
+            //GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(positionVboData.Length * Vector3.SizeInBytes), positionVboData, BufferUsageHint.StaticDraw);
+
+            GL.GenBuffers(1, out eboHandle);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboHandle);
+            //GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(sizeof(uint) * indicesVboData.Length), indicesVboData, BufferUsageHint.StaticDraw);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+        }
+
+        private void CreateVAOs()
+        {
+            // GL3 allows us to store the vertex layout in a "vertex array object" (VAO).
+            // This means we do not have to re-issue VertexAttribPointer calls
+            // every time we try to use a different vertex layout - these calls are
+            // stored in the VAO so we simply need to bind the correct VAO.
+            GL.GenVertexArrays(1, out vaoHandle);
+            GL.BindVertexArray(vaoHandle);
+
+            GL.EnableVertexAttribArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, positionVboHandle);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
+            GL.BindAttribLocation(shaderProgramHandle, 0, "in_position");
+
+            GL.EnableVertexAttribArray(1);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, normalVboHandle);
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
+            GL.BindAttribLocation(shaderProgramHandle, 1, "in_normal");
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboHandle);
+
+            GL.BindVertexArray(0);
+        }
+
+        public void Render()
+        {
+            // OnUpdateFrame
+            //modelviewMatrix += Camera.GetViewMatrix();
+            //Matrix4.Mult(ref rotation, ref modelviewMatrix, out modelviewMatrix);
+            GL.UniformMatrix4(modelviewMatrixLocation, false, ref modelviewMatrix);
+
+            /*List<Vector3> verts = new List<Vector3>();
+            List<int> inds = new List<int>();
+            List<Vector3> colors = new List<Vector3>();
+            int vertices = 0;
+            foreach (Mesh m in Meshes)
+            {
+                verts.AddRange(m.GetVertices());
+                inds.AddRange(m.GetIndices(vertices));
+                colors.AddRange(m.GetColorData());
+                vertices += m.GetVertices().Length;
+            }*
+            
+            /*foreach (Mesh m in Meshes)
+            {
+                m.CalculateModelMatrix();
+                m.ViewProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(1.3f, Control.Width / (float)Control.Height, 1.0f, 40.0f);
+                m.ModelViewProjectionMatrix = m.ModelMatrix * m.ViewProjectionMatrix;
+            }*
+
+            //
+
+            // OnRenderFrame
+            GL.Viewport(0, 0, Control.Width, Control.Height);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.BindVertexArray(vaoHandle);
+
+            int indices = 0;
+            foreach (Mesh m in Meshes)
+            {
+                GL.UniformMatrix4(modelviewMatrixLocation, false, ref m.ModelViewProjectionMatrix);
+                GL.DrawElements(BeginMode.Triangles, m.GetIndices().Length, DrawElementsType.UnsignedInt, indices * sizeof(uint));
+                indices += m.GetIndices().Length;
+
+                m.Scale = new Vector3(.001f, .001f, .001f);
+            }
+
+            Control.SwapBuffers();
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs args)
+        {
+            switch (args.KeyCode)
+            {
+                case Keys.W:
+                case Keys.Up:
+                    Camera.Move(0, 0.1f, 0);
+                    break;
+                case Keys.S:
+                case Keys.Down:
+                    Camera.Move(0, -0.1f, 0);
+                    break;
+                case Keys.A:
+                case Keys.Left:
+                    Camera.Move(-0.1f, 0, 0);
+                    break;
+                case Keys.D:
+                case Keys.Right:
+                    Camera.Move(0.1f, 0, 0);
+                    break;
+                case Keys.Q:
+                    Camera.Move(0, 0, 0.1f);
+                    break;
+                case Keys.E:
+                    Camera.Move(0, 0, -0.1f);
+                    break;
+                case Keys.Z:
+                    Camera.AddRotation(-15, 0);
+                    break;
+                case Keys.X:
+                    Camera.AddRotation(15, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void Resize()
+        {
+            GL.Viewport(0, 0, Control.Width, Control.Height);
+        }
+
+        private void LoadShader(string filename, ShaderType type, int program, out int address)
+        {
+            address = GL.CreateShader(type);
+            using (StreamReader sr = new StreamReader(filename))
+            {
+                GL.ShaderSource(address, sr.ReadToEnd());
+            }
+            GL.CompileShader(address);
+            GL.AttachShader(program, address);
+        }*/

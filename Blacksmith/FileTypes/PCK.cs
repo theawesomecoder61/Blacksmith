@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 
 // PCK files hold Wwise sound data
 

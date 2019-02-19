@@ -20,6 +20,7 @@ namespace Blacksmith.Forms
             tempTextBox.Text = Properties.Settings.Default.tempPath;
             deleteTempCheckbox.Checked = Properties.Settings.Default.deleteTemp;
             filelistSeparatorComboBox.SelectedIndex = Properties.Settings.Default.useCSV ? 1 : 0;
+            renderModeComboBox.SelectedIndex = Properties.Settings.Default.renderMode;
         }
 
         #region Odyssey
@@ -138,35 +139,22 @@ namespace Blacksmith.Forms
         }
         #endregion
 
+        #region 3D viewer render mode
+        private void renderModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.renderMode = renderModeComboBox.SelectedIndex;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
         #region 3D viewer bg color
         private void threeDBGColorBtn_Click(object sender, EventArgs e)
         {
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
-                SetImageBGColor(colorDialog.Color);
+                Properties.Settings.Default.threeBG = colorDialog.Color;
+                Properties.Settings.Default.Save();
             }
-        }
-
-        private void SetThreeeDBGColor(Color c)
-        {
-            Properties.Settings.Default.threeDBG = c;
-            Properties.Settings.Default.Save();
-        }
-        #endregion
-
-        #region Image viewer bg color
-        private void imageBGColorBtn_Click(object sender, EventArgs e)
-        {
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                SetImageBGColor(colorDialog.Color);
-            }
-        }
-
-        private void SetImageBGColor(Color c)
-        {
-            Properties.Settings.Default.imageBG = c;
-            Properties.Settings.Default.Save();
         }
         #endregion
     }
