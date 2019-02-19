@@ -2,11 +2,11 @@
 ### Textures
 | Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |--------------|---------------------------|---------------------------|-------|
-| Diffuse      | 🗸                        | 🗸                        | 🗸     |
-| Normal       | 🗸                        | 🗸                        | 🗸     |
-| Mask         | 🗸                        | 🗸                        | 🗸     |
-| Specular     | 🗸                        | 🗸                        | 🗸     |
-| UI/HUD       | 🗸                        | 🗸                       | 🗸     |
+| Diffuse      | 🗸                        | 🗸                         | 🗸     |
+| Normal       | 🗸                        | 🗸                         | 🗸     |
+| Mask         | 🗸                        | 🗸                         | 🗸     |
+| Specular     | 🗸                        | 🗸                         | 🗸     |
+| UI/HUD       | 🗸                        | 🗸                         | 🗸     |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -23,6 +23,11 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
+### Version 1.3.1 [FUTURE VERSION] (2/19/2019)
+- Fixed
+  - extraction and loading issues regarding textures with TopMips/Mips
+  - decompression and extraction issues
+
 ### Version 1.3 [CURRENT VERSION] (2/18/2019)
 - Added
   - the 3D Viewer is all set to go
