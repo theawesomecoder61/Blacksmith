@@ -27,13 +27,13 @@
 - Fixed
   - extraction and loading issues regarding textures with TopMips/Mips
   - a crash that would arise after the user selects "No" from the "Warning" message when attempting to load a .forge with over 20,000 entries
+  - that same message showed if a .forge has over 10,000 entries (though the message says "20,000") - this has been adjusted to 20,000
   - decompression and extraction issues
   - removed the `Convert` context menu item
-  - fixed context menu items that were not working or causes crashes
-  - the Image Viewer's scrollbars show when the image should be scrollable (when the image is not entirely visible)
+  - fixed context menu items that were not working or caused crashes
+  - the Image Viewer's scrollbars show when the image should be scrollable (that is, when the image is not entirely visible)
   - a message shows if a texture cannot be converted (instead of crashing)
-  - what Tag property?
-    > the Tag property of the EntryTreeNode class has been superseded by Path property
+  - the Tag property of the EntryTreeNode class has been superseded by the Path property
   - the 3D Viewer will not respond to camera movements unless Blacksmith is forefront and focused
 
 ### Version 1.3 [CURRENT VERSION] (2/18/2019)
