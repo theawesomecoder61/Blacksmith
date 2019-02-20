@@ -173,11 +173,15 @@ namespace Blacksmith.Three
 
         private void OnFocusedChanged(EventArgs e)
         {
-            lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+            lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
         }
         
         private void ProcessInput()
         {
+            // ignore all keystrokes unless the cursor is on the form
+            if (!Control.ParentForm.ClientRectangle.Contains(Cursor.Position))
+                return;
+
             float movement = 1 / 1000f;
             float rotation = 10;
 

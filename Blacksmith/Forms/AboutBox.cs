@@ -35,7 +35,7 @@ namespace Blacksmith.Forms
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, 3);
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, 5);
             }
         }
 

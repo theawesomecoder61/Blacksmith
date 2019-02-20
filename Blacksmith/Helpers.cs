@@ -338,19 +338,32 @@ namespace Blacksmith
         /// <param name="fileName"></param>
         /// <param name="completionAction"></param>
         /// <param name="format"></param>
-        public static void ConvertDDS(string fileName, Action completionAction = null, string format = "png")
+        public static void ConvertDDS(string fileName, Action<bool> completionAction = null, string format = "png")
         {
             string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
             if (File.Exists(texconv))
             {
                 string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{GetTempPath()}\" \"{fileName}\"";
                 Console.WriteLine("{0} {1}", texconv, args);
-                Process p = Process.Start(texconv, args);
+                Process p = new Process();
+                p.StartInfo.FileName = texconv;
+                p.StartInfo.Arguments = args;
                 p.EnableRaisingEvents = true;
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.Start();
+
+                StreamReader reader = p.StandardOutput;
+                string output = reader.ReadToEnd();
+
                 p.Exited += new EventHandler(delegate(object s, EventArgs a)
                 {
-                    completionAction?.Invoke();
+
+                    bool error = output.Contains("FAILED (");
+                    completionAction?.Invoke(error);
                 });
+
+                p.WaitForExit();
             }
             else
                 throw new Exception("texconv is not found. Blacksmith needs it to convert the texture.");
@@ -564,5 +577,19 @@ namespace Blacksmith
             }
             return count;
         }
+
+        /// <summary>
+        /// Returns the extension for a Game
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static string ExtensionForGame(Game game) => game == Game.ODYSSEY ? "acod" : (game == Game.ORIGINS ? "acor" : "stp");
+        
+        /// <summary>
+        /// Returns the name of a Game
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static string NameOfGame(Game game) => game == Game.ODYSSEY ? "Assassin's Creed: Odyssey" : (game == Game.ORIGINS ? "Assassin's Creed: Origins" : "Steep");
     }
 }

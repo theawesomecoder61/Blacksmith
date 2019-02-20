@@ -28,7 +28,6 @@ C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\OpenTK.xml
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\OpenTK.GLControl.pdb
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\OpenTK.GLControl.xml
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\System.Buffers.xml
-C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.csprojAssemblyReference.cache
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.AboutBox.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Form1.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.FindDialog.resources

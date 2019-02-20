@@ -56,6 +56,7 @@ namespace Blacksmith.Games
             }
         }
 
+        #region Models
         public static Submesh[] ExtractModel(string fileName, EntryTreeNode node, Action completionAction)
         {
             Submesh[] submeshes;
@@ -270,5 +271,6 @@ namespace Blacksmith.Games
 
             return submeshes;
         }
+        #endregion
     }
 }

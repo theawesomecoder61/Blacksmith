@@ -51,7 +51,6 @@ namespace Blacksmith
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.treeView = new System.Windows.Forms.TreeView();
             this.treeNodeContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.convertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.datafileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveRawDataAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveDecompressedDataAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -289,19 +288,11 @@ namespace Blacksmith
             // treeNodeContextMenuStrip
             // 
             this.treeNodeContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertToolStripMenuItem,
             this.datafileToolStripMenuItem,
             this.forgeToolStripMenuItem,
             this.textureToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
-            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(117, 92);
-            // 
-            // convertToolStripMenuItem
-            // 
-            this.convertToolStripMenuItem.Name = "convertToolStripMenuItem";
-            this.convertToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.convertToolStripMenuItem.Text = "Convert";
-            this.convertToolStripMenuItem.Click += new System.EventHandler(this.convertToolStripMenuItem_Click);
+            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(181, 92);
             // 
             // datafileToolStripMenuItem
             // 
@@ -309,7 +300,7 @@ namespace Blacksmith
             this.saveRawDataAsToolStripMenuItem,
             this.saveDecompressedDataAsToolStripMenuItem});
             this.datafileToolStripMenuItem.Name = "datafileToolStripMenuItem";
-            this.datafileToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.datafileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.datafileToolStripMenuItem.Text = "Datafile";
             // 
             // saveRawDataAsToolStripMenuItem
@@ -332,7 +323,7 @@ namespace Blacksmith
             this.createFilelistToolStripMenuItem,
             this.extractAllToolStripMenuItem});
             this.forgeToolStripMenuItem.Name = "forgeToolStripMenuItem";
-            this.forgeToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.forgeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.forgeToolStripMenuItem.Text = "Forge";
             // 
             // createFilelistToolStripMenuItem
@@ -355,7 +346,7 @@ namespace Blacksmith
             this.convertToAnotherFormatToolStripMenuItem,
             this.saveAsDDSToolStripMenuItem});
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
-            this.textureToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.textureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.textureToolStripMenuItem.Text = "Texture";
             // 
             // convertToAnotherFormatToolStripMenuItem
@@ -582,7 +573,6 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripMenuItem saveDecompressedDataAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem decompressFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem convertToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsDDSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;

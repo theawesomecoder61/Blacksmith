@@ -143,7 +143,7 @@ namespace Blacksmith.Games
 
                 // write all decompressed data chunks (stored in combinedData) to a combined file
                 Helpers.WriteToFile(writeToTemp ?
-                    $"{Path.GetFileNameWithoutExtension(inputFileName)}.dec" :
+                    $"{Path.GetFileNameWithoutExtension(inputFileName)}.acod" :
                     outputFileName, combinedStream.ToArray(), writeToTemp);
 
                 return true;
@@ -239,8 +239,9 @@ namespace Blacksmith.Games
         #endregion
 
         #region Textures
-        public static void ExtractTextureMap(string fileName, EntryTreeNode node, Action completionAction)
+        public static void ExtractTextureMap(string fileName, EntryTreeNode node, Action<string> completionAction)
         {
+            string name = Path.GetFileNameWithoutExtension(fileName);
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
@@ -281,19 +282,21 @@ namespace Blacksmith.Games
                     mip1.Mipmaps = reader.ReadInt32();
 
                     // locate the two topmips, if they exist
-                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileName(fileName) + "_TopMip")).Count() == 2)
+                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(name + "_TopMip")).Count() == 2)
                     {
-                        Forge.FileEntry topMipEntry = node.GetForge().FileEntries.Where(x => x.NameTable.Name == Path.GetFileName(fileName) + "_TopMip_0").First();
+                        Forge.FileEntry topMipEntry = node.GetForge().FileEntries.Where(x => x.NameTable.Name == name + "_TopMip_0").First();
 
-                        // extract, read, and create DDS images with the first topmips
-                        byte[] rawData = node.GetForge().GetRawData(topMipEntry);
-                        Helpers.WriteToFile(topMipEntry.NameTable.Name, rawData, true);
+                        // extract, read, and create a DDS image with the first topmip
+                        byte[] rawTopMipData = node.GetForge().GetRawData(topMipEntry);
+                        //Helpers.WriteToFile(topMipEntry.NameTable.Name, rawTopMipData, true);
 
                         // read
-                        ReadFile(Helpers.GetTempPath(topMipEntry.NameTable.Name));
+                        //ReadFile(Helpers.GetTempPath(topMipEntry.NameTable.Name));
+                        byte[] topMipData = ReadFile(rawTopMipData);
 
                         // extract
-                        ExtractTopMip(Helpers.GetTempPath(topMipEntry.NameTable.Name), mip0, completionAction);
+                        //ExtractTopMip(Helpers.GetTempPath(topMipEntry.NameTable.Name), mip0, completionAction);
+                        ExtractTopMip(topMipData, topMipEntry.NameTable.Name, mip0, completionAction);
                     }
                     else // topmips do not exist. fear not! there is still image data found here. let us use that.
                     {
@@ -305,17 +308,24 @@ namespace Blacksmith.Games
                         byte[] mipmapData = reader.ReadBytes(map.DataSize);
 
                         // write DDS file
-                        Helpers.WriteTempDDS(fileName, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
+                        Helpers.WriteTempDDS(name, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
                         {
-                            Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
+                            Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) =>
+                            {
+                                if (error)
+                                    completionAction("FAILED");
+                                else
+                                    completionAction($"{Helpers.GetTempPath(name)}.png");
+                            });
                         });
                     }
                 }
             }
         }
 
-        private static void ExtractTopMip(string fileName, TopMip topMip, Action completionAction)
+        private static void ExtractTopMip(string fileName, TopMip topMip, Action<string> completionAction)
         {
+            string name = Path.GetFileNameWithoutExtension(fileName);
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
@@ -327,14 +337,52 @@ namespace Blacksmith.Games
                         FileNameSize = reader.ReadInt32()
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
-                    
+
                     reader.BaseStream.Seek(18, SeekOrigin.Current);
                     byte[] data = reader.ReadBytes(header.FileSize - 18);
 
                     // write DDS file
-                    Helpers.WriteTempDDS(fileName, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType, () =>
+                    Helpers.WriteTempDDS(name, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType, () =>
                     {
-                        Helpers.ConvertDDS($"{Helpers.GetTempPath(fileName)}.dds", completionAction);
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) =>
+                        {
+                            if (!error)
+                                completionAction("FAILED");
+                            else
+                                completionAction($"{Helpers.GetTempPath(name)}.png");
+                        });
+                    });
+                }
+            }
+        }
+
+        private static void ExtractTopMip(byte[] topMipData, string name, TopMip topMip, Action<string> completionAction)
+        {
+            using (Stream stream = new MemoryStream(topMipData))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    DatafileHeader header = new DatafileHeader
+                    {
+                        ResourceType = reader.ReadInt32(),
+                        FileSize = reader.ReadInt32(),
+                        FileNameSize = reader.ReadInt32()
+                    };
+                    header.FileName = reader.ReadChars(header.FileNameSize);
+
+                    reader.BaseStream.Seek(18, SeekOrigin.Current);
+                    byte[] data = reader.ReadBytes(header.FileSize - 18);
+
+                    // write DDS file
+                    Helpers.WriteTempDDS(name, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType, () =>
+                    {
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) =>
+                        {
+                            if (error)
+                                completionAction("FAILED");
+                            else
+                                completionAction($"{Helpers.GetTempPath(name)}.png");
+                        });
                     });
                 }
             }
