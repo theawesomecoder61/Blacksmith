@@ -16,7 +16,9 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 ### Remember ARchive_neXt?
 Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games or Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
 
-![Version 1.2](https://i.imgur.com/c47xrt7.png)
+![Version 1.3.1](https://i.imgur.com/0qQpFHP.png)
+![Version 1.3.1](https://i.imgur.com/wLcQ1qf.png)
+![Version 1.3.1](https://i.imgur.com/nj28fQv.png)
 
 ## Supported Games
 PC versions of:
