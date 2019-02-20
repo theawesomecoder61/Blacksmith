@@ -5,6 +5,8 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 
 `Note: Blacksmith is NOT a repacker.`
 
+>> Another note: Blacksmith supports *ALL VERSIONS (past, latest, and future versions)* of each game
+
 ----
 
 ***Check the [Current Support section](https://github.com/theawesomecoder61/Blacksmith/blob/master/CHANGELOG.md#current-support) to see what is supported.***
@@ -17,7 +19,7 @@ Blacksmith tries to serve as a successor to ARchive_neXt, since development has 
 ![Version 1.2](https://i.imgur.com/c47xrt7.png)
 
 ## Supported Games
-PC versions only of:
+PC versions of:
 - Assassin's Creed: Odyssey
 - Assassin's Creed: Origins
 - Steep
@@ -41,9 +43,9 @@ PC versions only of:
 1. After setting the game paths, click the plus icon next to a game (on the left) to see all of the game's files.
 2. Click the plus icon next to a .forge and wait to see all of the .forge's entries.
 3. Click the plus icon next to a .forge entry to see all subentries.
-> Doing this will extract and decompress that entry. The result is a `.dec` file found in the Temporary Path with the same name.
+> Doing this will extract and decompress that entry. The result is a `.acod`, `.acor`, or `.stp` file found in the Temporary Path with the same name.
 
-> If there is a `TEXTURE_MAP`, `MATERIAL`, or `MESH` subentry, Blacksmith will try to load these in either the 3D Viewer, Image Viewer, or Text Viewer.
+> If there is a `TEXTURE_MAP` or `MESH` subentry, Blacksmith will try to load these in either the 3D Viewer, Image Viewer, or Text Viewer.
 
 ## Downloads
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
@@ -72,8 +74,7 @@ Blacksmith is licensed under the MIT License.
 - lzo
 - oodle
 - OodleSharp
-- SlimDX
-- SlimDX.D3D11Control
+- OpenTK
 - texconv
 - Zstandard.Net
 

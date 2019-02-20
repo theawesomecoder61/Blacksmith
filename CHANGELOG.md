@@ -2,11 +2,11 @@
 ### Textures
 | Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |--------------|---------------------------|---------------------------|-------|
-| Diffuse      | 🗸                        | 🗸                        | 🗸     |
-| Normal       | 🗸                        | 🗸                        | 🗸     |
-| Mask         | 🗸                        | 🗸                        | 🗸     |
-| Specular     | 🗸                        | 🗸                        | 🗸     |
-| UI/HUD       | 🗸                        | 🗸                       | 🗸     |
+| Diffuse      | 🗸                        | 🗸                         | 🗸     |
+| Normal       | 🗸                        | 🗸                         | 🗸     |
+| Mask         | 🗸                        | 🗸                         | 🗸     |
+| Specular     | 🗸                        | 🗸                         | 🗸     |
+| UI/HUD       | 🗸                        | 🗸                         | 🗸     |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -23,10 +23,22 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
+### Version 1.3.1 [FUTURE VERSION] (2/19/2019)
+- Fixed
+  - extraction and loading issues regarding textures with TopMips/Mips
+  - a crash that would arise after the user selects "No" from the "Warning" message when attempting to load a .forge with over 20,000 entries
+  - decompression and extraction issues
+  - removed the `Convert` context menu item
+  - fixed context menu items that were not working or causes crashes
+  - the Image Viewer's scrollbars show when the image should be scrollable (when the image is not entirely visible)
+  - a message shows if a texture cannot be converted (instead of crashing)
+  - what Tag property?
+    > the Tag property of the EntryTreeNode class has been superseded by Path property
+  - the 3D Viewer will not respond to camera movements unless Blacksmith is forefront and focused
+
 ### Version 1.3 [CURRENT VERSION] (2/18/2019)
 - Added
   - the 3D Viewer is all set to go
-  - preliminary Origins 3D models support
   - extensions for decompressed data for each game (.acod, .acor, .stp)
 - Updated
   - you are no longer able to set the background color of the Image Viewer because the background is now a grid
@@ -46,7 +58,6 @@
   - all entries from each .forge are loaded
   - zoom works with all images
   - any issue that arises when you browse multiple .forge files at once
-  - a dozen of other issues are gone
 
 ### Version 1.2 (2/3/2019)
 - Added
