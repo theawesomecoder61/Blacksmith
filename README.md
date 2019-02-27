@@ -3,9 +3,9 @@
 # Blacksmith
 A program for viewing, extracting, and converting (textures, 3D models, and sounds) from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. It is in early stages, and this repo will be updated constantly with additional support.
 
-`Note: Blacksmith is NOT a repacker.`
+> **Note**: Blacksmith is NOT a repacker.
 
->> Another note: Blacksmith supports *ALL VERSIONS (past, latest, and future versions)* of each game
+>> **Another note**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
 
 ----
 
@@ -29,13 +29,13 @@ PC versions of:
 ## Functionality
 - The main features are viewing and extraction of:
   - .forge files
-  - 3D models (conversion to: .dae, .obj)
+  - 3D models (conversion to: .obj)
   - textures (conversion to: .bmp, .dds, .png, .tga)
   - sounds (conversion to .ogg)
 - Also:
   - extraction of sounds and soundbanks from .pck files
   - creation of filelists from .forge files
-  - extract all entries from .forge files
+  - extraction of all entries from .forge files
 
 ## First Time Setup
 1. Download the latest version from below.
@@ -78,6 +78,7 @@ Blacksmith is licensed under the MIT License.
 - OodleSharp
 - OpenTK
 - texconv
+- ww2ogg
 - Zstandard.Net
 
 Blacksmith icon by Krisada from the Noun Project
