@@ -8,11 +8,11 @@ namespace Blacksmith
     {
         public Forge Forge;
         public Game Game;
-        //public int Levels { get { return Helpers.CountStringOccurrences(FullPath, "\\"); } }
         public long Offset;
         public string Path;
+        public long ResourceOffset = -1;
         public ResourceType ResourceType = ResourceType._NONE;
-        public int Size = -1;
+        public long Size = -1;
         public EntryTreeNodeType Type = EntryTreeNodeType.NONE;
 
         public EntryTreeNode() : base("")

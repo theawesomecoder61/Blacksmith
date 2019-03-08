@@ -1,30 +1,54 @@
-﻿using OpenTK;
+﻿using System.Numerics;
 
-// adapted from: https://github.com/neokabuto/OpenTKTutorialContent/blob/master/OpenTKTutorial7/OpenTKTutorial7/Volume.cs
+// Blacksmith.Three.Model = to be used with GLViewer
+// Blacksmith.Three.Mesh = to be used with the Blacksmith.Game classes for holding mesh properties
 
 namespace Blacksmith.Three
 {
-    public abstract class Mesh
+    public struct Mesh
     {
-        public Vector3 Position = Vector3.Zero;
-        public Vector3 Rotation = Vector3.Zero;
-        public Vector3 Scale = Vector3.One;
-        
-        public Matrix4 ModelMatrix = Matrix4.Identity;
-        public Matrix4 ViewProjectionMatrix = Matrix4.Identity;
-        public Matrix4 ModelViewProjectionMatrix = Matrix4.Identity;
+        public int ID { get; internal set; }
+        public string Name { get; internal set; }
+        public Vertex[] Vertices { get; internal set; }
+        public int TextureIndex { get; internal set; }
+        public Face[] Faces { get; internal set; }
+        public string OBJData { get; internal set; }
+    }
 
-        public abstract Vector3[] GetVertices();
-        public abstract int[] GetIndices(int offset = 0);
-        public abstract Vector3[] GetColorData();
-        public abstract void CalculateModelMatrix();
+    public struct Vertex
+    {
+        // the numbers at the end indicate which vertexTableSize in which that property is utilized
+        public Vector3 Position { get; internal set; } // all
+        public Vector3 Normal { get; internal set; } // 20, 24, 28, 32, 36, 40, 48
+        public Vector2 TextureCoordinate { get; internal set; } // 16, 20, 24, 28, 32, 36, 40, 48
+        public Vector4 BoneIndices { get; internal set; } // 32, 36, 40, 48
+        public Vector4 BoneIndices2 { get; internal set; } // 40, 48
+        public Vector4 BoneWeights { get; internal set; } // 32, 36, 40, 48
+        public Vector4 BoneWeights2 { get; internal set; } // 40, 48
 
-        public bool IsTextured = false;
-        public int TextureID;
-        public int TextureCoordsCount;
-        public abstract Vector2[] GetTextureCoords();
+        public override string ToString()
+        {
+            return $"{Position.X} {Position.Y} {Position.Z}";
+        }
+    }
 
-        public int NormalCount { get { return GetNormals().Length; } } // faces * 3
-        public abstract Vector3[] GetNormals();
+    public struct Face
+    {
+        public int X { get; internal set; }
+        public int Y { get; internal set; }
+        public int Z { get; internal set; }
+
+        public override string ToString()
+        {
+            return $"{Y} {X} {Z}";
+        }
+    }
+
+    public struct Bone
+    {
+        public long ID { get; internal set; }
+        public int Type { get; internal set; }
+        public int Name { get; internal set; }
+        public Matrix4x4 TransformMatrix { get; internal set; }
     }
 }

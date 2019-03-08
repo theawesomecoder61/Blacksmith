@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="textBoxDescription.Text" xml:space="preserve">
-    <value>Blacksmith is a successor to ARchive_neXt whose functionality is similar to ARchive_neXt. It is compatible with Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep.
+    <value>Blacksmith aims to be a successor to ARchive_neXt (a Ubisoft AnvilNext .forge explorer) who shares similar functionality. It is compatible with Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. If you missed it, the source code is on GitHub.
 
 Third-Party/Open-Source Software:
 &gt; libzstd
@@ -133,13 +133,12 @@ Third-Party/Open-Source Software:
 Credits:
 &gt; Clark Young - the picture to the left (found on Unsplash)
 &gt; Krisada (Noun Project) - Blacksmith icon
-&gt; MichaelDarkAngel - creating ARchive_neXt (perhaps the best tool for extracting from Assassin's Creed games) and his research
+&gt; MichaelDarkAngel - creating ARchive_neXt and his prior research (thanks again, Michael)
+&gt; Ploaj - creating his Collada-related classes that I incorporated into Blacksmith (Collada is very complex)
 &gt; The Xentax community - additional research and support
 &gt; Ubisoft - creating lovely models and textures
 
-I did all the research for the supported games. I understood and tested the structures of models and textures from these games.
-
 Copyright Notice:
-AnvilNext, Assassin's Creed franchise, and Steep are properties of Ubisoft. I have no affiliation with the development of any of these software or with Ubisoft. This tool is intended for users to extract files for personal use (i.e., renders, animations, 3D prints, etc.).</value>
+AnvilNext, Assassin's Creed franchise, and Steep are properties of Ubisoft. I have no affiliation with the development of any of these software or with Ubisoft. Blacksmith is not owned nor was appointed by Ubisoft. This tool is intended for users (those who own copies of the games) to extract files for personal use to be used in renders, animations, 3D prints, etc.</value>
   </data>
 </root>

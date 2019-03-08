@@ -36,6 +36,7 @@ namespace Blacksmith
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decompressFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showFileInTheViewersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decompileLocalizationDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,26 +52,40 @@ namespace Blacksmith
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.treeView = new System.Windows.Forms.TreeView();
             this.treeNodeContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyNameToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractAllEntriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.datafileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveRawDataAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveDecompressedDataAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showResourceViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFilelistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertToAnotherFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.threeToolStripContainer = new System.Windows.Forms.ToolStripContainer();
+            this.threeToolStrip = new System.Windows.Forms.ToolStrip();
+            this.cameraStripLabel = new System.Windows.Forms.ToolStripLabel();
+            this.resetCameraStripButton = new System.Windows.Forms.ToolStripButton();
+            this.threeToolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.sceneInfoStripLabel = new System.Windows.Forms.ToolStripLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
-            this.imageStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.imageDimensStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.imageToolStrip = new System.Windows.Forms.ToolStrip();
+            this.imageDimensStatusLabel = new System.Windows.Forms.ToolStripLabel();
             this.zoomDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toggleAlphaButton = new System.Windows.Forms.ToolStripButton();
             this.imagePanel = new System.Windows.Forms.Panel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip.SuspendLayout();
@@ -85,11 +100,16 @@ namespace Blacksmith
             this.splitContainer.SuspendLayout();
             this.treeNodeContextMenuStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.threeToolStripContainer.BottomToolStripPanel.SuspendLayout();
+            this.threeToolStripContainer.SuspendLayout();
+            this.threeToolStrip.SuspendLayout();
+            this.threeToolStrip2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.toolStripContainer2.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer2.ContentPanel.SuspendLayout();
             this.toolStripContainer2.SuspendLayout();
-            this.imageStatusStrip.SuspendLayout();
+            this.imageToolStrip.SuspendLayout();
             this.imagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.tabPage3.SuspendLayout();
@@ -137,6 +157,7 @@ namespace Blacksmith
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.decompressFileToolStripMenuItem,
+            this.showFileInTheViewersToolStripMenuItem,
             this.decompileLocalizationDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -149,11 +170,20 @@ namespace Blacksmith
             this.decompressFileToolStripMenuItem.Text = "Decompress File";
             this.decompressFileToolStripMenuItem.Click += new System.EventHandler(this.decompressFileToolStripMenuItem_Click);
             // 
+            // showFileInTheViewersToolStripMenuItem
+            // 
+            this.showFileInTheViewersToolStripMenuItem.Name = "showFileInTheViewersToolStripMenuItem";
+            this.showFileInTheViewersToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.showFileInTheViewersToolStripMenuItem.Text = "Preview an Origins Model";
+            this.showFileInTheViewersToolStripMenuItem.Click += new System.EventHandler(this.showFileInTheViewersToolStripMenuItem_Click);
+            // 
             // decompileLocalizationDataToolStripMenuItem
             // 
+            this.decompileLocalizationDataToolStripMenuItem.Enabled = false;
             this.decompileLocalizationDataToolStripMenuItem.Name = "decompileLocalizationDataToolStripMenuItem";
             this.decompileLocalizationDataToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.decompileLocalizationDataToolStripMenuItem.Text = "Decompile Localization Data";
+            this.decompileLocalizationDataToolStripMenuItem.Visible = false;
             this.decompileLocalizationDataToolStripMenuItem.Click += new System.EventHandler(this.decompileLocalizationDataToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
@@ -288,34 +318,67 @@ namespace Blacksmith
             // treeNodeContextMenuStrip
             // 
             this.treeNodeContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyNameToClipboardToolStripMenuItem,
+            this.buildTableToolStripMenuItem,
             this.datafileToolStripMenuItem,
             this.forgeToolStripMenuItem,
+            this.modelToolStripMenuItem,
             this.textureToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
-            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(181, 92);
+            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(207, 136);
+            // 
+            // copyNameToClipboardToolStripMenuItem
+            // 
+            this.copyNameToClipboardToolStripMenuItem.Name = "copyNameToClipboardToolStripMenuItem";
+            this.copyNameToClipboardToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.copyNameToClipboardToolStripMenuItem.Text = "Copy Name to Clipboard";
+            this.copyNameToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyNameToClipboardToolStripMenuItem_Click);
+            // 
+            // buildTableToolStripMenuItem
+            // 
+            this.buildTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractAllEntriesToolStripMenuItem});
+            this.buildTableToolStripMenuItem.Name = "buildTableToolStripMenuItem";
+            this.buildTableToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.buildTableToolStripMenuItem.Text = "Build Table";
+            // 
+            // extractAllEntriesToolStripMenuItem
+            // 
+            this.extractAllEntriesToolStripMenuItem.Name = "extractAllEntriesToolStripMenuItem";
+            this.extractAllEntriesToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.extractAllEntriesToolStripMenuItem.Text = "Extract All Entries";
+            this.extractAllEntriesToolStripMenuItem.Click += new System.EventHandler(this.extractAllEntriesToolStripMenuItem_Click);
             // 
             // datafileToolStripMenuItem
             // 
             this.datafileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveRawDataAsToolStripMenuItem,
-            this.saveDecompressedDataAsToolStripMenuItem});
+            this.saveDecompressedDataAsToolStripMenuItem,
+            this.showResourceViewerToolStripMenuItem});
             this.datafileToolStripMenuItem.Name = "datafileToolStripMenuItem";
-            this.datafileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.datafileToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.datafileToolStripMenuItem.Text = "Datafile";
             // 
             // saveRawDataAsToolStripMenuItem
             // 
             this.saveRawDataAsToolStripMenuItem.Name = "saveRawDataAsToolStripMenuItem";
-            this.saveRawDataAsToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.saveRawDataAsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.saveRawDataAsToolStripMenuItem.Text = "Save Raw Data As...";
             this.saveRawDataAsToolStripMenuItem.Click += new System.EventHandler(this.saveRawDataAsToolStripMenuItem_Click);
             // 
             // saveDecompressedDataAsToolStripMenuItem
             // 
             this.saveDecompressedDataAsToolStripMenuItem.Name = "saveDecompressedDataAsToolStripMenuItem";
-            this.saveDecompressedDataAsToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.saveDecompressedDataAsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.saveDecompressedDataAsToolStripMenuItem.Text = "Save Decompressed Data As...";
             this.saveDecompressedDataAsToolStripMenuItem.Click += new System.EventHandler(this.saveDecompressedDataAsToolStripMenuItem_Click);
+            // 
+            // showResourceViewerToolStripMenuItem
+            // 
+            this.showResourceViewerToolStripMenuItem.Name = "showResourceViewerToolStripMenuItem";
+            this.showResourceViewerToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.showResourceViewerToolStripMenuItem.Text = "Show Resource Identifiers Viewer";
+            this.showResourceViewerToolStripMenuItem.Click += new System.EventHandler(this.showResourceViewerToolStripMenuItem_Click);
             // 
             // forgeToolStripMenuItem
             // 
@@ -323,7 +386,7 @@ namespace Blacksmith
             this.createFilelistToolStripMenuItem,
             this.extractAllToolStripMenuItem});
             this.forgeToolStripMenuItem.Name = "forgeToolStripMenuItem";
-            this.forgeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.forgeToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.forgeToolStripMenuItem.Text = "Forge";
             // 
             // createFilelistToolStripMenuItem
@@ -340,13 +403,28 @@ namespace Blacksmith
             this.extractAllToolStripMenuItem.Text = "Extract All";
             this.extractAllToolStripMenuItem.Click += new System.EventHandler(this.extractAllToolStripMenuItem_Click);
             // 
+            // modelToolStripMenuItem
+            // 
+            this.modelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAsOBJToolStripMenuItem});
+            this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.modelToolStripMenuItem.Text = "Model";
+            // 
+            // saveAsOBJToolStripMenuItem
+            // 
+            this.saveAsOBJToolStripMenuItem.Name = "saveAsOBJToolStripMenuItem";
+            this.saveAsOBJToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.saveAsOBJToolStripMenuItem.Text = "Save As Model";
+            this.saveAsOBJToolStripMenuItem.Click += new System.EventHandler(this.saveAsOBJToolStripMenuItem_Click);
+            // 
             // textureToolStripMenuItem
             // 
             this.textureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.convertToAnotherFormatToolStripMenuItem,
             this.saveAsDDSToolStripMenuItem});
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
-            this.textureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.textureToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.textureToolStripMenuItem.Text = "Texture";
             // 
             // convertToAnotherFormatToolStripMenuItem
@@ -377,12 +455,79 @@ namespace Blacksmith
             // 
             // tabPage1
             // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.threeToolStripContainer);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(562, 449);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "3D Viewer";
+            // 
+            // threeToolStripContainer
+            // 
+            // 
+            // threeToolStripContainer.BottomToolStripPanel
+            // 
+            this.threeToolStripContainer.BottomToolStripPanel.Controls.Add(this.threeToolStrip);
+            this.threeToolStripContainer.BottomToolStripPanel.Controls.Add(this.threeToolStrip2);
+            // 
+            // threeToolStripContainer.ContentPanel
+            // 
+            this.threeToolStripContainer.ContentPanel.Size = new System.Drawing.Size(562, 374);
+            this.threeToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.threeToolStripContainer.Location = new System.Drawing.Point(0, 0);
+            this.threeToolStripContainer.Name = "threeToolStripContainer";
+            this.threeToolStripContainer.Size = new System.Drawing.Size(562, 449);
+            this.threeToolStripContainer.TabIndex = 0;
+            this.threeToolStripContainer.Text = "toolStripContainer1";
+            // 
+            // threeToolStrip
+            // 
+            this.threeToolStrip.AllowMerge = false;
+            this.threeToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.threeToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.threeToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cameraStripLabel,
+            this.resetCameraStripButton});
+            this.threeToolStrip.Location = new System.Drawing.Point(0, 0);
+            this.threeToolStrip.Name = "threeToolStrip";
+            this.threeToolStrip.Size = new System.Drawing.Size(562, 25);
+            this.threeToolStrip.Stretch = true;
+            this.threeToolStrip.TabIndex = 0;
+            // 
+            // cameraStripLabel
+            // 
+            this.cameraStripLabel.Name = "cameraStripLabel";
+            this.cameraStripLabel.Size = new System.Drawing.Size(133, 22);
+            this.cameraStripLabel.Text = "Camera: (0, 0, 0) (0, 0, 0)";
+            // 
+            // resetCameraStripButton
+            // 
+            this.resetCameraStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.resetCameraStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.resetCameraStripButton.Name = "resetCameraStripButton";
+            this.resetCameraStripButton.Size = new System.Drawing.Size(83, 22);
+            this.resetCameraStripButton.Text = "Reset Camera";
+            this.resetCameraStripButton.Click += new System.EventHandler(this.resetCameraStripButton_Click);
+            // 
+            // threeToolStrip2
+            // 
+            this.threeToolStrip2.AllowMerge = false;
+            this.threeToolStrip2.Dock = System.Windows.Forms.DockStyle.None;
+            this.threeToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.threeToolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sceneInfoStripLabel});
+            this.threeToolStrip2.Location = new System.Drawing.Point(0, 25);
+            this.threeToolStrip2.Name = "threeToolStrip2";
+            this.threeToolStrip2.Size = new System.Drawing.Size(562, 25);
+            this.threeToolStrip2.Stretch = true;
+            this.threeToolStrip2.TabIndex = 0;
+            // 
+            // sceneInfoStripLabel
+            // 
+            this.sceneInfoStripLabel.Name = "sceneInfoStripLabel";
+            this.sceneInfoStripLabel.Size = new System.Drawing.Size(170, 22);
+            this.sceneInfoStripLabel.Text = "Vertices: 0 | Faces: 0 | Meshes: 0";
             // 
             // tabPage2
             // 
@@ -401,12 +546,12 @@ namespace Blacksmith
             // 
             // toolStripContainer2.BottomToolStripPanel
             // 
-            this.toolStripContainer2.BottomToolStripPanel.Controls.Add(this.imageStatusStrip);
+            this.toolStripContainer2.BottomToolStripPanel.Controls.Add(this.imageToolStrip);
             // 
             // toolStripContainer2.ContentPanel
             // 
             this.toolStripContainer2.ContentPanel.Controls.Add(this.imagePanel);
-            this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(556, 421);
+            this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(556, 418);
             this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer2.LeftToolStripPanelVisible = false;
             this.toolStripContainer2.Location = new System.Drawing.Point(3, 3);
@@ -416,23 +561,24 @@ namespace Blacksmith
             this.toolStripContainer2.TabIndex = 0;
             this.toolStripContainer2.TopToolStripPanelVisible = false;
             // 
-            // imageStatusStrip
+            // imageToolStrip
             // 
-            this.imageStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.imageStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.imageToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.imageToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.imageToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.imageDimensStatusLabel,
-            this.zoomDropDownButton});
-            this.imageStatusStrip.Location = new System.Drawing.Point(0, 0);
-            this.imageStatusStrip.Name = "imageStatusStrip";
-            this.imageStatusStrip.Size = new System.Drawing.Size(556, 22);
-            this.imageStatusStrip.SizingGrip = false;
-            this.imageStatusStrip.TabIndex = 0;
+            this.zoomDropDownButton,
+            this.toggleAlphaButton});
+            this.imageToolStrip.Location = new System.Drawing.Point(0, 0);
+            this.imageToolStrip.Name = "imageToolStrip";
+            this.imageToolStrip.Size = new System.Drawing.Size(556, 25);
+            this.imageToolStrip.Stretch = true;
+            this.imageToolStrip.TabIndex = 0;
             // 
             // imageDimensStatusLabel
             // 
-            this.imageDimensStatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.imageDimensStatusLabel.Name = "imageDimensStatusLabel";
-            this.imageDimensStatusLabel.Size = new System.Drawing.Size(92, 17);
+            this.imageDimensStatusLabel.Size = new System.Drawing.Size(92, 22);
             this.imageDimensStatusLabel.Text = "Dimensions: 0x0";
             // 
             // zoomDropDownButton
@@ -440,19 +586,28 @@ namespace Blacksmith
             this.zoomDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.zoomDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.zoomDropDownButton.Name = "zoomDropDownButton";
-            this.zoomDropDownButton.Size = new System.Drawing.Size(116, 20);
+            this.zoomDropDownButton.Size = new System.Drawing.Size(116, 22);
             this.zoomDropDownButton.Text = "Zoom Level: 100%";
+            // 
+            // toggleAlphaButton
+            // 
+            this.toggleAlphaButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toggleAlphaButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toggleAlphaButton.Name = "toggleAlphaButton";
+            this.toggleAlphaButton.Size = new System.Drawing.Size(156, 22);
+            this.toggleAlphaButton.Text = "Toggle Alpha/Transparency";
+            this.toggleAlphaButton.Click += new System.EventHandler(this.toggleAlphaButton_Click);
             // 
             // imagePanel
             // 
             this.imagePanel.AutoScroll = true;
-            this.imagePanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.imagePanel.BackColor = System.Drawing.Color.Black;
             this.imagePanel.BackgroundImage = global::Blacksmith.Properties.Resources.grid;
             this.imagePanel.Controls.Add(this.pictureBox);
             this.imagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imagePanel.Location = new System.Drawing.Point(0, 0);
             this.imagePanel.Name = "imagePanel";
-            this.imagePanel.Size = new System.Drawing.Size(556, 421);
+            this.imagePanel.Size = new System.Drawing.Size(556, 418);
             this.imagePanel.TabIndex = 1;
             // 
             // pictureBox
@@ -489,6 +644,37 @@ namespace Blacksmith
             this.richTextBox.TabIndex = 0;
             this.richTextBox.Text = "";
             // 
+            // imageList
+            // 
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList.Images.SetKeyName(0, "tp.png");
+            this.imageList.Images.SetKeyName(1, "application.png");
+            this.imageList.Images.SetKeyName(2, "application_side_list.png");
+            this.imageList.Images.SetKeyName(3, "box.png");
+            this.imageList.Images.SetKeyName(4, "brick.png");
+            this.imageList.Images.SetKeyName(5, "bricks.png");
+            this.imageList.Images.SetKeyName(6, "cog.png");
+            this.imageList.Images.SetKeyName(7, "database.png");
+            this.imageList.Images.SetKeyName(8, "disk.png");
+            this.imageList.Images.SetKeyName(9, "drive.png");
+            this.imageList.Images.SetKeyName(10, "film.png");
+            this.imageList.Images.SetKeyName(11, "folder.png");
+            this.imageList.Images.SetKeyName(12, "help.png");
+            this.imageList.Images.SetKeyName(13, "map.png");
+            this.imageList.Images.SetKeyName(14, "music.png");
+            this.imageList.Images.SetKeyName(15, "package.png");
+            this.imageList.Images.SetKeyName(16, "page.png");
+            this.imageList.Images.SetKeyName(17, "photo.png");
+            this.imageList.Images.SetKeyName(18, "picture.png");
+            this.imageList.Images.SetKeyName(19, "pictures.png");
+            this.imageList.Images.SetKeyName(20, "plugin.png");
+            this.imageList.Images.SetKeyName(21, "script.png");
+            this.imageList.Images.SetKeyName(22, "sound.png");
+            this.imageList.Images.SetKeyName(23, "tag_blue.png");
+            this.imageList.Images.SetKeyName(24, "table.png");
+            this.imageList.Images.SetKeyName(25, "text_align_left.png");
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -519,14 +705,23 @@ namespace Blacksmith
             this.splitContainer.ResumeLayout(false);
             this.treeNodeContextMenuStrip.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.threeToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
+            this.threeToolStripContainer.BottomToolStripPanel.PerformLayout();
+            this.threeToolStripContainer.ResumeLayout(false);
+            this.threeToolStripContainer.PerformLayout();
+            this.threeToolStrip.ResumeLayout(false);
+            this.threeToolStrip.PerformLayout();
+            this.threeToolStrip2.ResumeLayout(false);
+            this.threeToolStrip2.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.toolStripContainer2.BottomToolStripPanel.ResumeLayout(false);
             this.toolStripContainer2.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer2.ContentPanel.ResumeLayout(false);
             this.toolStripContainer2.ResumeLayout(false);
             this.toolStripContainer2.PerformLayout();
-            this.imageStatusStrip.ResumeLayout(false);
-            this.imageStatusStrip.PerformLayout();
+            this.imageToolStrip.ResumeLayout(false);
+            this.imageToolStrip.PerformLayout();
             this.imagePanel.ResumeLayout(false);
             this.imagePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
@@ -561,8 +756,6 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripStatusLabel sizeStatusLabel;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.ToolStripContainer toolStripContainer2;
-        private System.Windows.Forms.StatusStrip imageStatusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel imageDimensStatusLabel;
         private System.Windows.Forms.Panel imagePanel;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ToolStripMenuItem forgeToolStripMenuItem;
@@ -576,10 +769,27 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripMenuItem textureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsDDSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
-        private System.Windows.Forms.ToolStripDropDownButton zoomDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem decompileLocalizationDataToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.ToolStripMenuItem convertToAnotherFormatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyNameToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showResourceViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripContainer threeToolStripContainer;
+        private System.Windows.Forms.ToolStrip threeToolStrip;
+        private System.Windows.Forms.ToolStripLabel cameraStripLabel;
+        private System.Windows.Forms.ToolStripButton resetCameraStripButton;
+        private System.Windows.Forms.ImageList imageList;
+        private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveAsOBJToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip imageToolStrip;
+        private System.Windows.Forms.ToolStripLabel imageDimensStatusLabel;
+        private System.Windows.Forms.ToolStripButton toggleAlphaButton;
+        private System.Windows.Forms.ToolStripDropDownButton zoomDropDownButton;
+        private System.Windows.Forms.ToolStripMenuItem buildTableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extractAllEntriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showFileInTheViewersToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip threeToolStrip2;
+        private System.Windows.Forms.ToolStripLabel sceneInfoStripLabel;
     }
 }
 

@@ -18,8 +18,20 @@ namespace Blacksmith
 {
     public static class Helpers
     {
-        public const string TEXTURE_CONVERSION_FORMATS = "Targa|*.tga|Portable Network Graphics|*.png|Tagged Image File Format|*.tif|Joint Photographic Experts Group|*.jpg|All files|*.*";
+        public const string DECOMPRESSED_FILE_FORMATS = "Assassin's Creed: Origins decompressed file|*.acor|Assassin's Creed: Odyssey decompressed file|*.acod|Steep decompressed file|*.stp|All files|*.*";
+        public static ResourceType[] IMPORTANT_RESOURCE_TYPES =
+        {
+            ResourceType.MESH, ResourceType.MATERIAL, ResourceType.LOCALIZATION_PACKAGE, ResourceType.TEXTURE_SET, ResourceType.TEXTURE_MAP, ResourceType.MIPMAP
+        };
+        public const string MODEL_CONVERSION_FORMATS = "Collada DAE|*.dae|Wavefront OBJ|*.obj|All files|*.*";
         private const string SUPPORTED_FILES = @"(.forge|.pck|.png|.txt|.ini|.log)";
+        public const string TEXTURE_CONVERSION_FORMATS = "Targa|*.tga|Portable Network Graphics|*.png|Tagged Image File Format|*.tif|Joint Photographic Experts Group|*.jpg|All files|*.*";
+
+        public struct ResourceLocation
+        {
+            public long Offset { get; internal set; }
+            public ResourceType Type { get; internal set; }
+        }
 
         /// <summary>
         /// Returns if a file path is a supported file by Blacksmith.
@@ -75,16 +87,6 @@ namespace Blacksmith
             return string.Join("/", texts);
         }
 
-        public static int[] ReadInts(BinaryReader reader, int count)
-        {
-            int[] ints = new int[count];
-            for (int i = 0; i < count; i++)
-            {
-                ints[i] = reader.ReadInt32();
-            }
-            return ints;
-        }
-
         // source: https://stackoverflow.com/a/4975942
         /// <summary>
         /// Converts bytes to a human-readable amount
@@ -125,68 +127,103 @@ namespace Blacksmith
             return offsets.ToArray();
         }
         
-        //
-
-        public struct ResourceLocation
-        {
-            public ResourceType Type { get; internal set; }
-            public long Offset { get; internal set; }
-        }
-
-        private static bool IntMatchesAnyResourceType(uint i)
-        {
-            bool b = false;
-            foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
-            {
-                if (ResourceTypeExtensions.GetResourceType(i) == type)
-                    b = true;
-            }
-            return b;
-        }
-
-        //
-
         /// <summary>
-        /// Returns the offsets of any supported resource type
+        /// Returns the offsets of any supported Resource Type
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
         public static ResourceLocation[] LocateResourceIdentifiers(BinaryReader reader)
         {
             List<ResourceLocation> locs = new List<ResourceLocation>();
-            //long originalPos = reader.BaseStream.Position;
-            reader.BaseStream.Position = 0;            
 
-            ResourceType type = ResourceTypeExtensions.GetResourceType(reader.ReadUInt32());
-            if (type != ResourceType._NONE)
+            // read the entire stream
+            reader.BaseStream.Position = 0;
+            byte[] allData = reader.ReadBytes((int)reader.BaseStream.Length);
+
+            // find all supported ResourceTypes
+            foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
             {
-                locs.Add(new ResourceLocation
+                uint value = (uint)type;
+                byte[] valueAsBytes = BitConverter.GetBytes(value);
+                foreach (Tuple<int, int> tuple in RecurringIndexes(allData, valueAsBytes, 4))
                 {
-                    //Offset = reader.BaseStream.Position, // - 4 // get the offset 4 bytes from here
-                    Type = type
-                });
+                    locs.Add(new ResourceLocation
+                    {
+                        Offset = tuple.Item1,
+                        Type = type
+                    });
+                }
             }
 
-            //reader.BaseStream.Position = originalPos;
             return locs.ToArray();
         }
 
         /// <summary>
-        /// Returns the first index of where pattern is located in array with a count
+        /// Returns the offsets of where find can be found
         /// </summary>
-        /// <param name="array"></param>
-        /// <param name="pattern"></param>
-        /// <param name="startIndex"></param>
-        /// <param name="count"></param>
+        /// <param name="reader"></param>
+        /// <param name="find"></param>
         /// <returns></returns>
-        public static int IndexOfBytes(byte[] array, byte[] pattern, int startIndex, int count)
+        public static Tuple<int[], long> LocateBytes(BinaryReader reader, byte[] find)
         {
-            int fidx = 0;
-            int result = Array.FindIndex(array, startIndex, count, (byte b) => {
-                fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
-                return fidx == pattern.Length;
-            });
-            return (result < 0) ? -1 : result - fidx + 1;
+            List<int> offs = new List<int>();
+            long pos = reader.BaseStream.Position;
+            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+            byte[] allData = reader.ReadBytes((int)reader.BaseStream.Length);
+            foreach (Tuple<int, int> tuple in RecurringIndexes(allData, find, 4))
+            {
+                offs.Add(tuple.Item1);
+            }
+            return new Tuple<int[], long>(offs.ToArray(), pos);
+        }
+
+        // source: https://stackoverflow.com/a/17803911
+        /// <summary>
+        /// Searches master for toFind with length precision. Returns a List of Tuples
+        /// </summary>
+        /// <param name="master"></param>
+        /// <param name="toFind"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static IList<Tuple<int, int>> RecurringIndexes(byte[] master, byte[] toFind, int length)
+        {
+            List<Tuple<int, int>> result = new List<Tuple<int, int>>();
+
+            // Let's return empty list ... or throw appropriate exception
+            if (ReferenceEquals(null, master))
+                return result;
+            else if (ReferenceEquals(null, toFind))
+                return result;
+            else if (length < 0)
+                return result;
+            else if (length > toFind.Length)
+                return result;
+
+            byte[] subRegion = new byte[length];
+
+            for (int i = 0; i <= toFind.Length - length; ++i)
+            {
+                for (int j = 0; j < length; ++j)
+                    subRegion[j] = toFind[j + i];
+
+                for (int j = 0; j < master.Length - length + 1; ++j)
+                {
+                    bool counterExample = false;
+
+                    for (int k = 0; k < length; ++k)
+                        if (master[j + k] != subRegion[k])
+                        {
+                            counterExample = true;
+                            break;
+                        }
+
+                    if (counterExample)
+                        continue;
+
+                    result.Add(new Tuple<int, int>(j, j + length - 1));
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -219,8 +256,9 @@ namespace Blacksmith
             }
             else
             {*/
+            if (data != null && data.Length > 0)
                 File.WriteAllBytes(fileName, data);
-                return true;
+            return true;
             //}
         }
 
@@ -242,7 +280,7 @@ namespace Blacksmith
         /// <param name="fileName"></param>
         /// <param name="data"></param>
         /// <param name="writeToTempFolder"></param>
-        public static void WriteToFile(string fileName, byte[] data, bool writeToTempFolder)
+        public static void WriteToFile(string fileName, byte[] data, bool writeToTempFolder = false)
         {
             if (writeToTempFolder)
                 WriteToTempFile(fileName, data);
@@ -583,13 +621,64 @@ namespace Blacksmith
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static string ExtensionForGame(Game game) => game == Game.ODYSSEY ? "acod" : (game == Game.ORIGINS ? "acor" : "stp");
-        
+        public static string GameToExtension(Game game) => game == Game.ODYSSEY ? "acod" : (game == Game.ORIGINS ? "acor" : "stp");
+
+        /// <summary>
+        /// Returns a Game for the extension
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public static Game ExtensionToGame(string ext) => ext == "acod" ? Game.ODYSSEY : (ext == "acor" ? Game.ORIGINS : Game.STEEP);
+
         /// <summary>
         /// Returns the name of a Game
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
         public static string NameOfGame(Game game) => game == Game.ODYSSEY ? "Assassin's Creed: Odyssey" : (game == Game.ORIGINS ? "Assassin's Creed: Origins" : "Steep");
+
+        // source: https://stackoverflow.com/a/30300521
+        public static string WildcardToRegEx(string value) => "^" + Regex.Escape(value).Replace("\\?", ".").Replace("\\*", ".*") + "$";
+
+        /// <summary>
+        /// Returns if the Stream is at end-of-stream (EOS)
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static bool CheckIfEOS(Stream stream) => stream.Position > stream.Length;
+
+        /// <summary>
+        /// Returns an array of int32s using a BinaryReader
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static int[] ReadInt32s(BinaryReader reader, int count)
+        {
+            int[] ints = new int[count];
+            for (int i = 0; i < count; i++)
+                ints[i] = reader.ReadInt32();
+            return ints;
+        }
+
+        /// <summary>
+        /// Get the first ResourceType in a file (provided from fileName)
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static ResourceType GetFirstResourceType(string fileName)
+        {
+            using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                if (stream.Length == 0)
+                    return ResourceType._NONE;
+
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    LocateResourceIdentifiers(reader).ToList().ForEach(x => Console.WriteLine(x.Type));
+                    return LocateResourceIdentifiers(reader).Length > 0 ? LocateResourceIdentifiers(reader).Where(x => x.Offset == 0).First().Type : ResourceType._NONE;
+                }
+            }
+        }
     }
 }

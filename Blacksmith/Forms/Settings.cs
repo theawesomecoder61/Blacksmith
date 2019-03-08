@@ -21,6 +21,7 @@ namespace Blacksmith.Forms
             deleteTempCheckbox.Checked = Properties.Settings.Default.deleteTemp;
             filelistSeparatorComboBox.SelectedIndex = Properties.Settings.Default.useCSV ? 1 : 0;
             renderModeComboBox.SelectedIndex = Properties.Settings.Default.renderMode;
+            pointSizeBar.Value = Properties.Settings.Default.pointSize;
         }
 
         #region Odyssey
@@ -143,6 +144,14 @@ namespace Blacksmith.Forms
         private void renderModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.renderMode = renderModeComboBox.SelectedIndex;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
+        #region 3D viewer point size
+        private void pointSizeBar_Scroll(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.pointSize = pointSizeBar.Value;
             Properties.Settings.Default.Save();
         }
         #endregion

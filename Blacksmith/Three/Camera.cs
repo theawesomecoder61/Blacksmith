@@ -100,15 +100,17 @@ namespace Blacksmith.Three
     {
         public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0, 0);
-        public float MoveSpeed = 1f;
+        public float MoveSpeed = 1 / 10f;
         public float MouseSensitivity = 0.0025f;
 
         public Matrix4 GetViewMatrix()
         {
-            Vector3 lookat = new Vector3();
-            lookat.X = (float)(Math.Sin(Orientation.X) * Math.Cos(Orientation.Y));
-            lookat.Y = (float)Math.Sin(Orientation.Y);
-            lookat.Z = (float)(Math.Cos(Orientation.X) * Math.Cos(Orientation.Y));
+            Vector3 lookat = new Vector3
+            {
+                X = (float)(Math.Sin(Orientation.X) * Math.Cos(Orientation.Y)),
+                Y = (float)Math.Sin(Orientation.Y),
+                Z = (float)(Math.Cos(Orientation.X) * Math.Cos(Orientation.Y))
+            };
             return Matrix4.LookAt(Position, Position + lookat, Vector3.UnitY);
         }
 

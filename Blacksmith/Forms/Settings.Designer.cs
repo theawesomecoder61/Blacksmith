@@ -52,16 +52,26 @@ namespace Blacksmith.Forms
             this.threeDBGColorBtn = new System.Windows.Forms.Button();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.pointSizeBar = new System.Windows.Forms.TrackBar();
+            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.renderModeComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.sensitivityTrackBar = new System.Windows.Forms.TrackBar();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pointSizeBar)).BeginInit();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox
@@ -218,7 +228,7 @@ namespace Blacksmith.Forms
             // 
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.filelistSeparatorComboBox);
-            this.groupBox1.Location = new System.Drawing.Point(380, 110);
+            this.groupBox1.Location = new System.Drawing.Point(380, 206);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(220, 48);
             this.groupBox1.TabIndex = 0;
@@ -228,7 +238,7 @@ namespace Blacksmith.Forms
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 22);
+            this.label5.Location = new System.Drawing.Point(6, 22);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(87, 13);
             this.label5.TabIndex = 0;
@@ -241,9 +251,9 @@ namespace Blacksmith.Forms
             this.filelistSeparatorComboBox.Items.AddRange(new object[] {
             "Tabs",
             "Commas (CSV)"});
-            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(101, 19);
+            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(99, 19);
             this.filelistSeparatorComboBox.Name = "filelistSeparatorComboBox";
-            this.filelistSeparatorComboBox.Size = new System.Drawing.Size(113, 21);
+            this.filelistSeparatorComboBox.Size = new System.Drawing.Size(115, 21);
             this.filelistSeparatorComboBox.TabIndex = 0;
             this.filelistSeparatorComboBox.SelectedIndexChanged += new System.EventHandler(this.filelistSeparatorComboBox_SelectedIndexChanged);
             // 
@@ -260,7 +270,7 @@ namespace Blacksmith.Forms
             // 
             // threeDBGColorBtn
             // 
-            this.threeDBGColorBtn.Location = new System.Drawing.Point(11, 51);
+            this.threeDBGColorBtn.Location = new System.Drawing.Point(11, 153);
             this.threeDBGColorBtn.Name = "threeDBGColorBtn";
             this.threeDBGColorBtn.Size = new System.Drawing.Size(203, 23);
             this.threeDBGColorBtn.TabIndex = 0;
@@ -270,20 +280,68 @@ namespace Blacksmith.Forms
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Controls.Add(this.sensitivityTrackBar);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.pointSizeBar);
+            this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.threeDBGColorBtn);
             this.groupBox2.Controls.Add(this.renderModeComboBox);
             this.groupBox2.Location = new System.Drawing.Point(380, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(220, 91);
+            this.groupBox2.Size = new System.Drawing.Size(220, 188);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "3D Viewer";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.SystemColors.Control;
+            this.label9.Location = new System.Drawing.Point(191, 81);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(19, 13);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "10";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.SystemColors.Control;
+            this.label8.Location = new System.Drawing.Point(78, 81);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(13, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "1";
+            // 
+            // pointSizeBar
+            // 
+            this.pointSizeBar.LargeChange = 2;
+            this.pointSizeBar.Location = new System.Drawing.Point(71, 49);
+            this.pointSizeBar.Minimum = 1;
+            this.pointSizeBar.Name = "pointSizeBar";
+            this.pointSizeBar.Size = new System.Drawing.Size(143, 45);
+            this.pointSizeBar.TabIndex = 0;
+            this.pointSizeBar.Value = 5;
+            this.pointSizeBar.Scroll += new System.EventHandler(this.pointSizeBar_Scroll);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(8, 56);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(57, 13);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Point Size:";
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 25);
+            this.label6.Location = new System.Drawing.Point(8, 25);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(75, 13);
             this.label6.TabIndex = 0;
@@ -297,9 +355,9 @@ namespace Blacksmith.Forms
             "Solid",
             "Wireframe",
             "Points"});
-            this.renderModeComboBox.Location = new System.Drawing.Point(93, 22);
+            this.renderModeComboBox.Location = new System.Drawing.Point(89, 22);
             this.renderModeComboBox.Name = "renderModeComboBox";
-            this.renderModeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.renderModeComboBox.Size = new System.Drawing.Size(125, 21);
             this.renderModeComboBox.TabIndex = 0;
             this.renderModeComboBox.SelectedIndexChanged += new System.EventHandler(this.renderModeComboBox_SelectedIndexChanged);
             // 
@@ -315,6 +373,49 @@ namespace Blacksmith.Forms
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Temporary Files";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.SystemColors.Control;
+            this.label10.Enabled = false;
+            this.label10.Location = new System.Drawing.Point(186, 129);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(29, 13);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "High";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.SystemColors.Control;
+            this.label11.Enabled = false;
+            this.label11.Location = new System.Drawing.Point(107, 129);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(27, 13);
+            this.label11.TabIndex = 0;
+            this.label11.Text = "Low";
+            // 
+            // sensitivityTrackBar
+            // 
+            this.sensitivityTrackBar.Enabled = false;
+            this.sensitivityTrackBar.LargeChange = 2;
+            this.sensitivityTrackBar.Location = new System.Drawing.Point(106, 97);
+            this.sensitivityTrackBar.Minimum = 1;
+            this.sensitivityTrackBar.Name = "sensitivityTrackBar";
+            this.sensitivityTrackBar.Size = new System.Drawing.Size(108, 45);
+            this.sensitivityTrackBar.TabIndex = 0;
+            this.sensitivityTrackBar.Value = 5;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Enabled = false;
+            this.label12.Location = new System.Drawing.Point(8, 104);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(92, 13);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Mouse Sensitivity:";
             // 
             // Settings
             // 
@@ -344,8 +445,10 @@ namespace Blacksmith.Forms
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pointSizeBar)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -379,5 +482,13 @@ namespace Blacksmith.Forms
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox renderModeComboBox;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TrackBar pointSizeBar;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TrackBar sensitivityTrackBar;
+        private System.Windows.Forms.Label label12;
     }
 }

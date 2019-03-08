@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace Blacksmith.Games
 {
@@ -251,9 +250,9 @@ namespace Blacksmith.Games
                         Width = reader.ReadInt32(),
                         Height = reader.ReadInt32()
                     };
-                    reader.BaseStream.Seek(8, SeekOrigin.Current);
-                    mip0.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
                     reader.BaseStream.Seek(4, SeekOrigin.Current);
+                    mip0.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
+                    reader.BaseStream.Seek(8, SeekOrigin.Current);
                     mip0.Mipmaps = reader.ReadInt32();
 
                     reader.BaseStream.Seek(39, SeekOrigin.Current); // go to next mip
@@ -264,13 +263,13 @@ namespace Blacksmith.Games
                         Width = reader.ReadInt32(),
                         Height = reader.ReadInt32()
                     };
-                    reader.BaseStream.Seek(8, SeekOrigin.Current);
-                    mip1.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
                     reader.BaseStream.Seek(4, SeekOrigin.Current);
+                    mip1.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
+                    reader.BaseStream.Seek(8, SeekOrigin.Current);
                     mip1.Mipmaps = reader.ReadInt32();
 
                     // locate the two mips, if they exist
-                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileNameWithoutExtension(fileName) + "_Mip")).Count() == 2)
+                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(Path.GetFileNameWithoutExtension(fileName) + "_Mip")).Count() > 0)
                     {
                         Forge.FileEntry[] mipEntries = node.GetForge().FileEntries.Where(x => x.NameTable.Name == Path.GetFileNameWithoutExtension(fileName) + "_Mip0").ToArray();
                         if (mipEntries.Length > 0)
@@ -287,21 +286,36 @@ namespace Blacksmith.Games
 
                             // extract
                             //ExtractTopMip(Helpers.GetTempPath(mipEntry.NameTable.Name), mip0, completionAction);
-                            ExtractTopMip(topMipData, mipEntry.NameTable.Name, mip0, completionAction);
+                            Mip mip = MipToUse(mipEntry.NameTable.Name) == 0 ? mip0 : mip1;
+                            ExtractTopMip(topMipData, mipEntry.NameTable.Name, mip, completionAction);
                         }
                     }
                     else // mips do not exist. fear not! there is still image data found here. let us use that.
                     {
                         reader.BaseStream.Seek(12, SeekOrigin.Current);
 
-                        TextureMap map = new TextureMap
+                        TextureMap map = new TextureMap();
+                        map.DataSize = reader.ReadInt32();
+
+                        // test if this dataSize is too big
+                        bool correctSize = true;
+                        if (map.DataSize > reader.BaseStream.Length || map.DataSize < reader.BaseStream.Length - 300) // if the dataSize lies within a reasonable range
                         {
-                            DataSize = reader.ReadInt32()
-                        };
+                            correctSize = false;
+                        }
+
+                        // test again, 14 bytes later
+                        if (!correctSize)
+                        {
+                            reader.BaseStream.Seek(14, SeekOrigin.Current);
+                            map.DataSize = reader.ReadInt32();
+                        }
+
                         byte[] mipmapData = reader.ReadBytes(map.DataSize);
 
                         // write DDS file
-                        Helpers.WriteTempDDS(name, mipmapData, mip1.Width, mip1.Height, mip1.Mipmaps, mip1.DXTType, () =>
+                        Mip mip = mip0;
+                        Helpers.WriteTempDDS(name, mipmapData, mip.Width, mip.Height, mip.Mipmaps, mip.DXTType, () =>
                         {
                             Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) => {
                                 if (error)
@@ -386,5 +400,13 @@ namespace Blacksmith.Games
             }
         }
         #endregion
+
+        private static int MipToUse(string fileName)
+        {
+            int mip = 0;
+            /*if (fileName.Contains("NormalMap"))
+                mip = 0;*/
+            return mip;
+        }
     }
 }

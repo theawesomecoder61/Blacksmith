@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Blacksmith.Three
 {
@@ -32,7 +33,7 @@ namespace Blacksmith.Three
             Console.WriteLine(GL.GetShaderInfoLog(address));
         }
 
-        public void LoadShaderFromString(String code, ShaderType type)
+        public void LoadShaderFromString(string code, ShaderType type)
         {
             if (type == ShaderType.VertexShader)
             {
@@ -46,6 +47,7 @@ namespace Blacksmith.Three
 
         public void LoadShaderFromFile(string filename, ShaderType type)
         {
+            filename = Application.ExecutablePath + "\\..\\Shaders\\" + filename;
             using (StreamReader sr = new StreamReader(filename))
             {
                 if (type == ShaderType.VertexShader)

@@ -83,10 +83,6 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="ObjParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Binaries\x64\ObjParser.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.0.1\lib\net20\OpenTK.dll</HintPath>
     </Reference>
@@ -123,6 +119,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\EntryTreeNodeType.cs" />
+    <Compile Include="Enums\FindType.cs" />
+    <Compile Include="Forms\ResourceViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ResourceViewer.Designer.cs">
+      <DependentUpon>ResourceViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="IO\BigEndianBinaryReader.cs" />
     <Compile Include="FileTypes\PCK.cs" />
     <Compile Include="Forms\AboutBox.cs">
@@ -149,14 +152,17 @@
     <Compile Include="Forms\SoundpackBrowser.Designer.cs">
       <DependentUpon>SoundpackBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Three\DynamicMesh.cs" />
+    <Compile Include="Three\DAEWriter.cs" />
+    <Compile Include="Three\IO_DAE.cs" />
+    <Compile Include="Three\Mesh.cs" />
     <Compile Include="Three\RenderMode.cs" />
     <Compile Include="Three\ShaderProgram.cs" />
-    <Content Include="Binaries\x64\ObjParser.dll" />
+    <Compile Include="Three\TextRenderer.cs" />
     <Content Include="Form1 backup.cs">
       <SubType>Form</SubType>
     </Content>
-    <Content Include="Three\D3DScene.cs" />
+    <None Include="Resources\arrow_in.png" />
+    <Content Include="Three\D3DScene.txt" />
     <Compile Include="Enums\DXT.cs" />
     <Compile Include="Enums\ResourceType.cs" />
     <Compile Include="FileTypes\Forge.cs" />
@@ -180,9 +186,9 @@
     </Compile>
     <Compile Include="Three\Camera.cs" />
     <Compile Include="Three\GLViewer.cs" />
-    <Compile Include="Three\OBJMesh.cs" />
-    <Content Include="Three\ThreeViewer.cs" />
-    <Compile Include="Three\Mesh.cs" />
+    <Compile Include="Three\OBJModel.cs" />
+    <Content Include="Three\ThreeViewer.txt" />
+    <Compile Include="Three\Model.cs" />
     <Content Include="Three\GLViewer backup.txt" />
     <Content Include="Shaders\fs.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -201,6 +207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindDialog.resx">
       <DependentUpon>FindDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ResourceViewer.resx">
+      <DependentUpon>ResourceViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SoundpackBrowser.resx">
       <DependentUpon>SoundpackBrowser.cs</DependentUpon>
@@ -244,6 +253,12 @@
     <Content Include="Shaders\vs_tex.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Shaders\fs_normal.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\vs_normal.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -284,4 +299,8 @@
     <Error Condition="!Exists('..\packages\Zstandard.Net.1.1.6\build\Zstandard.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Zstandard.Net.1.1.6\build\Zstandard.Net.targets'))" />
   </Target>
   <Import Project="..\packages\Zstandard.Net.1.1.6\build\Zstandard.Net.targets" Condition="Exists('..\packages\Zstandard.Net.1.1.6\build\Zstandard.Net.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

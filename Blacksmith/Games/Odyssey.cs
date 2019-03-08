@@ -158,6 +158,9 @@ namespace Blacksmith.Games
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
+                    if (identifierOffsets.Length < 2)
+                        return null;
+
                     long x = identifierOffsets[1];
 
                     // skip to this Raw Data Block's offset
@@ -260,8 +263,8 @@ namespace Blacksmith.Games
                     // toppmip 0
                     TopMip mip0 = new TopMip
                     {
-                        Width = reader.ReadInt32(),
-                        Height = reader.ReadInt32()
+                        Height = reader.ReadInt32(),
+                        Width = reader.ReadInt32()
                     };
                     reader.BaseStream.Seek(8, SeekOrigin.Current);
                     mip0.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
@@ -273,8 +276,8 @@ namespace Blacksmith.Games
                     // topmip 1, ignored
                     TopMip mip1 = new TopMip
                     {
-                        Width = reader.ReadInt32(),
-                        Height = reader.ReadInt32()
+                        Height = reader.ReadInt32(),
+                        Width = reader.ReadInt32()
                     };
                     reader.BaseStream.Seek(8, SeekOrigin.Current);
                     mip1.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
@@ -282,7 +285,7 @@ namespace Blacksmith.Games
                     mip1.Mipmaps = reader.ReadInt32();
 
                     // locate the two topmips, if they exist
-                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(name + "_TopMip")).Count() == 2)
+                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(name + "_TopMip")).Count() > 0)
                     {
                         Forge.FileEntry topMipEntry = node.GetForge().FileEntries.Where(x => x.NameTable.Name == name + "_TopMip_0").First();
 
@@ -393,7 +396,7 @@ namespace Blacksmith.Games
         #endregion
 
         #region Models
-        public static void ExtractModel(string fileName)
+        public static void ExtractModel(string fileName, Action<string> completionAction)
         {
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -408,6 +411,8 @@ namespace Blacksmith.Games
                     file.FileName = reader.ReadChars(file.FileNameSize);
 
                     // ToDo: implement the model stuff
+
+                    completionAction("");
                 }
             }
         }

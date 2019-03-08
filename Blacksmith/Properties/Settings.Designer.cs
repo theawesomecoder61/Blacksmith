@@ -118,5 +118,17 @@ namespace Blacksmith.Properties {
                 this["renderMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int pointSize {
+            get {
+                return ((int)(this["pointSize"]));
+            }
+            set {
+                this["pointSize"] = value;
+            }
+        }
     }
 }

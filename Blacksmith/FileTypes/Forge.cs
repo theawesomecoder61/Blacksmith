@@ -129,7 +129,7 @@ namespace Blacksmith.FileTypes
                     DataHeader1 = new DataHeader1Block
                     {
                         NumOfEntries = reader.ReadInt32(),
-                        Unknown1 = Helpers.ReadInts(reader, 4),
+                        Unknown1 = Helpers.ReadInt32s(reader, 4),
                         Unknown2 = reader.ReadInt64(),
                         MaxFilesForThisIndex = reader.ReadInt32(),
                         Unknown3 = reader.ReadInt32(),
@@ -180,13 +180,13 @@ namespace Blacksmith.FileTypes
                         {
                             RawDataSize = reader.ReadInt32(),
                             FileDataID = reader.ReadInt64(),
-                            Unknown1 = Helpers.ReadInts(reader, 4),
+                            Unknown1 = Helpers.ReadInt32s(reader, 4),
                             NextFileCount = reader.ReadInt32(),
                             PreviousFileCount = reader.ReadInt32(),
                             Unknown2 = reader.ReadInt32(),
                             Timestamp = reader.ReadInt32(),
                             Name = new string(reader.ReadChars(128)),
-                            Unknown3 = Helpers.ReadInts(reader, 5)
+                            Unknown3 = Helpers.ReadInt32s(reader, 5)
                         };
 
                         // remove non-ASCII characters from the name
@@ -242,7 +242,7 @@ namespace Blacksmith.FileTypes
         /// <param name="offset"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public byte[] GetRawData(long offset, int size)
+        public byte[] GetRawData(long offset, long size)
         {
             byte[] data = new byte[size];
             using (Stream stream = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -250,7 +250,7 @@ namespace Blacksmith.FileTypes
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     reader.BaseStream.Seek(offset, SeekOrigin.Begin); // the checksum is ignored
-                    data = reader.ReadBytes(size);
+                    data = reader.ReadBytes((int)size);
                 }
             }
             return data;

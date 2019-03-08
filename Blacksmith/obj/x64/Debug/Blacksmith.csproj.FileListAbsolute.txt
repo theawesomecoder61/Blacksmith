@@ -6,6 +6,8 @@ C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Binaries\x86\pac
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Shaders\vs.glsl
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Shaders\teapot.obj
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Shaders\vs_tex.glsl
+C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Shaders\fs_normal.glsl
+C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Shaders\vs_normal.glsl
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Binaries\x86\lzo.dll
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Binaries\x64\lzo2_64.dll
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Binaries\x64\oo2core_4_win64.dll
@@ -17,7 +19,6 @@ C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Blacksmith.exe.c
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Blacksmith.exe
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\Blacksmith.pdb
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\NLog.dll
-C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\ObjParser.dll
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\OpenTK.dll
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\OpenTK.GLControl.dll
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\System.Buffers.dll
@@ -31,6 +32,7 @@ C:\Users\pinea\source\repos\Blacksmith\Blacksmith\bin\x64\Debug\System.Buffers.x
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.AboutBox.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Form1.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.FindDialog.resources
+C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.ResourceViewer.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.SoundpackBrowser.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Properties.Resources.resources
 C:\Users\pinea\source\repos\Blacksmith\Blacksmith\obj\x64\Debug\Blacksmith.Forms.Settings.resources
