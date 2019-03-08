@@ -30,7 +30,7 @@ Version 1.4: Initial Origins 3D model support, Find feature, 3D Viewer & UI impr
   - *initial Origins 3D model support!*
   > Supported features: geometry, normals, texture coordinates (UVs)
   - added ability to export a 3D model to DAE and OBJ
-  - `Tools > Preview Origins Model in 3D Viewer`
+  - `Tools > Preview an Origins Model`
   - adjust the size of points from the 3D Viewer in Settings
   - a `Copy Name to Clipboard` item to the context menu
   - a `Datafile > Show Resource Identifiers Viewer` item
