@@ -11,8 +11,8 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | X                         | X                         | X     |
-| Normals             | X                         | X                         | X     |
+| Geometry            | X                         | 🗸                         | X     |
+| Normals             | X                         | 🗸                         | X     |
 | UV sets             | X                         | X                         | X     |
 | Skeleton & Skinning | X                         | X                         | X     |
 
@@ -23,7 +23,35 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.3.1 [FUTURE VERSION] (2/19/2019)
+### Version 1.4 [CURRENT VERSION] (3/8/2019)
+
+Version 1.4: Initial Origins 3D model support, Find feature, 3D Viewer & UI improvements
+- Added
+  - *initial Origins 3D model support!*
+  > Supported features: geometry, normals, texture coordinates (UVs)
+  - added ability to export a 3D model to DAE and OBJ
+  - `Tools > Preview Origins Model in 3D Viewer`
+  - adjust the size of points from the 3D Viewer in Settings
+  - a `Copy Name to Clipboard` item to the context menu
+  - a `Datafile > Show Resource Identifiers Viewer` item
+  > Resource Identifiers Viewer displays all located resource identifiers and offsets in that entry
+- Updated
+  - the ResourceType enum and its extension class
+  - faster and better Resource Type detection
+  - 3D Viewer camera moves slower
+  - 3D Viewer camera only moves if the cursor is on the 3D Viewer (all input is directed to it)
+  - 3D Viewer now renders the model with its normals (colorful)
+  - other 3D Viewer improvements
+- Fixed
+  - file sizes over 2 GB would not show in the status bar
+  - improved Steep texture support
+  - the inability to extract image data from a TopMip/Mip if there is only one TopMip/Mip
+  - the tree view would lose focus and the selected node would be unselected
+  - the useless `Decompress Localization Data` menu item was removed from sight
+  - Find feature works
+  - various UI improvements
+
+### Version 1.3.1 (2/9/2019)
 - Fixed
   - extraction and loading issues regarding textures with TopMips/Mips
   - a crash that would arise after the user selects "No" from the "Warning" message when attempting to load a .forge with over 20,000 entries
@@ -36,7 +64,7 @@
   - the Tag property of the EntryTreeNode class has been superseded by the Path property
   - the 3D Viewer will not respond to camera movements unless Blacksmith is forefront and focused
 
-### Version 1.3 [CURRENT VERSION] (2/18/2019)
+### Version 1.3 (2/18/2019)
 - Added
   - the 3D Viewer is all set to go
   - extensions for decompressed data for each game (.acod, .acor, .stp)
