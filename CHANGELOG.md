@@ -11,10 +11,10 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | X                         | 🗸                         | X     |
+| Geometry            | X                         | 🗸 (partial)               | X     |
 | Normals             | X                         | 🗸                         | X     |
 | UV sets             | X                         | X                         | X     |
-| Skeleton & Skinning | X                         | X                         | X     |
+| Skeleton            | X                         | X                         | X     |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
