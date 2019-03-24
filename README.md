@@ -30,9 +30,13 @@ PC versions of:
 ## Functionality
 - The main features are viewing and extraction of:
   - .forge files
-  - 3D models (conversion to: .obj)
-  - textures (conversion to: .bmp, .dds, .png, .tga)
-  - sounds (conversion to .ogg)
+  - 3D models
+    - conversion to: .dae, .obj, .smd, .stl
+    - (as of Version 1.5)
+  - textures
+    - conversion to: .bmp, .dds, .png, .tga
+  - sounds
+    - conversion to: .ogg
 - Also:
   - extraction of sounds and soundbanks from .pck files
   - creation of filelists from .forge files
