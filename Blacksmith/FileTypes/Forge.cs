@@ -1,3 +1,4 @@
+using Blacksmith.Enums;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Blacksmith.FileTypes
     {
         public string Path { get; private set; }
         public string Name { get; private set; }
+        public Game Game;
         public HeaderBlock Header { get; private set; }
         public DataHeader1Block DataHeader1 { get; private set; }
         public DataHeader2Block DataHeader2 { get; private set; }
@@ -265,17 +267,15 @@ namespace Blacksmith.FileTypes
             if (FileEntries != null && FileEntries.Length > 0)
             {
                 sb.Append("Name\tOffset\tSize\tFile ID from Index Table\n");
-                foreach (FileEntry entry in FileEntries)
+                FileEntries.ToList().ForEach(x =>
                 {
                     if (Properties.Settings.Default.useCSV)
-                        sb.AppendFormat("{0},{1},{2},{3}\n", entry.NameTable.Name, entry.IndexTable.OffsetToRawDataTable, entry.IndexTable.RawDataSize, entry.IndexTable.FileDataID);
+                        sb.AppendFormat("{0},{1},{2},{3}\n", x.NameTable.Name, x.IndexTable.OffsetToRawDataTable, x.IndexTable.RawDataSize, x.IndexTable.FileDataID);
                     else
-                        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\n", entry.NameTable.Name, entry.IndexTable.OffsetToRawDataTable, entry.IndexTable.RawDataSize, entry.IndexTable.FileDataID);
-                }
-                return sb.ToString();
+                        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\n", x.NameTable.Name, x.IndexTable.OffsetToRawDataTable, x.IndexTable.RawDataSize, x.IndexTable.FileDataID);
+                });
             }
-            else
-                return "";
+            return sb.ToString();
         }
 
         public bool IsFullyRead() => isFullyRead;

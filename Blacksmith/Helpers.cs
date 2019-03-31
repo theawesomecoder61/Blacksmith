@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -23,7 +24,7 @@ namespace Blacksmith
         {
             ResourceType.MESH, ResourceType.MATERIAL, ResourceType.LOCALIZATION_PACKAGE, ResourceType.TEXTURE_SET, ResourceType.TEXTURE_MAP, ResourceType.MIPMAP
         };
-        public const string MODEL_CONVERSION_FORMATS = "Collada DAE|*.dae|Wavefront OBJ|*.obj|All files|*.*";
+        public const string MODEL_CONVERSION_FORMATS = "Collada|*.dae|Valve SMD|*.smd|STL|*.stl|Wavefront OBJ|*.obj|All files|*.*";
         private const string SUPPORTED_FILES = @"(.forge|.pck|.png|.txt|.ini|.log)";
         public const string TEXTURE_CONVERSION_FORMATS = "Targa|*.tga|Portable Network Graphics|*.png|Tagged Image File Format|*.tif|Joint Photographic Experts Group|*.jpg|All files|*.*";
 
@@ -159,7 +160,7 @@ namespace Blacksmith
         }
 
         /// <summary>
-        /// Returns the offsets of where find can be found
+        /// Returns the offsets of where find can be found. The long holds the original position of the BinaryReader.
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="find"></param>
@@ -374,15 +375,15 @@ namespace Blacksmith
         /// Converts a DDS texture with texconv. Has a callback if you wish to use it.
         /// </summary>
         /// <param name="fileName"></param>
-        /// <param name="completionAction"></param>
         /// <param name="format"></param>
-        public static void ConvertDDS(string fileName, Action<bool> completionAction = null, string format = "png")
+        /// <param name="completionAction"></param>
+        public static void ConvertDDS(string fileName, string format = "png", Action<bool> completionAction = null)
         {
             string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
             if (File.Exists(texconv))
             {
                 string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{GetTempPath()}\" \"{fileName}\"";
-                Console.WriteLine("{0} {1}", texconv, args);
+                Console.WriteLine($"> {0} {1}", texconv, args);
                 Process p = new Process();
                 p.StartInfo.FileName = texconv;
                 p.StartInfo.Arguments = args;
@@ -396,7 +397,7 @@ namespace Blacksmith
 
                 p.Exited += new EventHandler(delegate(object s, EventArgs a)
                 {
-
+                    Console.WriteLine($">> {output}");
                     bool error = output.Contains("FAILED (");
                     completionAction?.Invoke(error);
                 });
@@ -412,21 +413,34 @@ namespace Blacksmith
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="outputDir"></param>
-        /// <param name="completionAction"></param>
         /// <param name="format"></param>
-        public static void ConvertDDS(string fileName, string outputDir, Action completionAction = null, string format = "png")
+        /// <param name="completionAction"></param>
+        public static void ConvertDDS(string fileName, string outputDir, string format = "png", Action<bool> completionAction = null)
         {
             string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
             if (File.Exists(texconv))
             {
                 string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{outputDir}\" \"{fileName}\"";
-                Console.WriteLine("{0} {1}", texconv, args);
-                Process p = Process.Start(texconv, args);
+                Console.WriteLine($"> {0} {1}", texconv, args);
+                Process p = new Process();
+                p.StartInfo.FileName = texconv;
+                p.StartInfo.Arguments = args;
                 p.EnableRaisingEvents = true;
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.Start();
+
+                StreamReader reader = p.StandardOutput;
+                string output = reader.ReadToEnd();
+
                 p.Exited += new EventHandler(delegate (object s, EventArgs a)
                 {
-                    completionAction?.Invoke();
+                    Console.WriteLine($">> {output}");
+                    bool error = output.Contains("FAILED (");
+                    completionAction?.Invoke(error);
                 });
+
+                p.WaitForExit();
             }
             else
                 throw new Exception("texconv is not found. Blacksmith needs it to convert the texture.");
@@ -676,9 +690,27 @@ namespace Blacksmith
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     LocateResourceIdentifiers(reader).ToList().ForEach(x => Console.WriteLine(x.Type));
-                    return LocateResourceIdentifiers(reader).Length > 0 ? LocateResourceIdentifiers(reader).Where(x => x.Offset == 0).First().Type : ResourceType._NONE;
+                    if (LocateResourceIdentifiers(reader) != null && LocateResourceIdentifiers(reader).Length > 0)
+                    {
+                        if (LocateResourceIdentifiers(reader).Where(x => x.Offset == 0).Count() > 0)
+                        {
+                            return LocateResourceIdentifiers(reader).Where(x => x.Offset == 0).First().Type;
+                        }
+                    }
                 }
             }
+            return ResourceType._NONE;
+        }
+
+        /// <summary>
+        /// Converts a string into title case
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string ToTitleCase(string str)
+        {
+            TextInfo info = new CultureInfo("en-US", false).TextInfo;
+            return info.ToTitleCase(str);
         }
     }
 }

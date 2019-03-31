@@ -35,7 +35,7 @@ namespace Blacksmith
             else if (Type == EntryTreeNodeType.SUBENTRY)
                 return ((EntryTreeNode)Parent.Parent).Forge;
             else
-                return null;
+                return Forge;
         }
     }
 }

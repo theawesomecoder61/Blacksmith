@@ -20,6 +20,8 @@ namespace Blacksmith
 {
     public partial class Form1 : Form
     {
+        private static Vector3 MODEL_SCALE = new Vector3(.005f, .005f, .005f);
+
         private double[] zoomLevels = new double[]
         {
             .25f, .5f, .75f, 1, 1.5f, 2, 2.5f, 3, 4
@@ -28,9 +30,9 @@ namespace Blacksmith
         private EntryTreeNode odysseyNode;
         private EntryTreeNode originsNode;
         private EntryTreeNode steepNode;
+        private ConvertDialog convertDialog = null;
         private FindDialog findDialog = null;
         private string currentImgPath;
-        private List<Mesh> meshes = new List<Mesh>();
         private bool useAlpha = true;
         private EntryTreeNode nodeToSearchIn = null;
 
@@ -64,7 +66,7 @@ namespace Blacksmith
             // create a GLControl and a GLViewer
             GLControl glControl = new GLControl(new GraphicsMode(32, 24, 0, 4), 3, 0, GraphicsContextFlags.ForwardCompatible);
             glControl.Dock = DockStyle.Fill;
-            threeToolStripContainer.ContentPanel.Controls.Add(glControl);
+            threeSplitContainer.Panel1.Controls.Add(glControl);
             gl = new GLViewer(glControl);
             gl.BackgroundColor = Properties.Settings.Default.threeBG;
             gl.Init();
@@ -77,7 +79,14 @@ namespace Blacksmith
             {
                 gl.Render();
                 cameraStripLabel.Text = $"Camera: {gl.Camera.Position} {gl.Camera.Orientation}";
-                sceneInfoStripLabel.Text = string.Concat("Vertices: ", string.Format("{0:n0}", gl.Models.Select(x => x.VertexCount).Sum()), " | Faces: ", string.Format("{0:n0}", gl.Models.Select(x => x.FaceCount).Sum()), " | Meshes: ", gl.Models.Count);
+                if (gl.Model != null)
+                {
+                    sceneInfoStripLabel.Text = string.Concat("Vertices: ", string.Format("{0:n0}", gl.Model.Meshes.Select(x => x.Vertices.Count).Sum()), " | Faces: ", string.Format("{0:n0}", gl.Model.Meshes.Select(x => x.FaceCount).Sum()), " | Meshes: ", gl.Model.Meshes.Count);
+                }
+                else
+                {
+                    sceneInfoStripLabel.Text = "Vertices: 0 | Faces: 0 | Meshes: 0";
+                }
             });
             t.Start();
 
@@ -85,9 +94,9 @@ namespace Blacksmith
             LoadSettings();
 
             // load the Utah teapot
-            OBJModel teapot = OBJModel.LoadFromFile(Application.ExecutablePath + "\\..\\Shaders\\teapot.obj");
-            teapot.CalculateNormals();
-            gl.Models.Add(teapot);
+            gl.Model = OBJ.LoadFromFile(Application.ExecutablePath + "\\..\\Shaders\\teapot.obj");
+
+            //gl.Model = new Model(new Cube());
 
             /*gl.TextRenderer.Clear(Color.Red);
             gl.TextRenderer.DrawString("Text", new Font(FontFamily.GenericMonospace, 24), Brushes.White, new PointF(100, 100));*/
@@ -146,8 +155,8 @@ namespace Blacksmith
                 });
 
                 // update the "Forge to search in" combobox in the Find dialog
-                if (findDialog != null)
-                    findDialog.AddOrRemoveForge(node.Text);
+                if (findDialog != null && node.GetForge() != null)
+                    findDialog.AddOrRemoveForge(node.GetForge());
             }
             else if (node.Type == EntryTreeNodeType.ENTRY) // populate with subentries (resource types)
             {
@@ -191,8 +200,8 @@ namespace Blacksmith
                 node.Nodes.Add(new EntryTreeNode()); // add a placeholder child node
 
                 // update the "Forge to search in" combobox in the Find dialog
-                if (findDialog != null)
-                    findDialog.AddOrRemoveForge(node.Text);
+                if (findDialog != null && node.GetForge() != null)
+                    findDialog.AddOrRemoveForge(node.GetForge());
             }
             else if (node.Type == EntryTreeNodeType.ENTRY)
             {
@@ -240,7 +249,7 @@ namespace Blacksmith
         {
             if (e.Button == MouseButtons.Right)
             {
-                EntryTreeNode node = (EntryTreeNode)treeView.GetNodeAt(e.Location);
+                EntryTreeNode node = (EntryTreeNode)treeView.GetNodeAt(e.Location); // I have both, in case one holds the true selected node
                 EntryTreeNode sNode = (EntryTreeNode)treeView.SelectedNode;
                 if (node == null || sNode == null)
                 {
@@ -255,34 +264,98 @@ namespace Blacksmith
                     treeNodeContextMenuStrip.Close();
                 }
 
+                // show in explorer item
+                showInExplorerToolStripMenuItem.Visible = !string.IsNullOrEmpty(node.Path) && File.Exists(node.Path);
+
+                // filter which menus are visible
                 if ((node.Type == EntryTreeNodeType.FORGE && node.Nodes.Count > 1) || (sNode.Type == EntryTreeNodeType.FORGE && sNode.Nodes.Count > 1)) // forge
                 {
                     UpdateContextMenu(enableForge: true);
                 }
-                else // forge entry or subentry
+                else if (node.Type == EntryTreeNodeType.ENTRY || sNode.Type == EntryTreeNodeType.ENTRY) // forge entry
                 {
-                    if (node.Type == EntryTreeNodeType.ENTRY || sNode.Type == EntryTreeNodeType.ENTRY) // forge entry
+                    if (node.Nodes.Count > 0 || sNode.Nodes.Count > 0)
                     {
-                        UpdateContextMenu(enableDatafile: true);
+                        IEnumerable<TreeNode> nodes = node.Nodes.Cast<TreeNode>();
+                        IEnumerable<TreeNode> sNodes = sNode.Nodes.Cast<TreeNode>();
+                        Console.WriteLine("Nodes: " + string.Join(" ", nodes.Select(x => x.Text).ToArray()));
+                        Console.WriteLine("SNodes: " + string.Join(" ", sNodes.Select(x => x.Text).ToArray()));
+
+                        bool hasBuildTable = nodes.Where(x => x.Text == ResourceType.BUILD_TABLE.ToString()).Count() > 0 || sNodes.Where(x => x.Text == ResourceType.BUILD_TABLE.ToString()).Count() > 0;
+                        bool hasMesh = nodes.Where(x => x.Text == ResourceType.MESH.ToString()).Count() > 0 || sNodes.Where(x => x.Text == ResourceType.MESH.ToString()).Count() > 0;
+                        bool hasTextureMap = nodes.Where(x => x.Text == ResourceType.TEXTURE_MAP.ToString()).Count() > 0 || sNodes.Where(x => x.Text == ResourceType.TEXTURE_MAP.ToString()).Count() > 0;
+                            
+                        UpdateContextMenu(enableBuildTable: hasBuildTable, enableDatafile: true, enableModel: hasMesh, enableTexture: hasTextureMap);
                     }
-                    else if (node.Type == EntryTreeNodeType.SUBENTRY || sNode.Type == EntryTreeNodeType.SUBENTRY) // forge subentry
-                    {
-                        if (node.ResourceType == ResourceType.BUILD_TABLE || sNode.ResourceType == ResourceType.BUILD_TABLE)
-                            UpdateContextMenu(enableBuildTable: true);
-                        else if (node.ResourceType == ResourceType.MESH || sNode.ResourceType == ResourceType.MESH)
-                            UpdateContextMenu(enableModel: true);
-                        else if (node.ResourceType == ResourceType.TEXTURE_MAP || sNode.ResourceType == ResourceType.TEXTURE_MAP)
-                            UpdateContextMenu(enableTexture: true);
-                        else
-                            UpdateContextMenu();
-                    }
+                }
+                else if (node.Type == EntryTreeNodeType.SUBENTRY || sNode.Type == EntryTreeNodeType.SUBENTRY)
+                {
+                    UpdateContextMenu(enableBuildTable: node.ResourceType == ResourceType.BUILD_TABLE || sNode.ResourceType == ResourceType.BUILD_TABLE, enableDatafile: true, enableModel: node.ResourceType == ResourceType.MESH || sNode.ResourceType == ResourceType.MESH, enableTexture: node.ResourceType == ResourceType.TEXTURE_MAP || sNode.ResourceType == ResourceType.TEXTURE_MAP);
                 }
             }
         }
-        
+
+        // source: https://stackoverflow.com/a/6522741
+        private void splitContainer_MouseDown(object sender, MouseEventArgs e)
+        {
+            ((SplitContainer)sender).IsSplitterFixed = true;
+        }
+
+        // source: https://stackoverflow.com/a/6522741
+        private void splitContainer_MouseUp(object sender, MouseEventArgs e)
+        {
+            ((SplitContainer)sender).IsSplitterFixed = false;
+        }
+
+        // source: https://stackoverflow.com/a/6522741
+        private void splitContainer_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (((SplitContainer)sender).IsSplitterFixed)
+            {
+                if (e.Button.Equals(MouseButtons.Left))
+                {
+                    if (((SplitContainer)sender).Orientation.Equals(Orientation.Vertical))
+                    {
+                        if (e.X > 0 && e.X < ((SplitContainer)sender).Width)
+                        {
+                            ((SplitContainer)sender).SplitterDistance = e.X;
+                            ((SplitContainer)sender).Refresh();
+                        }
+                    }
+                    else
+                    {
+                        if (e.Y > 0 && e.Y < ((SplitContainer)sender).Height)
+                        {
+                            ((SplitContainer)sender).SplitterDistance = e.Y;
+                            ((SplitContainer)sender).Refresh();
+                        }
+                    }
+                }
+                else
+                {
+                    ((SplitContainer)sender).IsSplitterFixed = false;
+                }
+            }
+        }
+
         private void resetCameraStripButton_Click(object sender, EventArgs e)
         {
             gl.ResetCamera();
+        }
+
+        private void meshCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (gl.Model != null)
+                gl.Model.Meshes[e.Index].IsVisible = e.NewValue == CheckState.Checked;
+        }
+
+        private void toggleAlphaButton_Click(object sender, EventArgs e)
+        {
+            useAlpha = !useAlpha;
+            if (useAlpha)
+                imagePanel.BackgroundImage = Properties.Resources.grid;
+            else
+                imagePanel.BackgroundImage = null;
         }
         #endregion
 
@@ -296,6 +369,17 @@ namespace Blacksmith
             Clipboard.SetText(node.Text);
 
             MessageBox.Show("Copied the name to the clipboard.", "Success");
+        }
+
+        private void showInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView.SelectedNode == null)
+                return;
+
+            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+            string path = node.Path;
+            Console.WriteLine("Opening " + path);
+            Process.Start("explorer.exe", $"/select, {path}");
         }
 
         // Build Table
@@ -442,14 +526,12 @@ namespace Blacksmith
                 {
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        BeginMarquee();
                         Parallel.ForEach(forge.FileEntries, (fe) =>
                         {
                             string name = fe.NameTable.Name;
                             byte[] data = forge.GetRawData(fe);
                             File.WriteAllBytes(Path.Combine(dialog.SelectedPath, name), data);
                         });
-                        EndMarquee();
                         MessageBox.Show($"Extracted all of {forge.Name}.", "Success");
                     }
                 }
@@ -458,91 +540,24 @@ namespace Blacksmith
         // end Forge
 
         // Model
-        private void saveAsOBJToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveAsModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (treeView.SelectedNode == null || meshes == null)
+            if (treeView.SelectedNode == null || gl.Model == null)
                 return;
-            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode.Parent;
-
-            saveFileDialog.FileName = node.Text;
-            saveFileDialog.Filter = Helpers.MODEL_CONVERSION_FORMATS;
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                for (int i = 0; i < meshes.Count; i++)
-                {
-                    string fileName = string.Concat(Path.Combine(Path.GetDirectoryName(saveFileDialog.FileName), Path.GetFileNameWithoutExtension(saveFileDialog.FileName)), "-", i, Path.GetExtension(saveFileDialog.FileName)); // all this to add a suffix
-                    if (Path.GetExtension(saveFileDialog.FileName) == ".dae")
-                    {
-                        IO_DAE.ExportModelAsDAE(fileName, meshes, false, false);
-                    }
-                    else if(Path.GetExtension(saveFileDialog.FileName) == ".obj")
-                    {
-                        File.WriteAllText(fileName, meshes[i].OBJData);
-                    }
-                }
-                MessageBox.Show("Extracted all meshes as separate files.", "Success");
-            }
+            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+            node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
+            ShowConvertDialog(0, node, gl.Model);
         }
         // end Model
 
         // Texture
-        private void convertToAnotherFormatToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveAsTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (treeView.SelectedNode == null)
                 return;
-            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode.Parent;
-
-            string text = node.Text;
-            string tex = "";
-
-            if (File.Exists($"{Helpers.GetTempPath(text)}.dds"))
-                tex = $"{Helpers.GetTempPath(text)}.dds";
-            else if (File.Exists($"{Helpers.GetTempPath(text)}_TopMip_0.dds"))
-                tex = $"{Helpers.GetTempPath(text)}_TopMip_0.dds";
-            else if (File.Exists($"{Helpers.GetTempPath(text)}_Mip0.dds"))
-                tex = $"{Helpers.GetTempPath(text)}_Mip0.dds";
-
-            if (!string.IsNullOrEmpty(tex))
-            {
-                saveFileDialog.FileName = Path.GetFileNameWithoutExtension(tex);
-                saveFileDialog.Filter = Helpers.TEXTURE_CONVERSION_FORMATS;
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    Helpers.ConvertDDS(tex, Path.GetDirectoryName(saveFileDialog.FileName), () =>
-                    {
-                        MessageBox.Show("Converted the texture.", "Success");
-                    }, Path.GetExtension(saveFileDialog.FileName).Substring(1));
-                }
-            }
-        }
-
-        // simply copy the file
-        private void saveAsDDSToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (treeView.SelectedNode == null)
-                return;
-            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode.Parent;
-
-            string text = node.Text;
-            string dds = "";
-
-            if (File.Exists($"{Helpers.GetTempPath(text)}.dds"))
-                dds = $"{Helpers.GetTempPath(text)}.dds";
-            else if (File.Exists($"{Helpers.GetTempPath(text)}_TopMip_0.dds"))
-                dds = $"{Helpers.GetTempPath(text)}_TopMip_0.dds";
-            else if (File.Exists($"{Helpers.GetTempPath(text)}_Mip0.dds"))
-                dds = $"{Helpers.GetTempPath(text)}_Mip0.dds";
-
-            if (!string.IsNullOrEmpty(dds))
-            {
-                saveFileDialog.FileName = Path.GetFileName(dds);
-                saveFileDialog.Filter = "DirectDraw Surface|*.dds|All Files|*.*";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    File.Copy(dds, saveFileDialog.FileName);
-                    MessageBox.Show("Saved the texture.", "Success");
-                }
-            }
+            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+            node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
+            ShowConvertDialog(1, node);
         }
         // end Texture
         #endregion
@@ -557,15 +572,7 @@ namespace Blacksmith
         #region Find
         private void findToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Helpers.GetOpenForms().Where((f) => f.Text == "Find").Count() > 0 && findDialog != null)
-                findDialog.BringToFront();
-            else
-            {
-                findDialog = new FindDialog();
-                findDialog.FindAll += OnFindAll;
-                findDialog.ShowInList += OnShowInList;
-                findDialog.Show();
-            }
+            ShowFindDialog();
         }
         #endregion
         #region Tools
@@ -573,59 +580,61 @@ namespace Blacksmith
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                saveFileDialog.Filter = "Decompressed Data|*.dec|All Files|*.*";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                using (Stream stream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    using (Stream stream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (BinaryReader reader = new BinaryReader(stream))
                     {
-                        using (BinaryReader reader = new BinaryReader(stream))
+                        if (Helpers.LocateRawDataIdentifier(reader).Length < 2)
                         {
-                            if (Helpers.LocateRawDataIdentifier(reader).Length < 2)
-                            {
-                                MessageBox.Show("Operation failed, due to improper data.", "Failure");
-                                return;
-                            }
-
-                            BeginMarquee();
-
-                            long secondRawData = Helpers.LocateRawDataIdentifier(reader)[1];
-                            reader.BaseStream.Seek(10, SeekOrigin.Current); // ignore everything until the compression byte
-                            byte compression = reader.ReadByte();
-
-                            bool success = false;
-
-                            Helpers.DoBackgroundWork(() =>
-                            {
-                                if (secondRawData > 0)
-                                {
-                                    if (compression == 0x08)
-                                        success = Odyssey.ReadFile(openFileDialog.FileName, false, saveFileDialog.FileName);
-                                    else if (compression == 0x05)
-                                        success = Steep.ReadFile(openFileDialog.FileName, false, saveFileDialog.FileName);
-                                }
-                            }, () =>
-                            {
-                                EndMarquee();
-                                if (success)
-                                    MessageBox.Show("Decompressed file successfully. Check the folder where the compressed file is located.", "Success");
-                                else
-                                    MessageBox.Show("Unknown compression type.", "Failure");
-                            });
+                            MessageBox.Show("Operation failed, due to improper data.", "Failure");
+                            return;
                         }
+
+                        BeginMarquee();
+
+                        long secondRawData = Helpers.LocateRawDataIdentifier(reader)[1];
+                        reader.BaseStream.Seek(10, SeekOrigin.Current); // ignore everything until the compression byte
+                        byte compression = reader.ReadByte();
+
+                        bool success = false;
+                        Helpers.DoBackgroundWork(() =>
+                        {
+                            if (secondRawData > 0)
+                            {
+                                if (compression == 0x08)
+                                    success = Odyssey.ReadFile(openFileDialog.FileName, false, saveFileDialog.FileName);
+                                else if (compression == 0x05)
+                                    success = Steep.ReadFile(openFileDialog.FileName, false, saveFileDialog.FileName);
+                            }
+                        }, () =>
+                        {
+                            EndMarquee();
+                            if (success)
+                            {
+                                saveFileDialog.Filter = "Decompressed Data|*.dec|All Files|*.*";
+                                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                                {
+                                    MessageBox.Show("Decompressed file successfully. Check the folder where the compressed file is located.", "Success");
+                                }
+                            }
+                            else
+                                MessageBox.Show("Unknown compression type.", "Failure");
+                        });
                     }
                 }
             }
         }
 
+#warning currently hidden (Version 1.6)
         private void showFileInTheViewersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog.Filter = Helpers.DECOMPRESSED_FILE_FORMATS;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Console.WriteLine($"Selected file: {openFileDialog.FileName}");
                 ResourceType type = Helpers.GetFirstResourceType(openFileDialog.FileName);
-                Console.WriteLine($"Selected file resource type: {type}");
                 Game game = Helpers.ExtensionToGame(Path.GetExtension(openFileDialog.FileName).Substring(1));
+                Console.WriteLine($"Selected file: {openFileDialog.FileName}");
+                Console.WriteLine($"Selected file resource type: {type}");
                 Console.WriteLine($"Selected file game: {game}");
 
                 BeginMarquee();
@@ -633,49 +642,72 @@ namespace Blacksmith
 
                 Helpers.DoBackgroundWork(() =>
                 {
-                    if (game == Game.ORIGINS && type == ResourceType.MESH)
+                    if (type == ResourceType.MESH)
                     {
-                        meshes = Origins.ExtractModel(openFileDialog.FileName, (string text) =>
+                        if (game == Game.ODYSSEY)
                         {
-                            Invoke(new Action(() =>
+                            gl.Model = Odyssey.ExtractModel(openFileDialog.FileName, (string text) =>
                             {
-                                tabControl.SelectedIndex = 0;
-                                richTextBox.Text = text;
-                            }));
-                        });
+                                Invoke(new Action(() =>
+                                {
+                                    tabControl.SelectedIndex = 0;
+                                    richTextBox.Text = text;
+                                }));
+                            });
+                        }
+                        else if (game == Game.ORIGINS)
+                        {
+                            gl.Model = Origins.ExtractModel(openFileDialog.FileName, (string text) =>
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    tabControl.SelectedIndex = 0;
+                                    richTextBox.Text = text;
+                                }));
+                            });
+                        }
+                        else
+                        {
+                            MessageBox.Show("Not yet supported.", "Failure");
+                        }
                     }
-                    else
+                    else if (type == ResourceType.TEXTURE_MAP)
                     {
-                        MessageBox.Show("Only Origins models can be viewed using this tool for now.", "Failure");
+                        if (game == Game.ODYSSEY || game == Game.ORIGINS)
+                        {
+                            Odyssey.ExtractTextureMapFromFile(openFileDialog.FileName, (string path) =>
+                            {
+                                HandleTextureMap(path);
+                            });
+                        }
+                        else if (game == Game.STEEP)
+                        {
+                            /*Steep.ExtractTextureMap(Helpers.GetTempPath(node.Path), node, (string path) =>
+                            {
+                                HandleTextureMap(path);
+                            });*/
+                        }
                     }
-                    // ToDo: implement texture map
                 }, () =>
                 {
                     EndMarquee();
 
                     if (type == ResourceType.MESH)
                     {
-                        if (meshes == null)
-                            return;
-
-                        List<Model> models = new List<Model>();
-                        foreach (Mesh mesh in meshes)
+                        meshCheckedListBox.Items.Clear();
+                        for (int i = 0; i < gl.Model.Meshes.Count; i++)
                         {
-                            OBJModel m = OBJModel.LoadFromString(mesh.OBJData);
-                            m.Scale = new Vector3(.001f, .001f, .001f);
-                            m.CalculateNormals();
-                            models.Add(m);
-                            gl.Models.Add(m);
+                            meshCheckedListBox.Items.Add($"Mesh {i}", true);
                         }
 
-                        if (meshes != null && meshes.Count > 0)
+                        if (gl.Model != null)
                         {
-                            Vector3 center = models.First().GetCenterOfAABB(models.First().CalculateAABB());
-                            gl.SetCameraResetPosition(Vector3.Add(center, new Vector3(0, 0, 10)));
+                            Vector3 center = gl.Model.GetCenter();
+                            //float farthestZ = gl.Model.Meshes.Select(x => x.Position.Z).Max();
+                            gl.SetCameraResetPosition(Vector3.Add(center, new Vector3(0, 0, 30)));
                             gl.ResetCamera();
                         }
                     }
-                    // ToDo: implement texture map
                 });
             }
         }
@@ -724,9 +756,10 @@ namespace Blacksmith
         private void OnFindAll(object sender, FindEventArgs args)
         {
             List<EntryTreeNode> nodeResults = new List<EntryTreeNode>();
-            nodeToSearchIn = odysseyNode.Nodes.Cast<EntryTreeNode>().ToArray().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).FirstOrDefault() ??
+            /*nodeToSearchIn = odysseyNode.Nodes.Cast<EntryTreeNode>().ToArray().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).FirstOrDefault() ??
                 originsNode.Nodes.Cast<EntryTreeNode>().ToArray().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).FirstOrDefault() ??
-                steepNode.Nodes.Cast<EntryTreeNode>().ToArray().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).FirstOrDefault();
+                steepNode.Nodes.Cast<EntryTreeNode>().ToArray().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).FirstOrDefault();*/
+            nodeToSearchIn = odysseyNode.Nodes.Cast<EntryTreeNode>().Where(x => x.GetForge() == args.ForgeToSearchIn).FirstOrDefault() ?? originsNode.Nodes.Cast<EntryTreeNode>().Where(x => x.GetForge() == args.ForgeToSearchIn).FirstOrDefault() ?? steepNode.Nodes.Cast<EntryTreeNode>().Where(x => x.GetForge() == args.ForgeToSearchIn).FirstOrDefault();
             if (nodeToSearchIn == null)
                 return;
 
@@ -750,7 +783,7 @@ namespace Blacksmith
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show(e.Message, "Failure");
+                        MessageBox.Show(e.Message + e.StackTrace, "Failure");
                     }
                     finally
                     {
@@ -820,68 +853,95 @@ namespace Blacksmith
 
             switch (node.ResourceType)
             {
-                case ResourceType.MESH: // meshes/models
-                    switch (node.Game)
+                case ResourceType.MESH: // meshes/models                    
+                    Helpers.DoBackgroundWork(() =>
                     {
-                        case Game.ODYSSEY:
-                            // ToDo: to be implemented
-                            break;
-                        case Game.ORIGINS:
-                            meshes = Origins.ExtractModel(Helpers.GetTempPath(node.Path), (string text) =>
+                        if (node.Game == Game.ODYSSEY)
+                        {
+                            gl.Model = Odyssey.ExtractModel(node.Path, (string text) =>
                             {
-                                tabControl.SelectedIndex = 0;
-                                richTextBox.Text = text;
+                                Invoke(new Action(() =>
+                                {
+                                    tabControl.SelectedIndex = 0;
+                                    richTextBox.Text = text;
+                                }));
                             });
-
-                            if (meshes == null)
-                                return;
-
-                            List<Model> models = new List<Model>();
-                            foreach (Mesh mesh in meshes)
+                        }
+                        else if (node.Game == Game.ORIGINS)
+                        {
+                            gl.Model = Origins.ExtractModel(node.Path, (string text) =>
                             {
-                                OBJModel m = OBJModel.LoadFromString(mesh.OBJData);
-                                m.Scale = new Vector3(.001f, .001f, .001f);
-                                m.CalculateNormals();
-                                models.Add(m);
-                                gl.Models.Add(m);
-                            }
+                                Invoke(new Action(() =>
+                                {
+                                    tabControl.SelectedIndex = 0;
+                                    richTextBox.Text = text;
+                                }));
+                            });
+                        }
+                        else
+                        {
+                            MessageBox.Show("Not yet supported.", "Failure");
+                        }
+                    }, () =>
+                    {
+                        meshCheckedListBox.Items.Clear();
+                        for (int i = 0; i < gl.Model.Meshes.Count; i++)
+                        {
+                            meshCheckedListBox.Items.Add($"Mesh {i}", true);
+                        }
 
-                            if (meshes != null && meshes.Count > 0)
-                            {
-                                Vector3 center = models.First().GetCenterOfAABB(models.First().CalculateAABB());
-                                gl.SetCameraResetPosition(Vector3.Add(center, new Vector3(0, 0, 10)));
-                                gl.ResetCamera();
-                            }
-                            break;
-                        case Game.STEEP:
-                            // ToDo: to be implemented
-                            break;
-                    }
+                        if (gl.Model != null)
+                        {
+                            gl.Model.Meshes.ForEach(x => x.Scale = MODEL_SCALE);
+
+                            Vector3 center = gl.Model.GetCenter();
+                            //float farthestZ = gl.Model.Meshes.Select(x => x.Position.Z).Max();
+                            gl.SetCameraResetPosition(Vector3.Add(center, new Vector3(0, 0, 30)));
+                            gl.ResetCamera();
+                        }
+                    });
                     break;
                 case ResourceType.TEXTURE_MAP: // texture maps
                     if (node.Game == Game.ODYSSEY || node.Game == Game.ORIGINS)
                     {
-                        Odyssey.ExtractTextureMap(Helpers.GetTempPath(node.Path), node, (string path) =>
+                        Odyssey.ExtractTextureMap(node.Path, node, (string path) =>
                         {
-                            HandleTextureMap(path);
+                            HandleTextureMap(path, node);
                         });
                     }
                     else if (node.Game == Game.STEEP)
                     {
-                        Steep.ExtractTextureMap(Helpers.GetTempPath(node.Path), node, (string path) =>
+                        Steep.ExtractTextureMap(node.Path, node, (string path) =>
                         {
-                            HandleTextureMap(path);
+                            HandleTextureMap(path, node);
                         });
                     }
                     break;
             } 
         }
 
-        private void HandleTextureMap(string texturePath)
+        private void HandleTextureMap(string texturePath, EntryTreeNode node = null)
         {
             if (texturePath == "FAILED")
             {
-                MessageBox.Show("Texture failed to convert to PNG. Alternatively, you can right-click the TEXTURE_MAP node, select \"Texture\">\"Save As DDS\".", "Failure");
+#warning remove once texconv works again
+                //MessageBox.Show("Texture failed to convert to PNG. Alternatively, you can right-click the TEXTURE_MAP node, select \"Texture\">\"Save As DDS\".", "Failure");
+                if (MessageBox.Show("Texture conversion failed. Show the .dds file in the associated program?", "Failure", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    if (node != null)
+                    {
+                        node = (EntryTreeNode)node.Parent;
+                        string tex = "";
+                        if (File.Exists($"{Helpers.GetTempPath(node.Text)}.dds"))
+                            tex = $"{Helpers.GetTempPath(node.Text)}.dds";
+                        else if (File.Exists($"{Helpers.GetTempPath(node.Text)}_TopMip_0.dds"))
+                            tex = $"{Helpers.GetTempPath(node.Text)}_TopMip_0.dds";
+                        else if (File.Exists($"{Helpers.GetTempPath(node.Text)}_Mip0.dds"))
+                            tex = $"{Helpers.GetTempPath(node.Text)}_Mip0.dds";
+                        if (tex != "")
+                            Process.Start(tex.Trim());
+                    }
+                }
                 return;
             }
 
@@ -906,7 +966,7 @@ namespace Blacksmith
             odysseyNode = new EntryTreeNode
             {
                 Game = Game.ODYSSEY,
-                Text = "Assassin's Creed: Odyssey"                
+                Text = "Assassin's Creed: Odyssey"
             };
             treeView.Nodes.Add(odysseyNode);
             if (!string.IsNullOrEmpty(Properties.Settings.Default.odysseyPath))
@@ -981,6 +1041,7 @@ namespace Blacksmith
                         if (Path.GetExtension(file).Equals(".forge")) // forge
                         {
                             node.Forge = new Forge(file);
+                            node.Forge.Game = node.Game;
                             node.Type = EntryTreeNodeType.FORGE;
                             node.Nodes.Add(new EntryTreeNode()); // used as a placeholder, will be removed later
                         }
@@ -1066,7 +1127,7 @@ namespace Blacksmith
                 Helpers.WriteToFile(file, Steep.ReadFile(data), true);
 
             // path will hold the file name
-            node.Path = file;
+            node.Path = Helpers.GetTempPath(file);
 
             // get resource locations and create nodes
             List<EntryTreeNode> nodes = new List<EntryTreeNode>();
@@ -1083,10 +1144,10 @@ namespace Blacksmith
                             {
                                 Game = node.Game,
                                 ImageIndex = GetImageIndex(location.Type),
-                                Path = file,
+                                Path = Helpers.GetTempPath(file),
                                 ResourceOffset = location.Offset,
                                 ResourceType = location.Type,
-                                Text = location.Type.ToString().Replace("_", ""),
+                                Text = location.Type.ToString(),
                                 Type = EntryTreeNodeType.SUBENTRY
                             });
                         }
@@ -1100,7 +1161,7 @@ namespace Blacksmith
         private void ClearTheViewers(bool clear3D = false)
         {
             if (clear3D)
-                gl.Models.Clear();
+                gl.Model = null;
             pictureBox.Image = null;
             richTextBox.Text = "";
         }
@@ -1182,14 +1243,91 @@ namespace Blacksmith
                 return 0;
         }
 
-        private void toggleAlphaButton_Click(object sender, EventArgs e)
+        private void ShowConvertDialog(int selectedTab, EntryTreeNode node, Model model = null)
         {
-            useAlpha = !useAlpha;
-            if (useAlpha)
-                imagePanel.BackgroundImage = Properties.Resources.grid;
+            if (Helpers.GetOpenForms().Where((f) => f.Text == "Convert To...").Count() > 0 && convertDialog != null)
+            {
+                convertDialog.SetValues(selectedTab, node, model);
+                convertDialog.BringToFront();
+                convertDialog.Focus();
+            }
             else
-                imagePanel.BackgroundImage = null;
+            {
+                convertDialog = new ConvertDialog();
+                convertDialog.Location = new Point(Location.X + convertDialog.Size.Width, Location.Y + convertDialog.Size.Height);
+                convertDialog.SetValues(selectedTab, node, model);
+                convertDialog.FormClosing += new FormClosingEventHandler(delegate (object o, FormClosingEventArgs args)
+                {
+                    convertDialog = null;
+                });
+                convertDialog.ShowDialog();
+            }
+        }
+
+        private void ShowFindDialog()
+        {
+            if (Helpers.GetOpenForms().Where((f) => f.Text == "Find").Count() > 0 && findDialog != null)
+            {
+                findDialog.BringToFront();
+                findDialog.Focus();
+            }
+            else
+            {
+                findDialog = new FindDialog();
+                findDialog.Location = new Point(Location.X + findDialog.Size.Width, Location.Y + findDialog.Size.Height);
+                findDialog.FormClosing += new FormClosingEventHandler(delegate (object o, FormClosingEventArgs args)
+                {
+                    findDialog = null;
+                });
+                findDialog.FindAll += OnFindAll;
+                findDialog.ShowInList += OnShowInList;
+
+                // add all expanded forge nodes
+                odysseyNode.Nodes.Cast<EntryTreeNode>().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).ToList().ForEach(x =>
+                {
+                    if (x.GetForge() != null)
+                        findDialog.AddOrRemoveForge(x.GetForge());
+                });
+                originsNode.Nodes.Cast<EntryTreeNode>().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).ToList().ForEach(x =>
+                {
+                    if (x.GetForge() != null)
+                        findDialog.AddOrRemoveForge(x.GetForge());
+                });
+                steepNode.Nodes.Cast<EntryTreeNode>().Where(x => x.IsExpanded && x.Type == EntryTreeNodeType.FORGE).ToList().ForEach(x =>
+                {
+                    if (x.GetForge() != null)
+                        findDialog.AddOrRemoveForge(x.GetForge());
+                });
+
+                findDialog.Show();
+            }
         }
         #endregion
+
+        
+        private void export3DViewerDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (gl.Model != null && gl.Model.Meshes.Count > 0)
+            {
+                saveFileDialog.FileName = "fountain";
+                saveFileDialog.Filter = "obj|*.obj|All Files|*.*";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    /*string[] smd = SMD.GenerateModelFromOBJ(objModels);
+                    for (int i = 0; i < smd.Length; i++)
+                    {
+                        File.WriteAllText(Path.Combine(Path.GetDirectoryName(saveFileDialog.FileName), Path.GetFileNameWithoutExtension(saveFileDialog.FileName) + i + ".smd"), smd[i]);
+                    }*/
+
+                    File.WriteAllText(saveFileDialog.FileName, OBJ.Export(gl.Model));
+                    //File.WriteAllText(saveFileDialog.FileName + ".smd", SMD.Export(gl.Model)[0]);
+                    STL.ExportBinary(saveFileDialog.FileName, gl.Model);
+
+                    MessageBox.Show("Done.", "Success");
+                }
+            }
+        }
+
+
     }
 }

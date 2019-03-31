@@ -1,21 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Numerics;
 using Blacksmith.Enums;
 using Blacksmith.Three;
+using OpenTK;
 
 namespace Blacksmith.Games
 {
     public class Origins
     {
-        private static byte[] MESH_DATA = new byte[] {
+        private static byte[] MESH_DATA = new byte[]
+        {
             0x68, 0x95, 0x5D, 0x41
         };
 
-        private static byte[] COMPILED_MESH_DATA = new byte[] {
+        private static byte[] COMPILED_MESH_DATA = new byte[]
+        {
             0x95, 0x15, 0x9E, 0xFC
         };
 
@@ -33,7 +36,7 @@ namespace Blacksmith.Games
             public int ModelType { get; internal set; }
             public int ACount { get; internal set; }
             public int BoneCount { get; internal set; }
-            public Bone[] Bones { get; internal set; }
+            public Mesh.Bone[] Bones { get; internal set; }
         }
 
         public struct CompiledMeshBlock
@@ -41,20 +44,31 @@ namespace Blacksmith.Games
             public int VertexTableSize { get; internal set; }
             public int Unknown1 { get; internal set; }
             public int Unknown2 { get; internal set; }
-            public int MeshCount { get; internal set; }
-            public int ShadowCount { get; internal set; }
         }
 
-        public struct BuildTableEntry {
+        public struct SubmeshBlock
+        {
+            public int MeshCount { get; internal set; }
+            public SubmeshEntry[] Entries { get; internal set; }
+        }
+
+        public struct SubmeshEntry
+        {
+            public int FaceOffset { get; internal set; }
+            public int VertexOffset { get; internal set; }
+        }
+
+        public struct BuildTableEntry
+        {
             public DatafileHeader Header { get; internal set; }
             public byte[] Data { get; internal set; }
-        };
+        }
         #endregion
 
         #region Models
-        public static List<Mesh> ExtractModel(string fileName, Action<string> completionAction)
+        public static Model ExtractModel(string fileName, Action<string> completionAction = null)
         {
-            List<Mesh> meshes = new List<Mesh>();
+            Model model = new Model();
             StringBuilder str = new StringBuilder(); // used to print information in the Text Viewer
             byte[] allData = File.ReadAllBytes(fileName);
 
@@ -74,185 +88,205 @@ namespace Blacksmith.Games
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
 
-                    reader.BaseStream.Seek(29, SeekOrigin.Current);
-
-                    // Bones chunk
-                    /*uint boneCount = reader.ReadUInt32();
-                    str.AppendLine($"Bone Count: {boneCount}");
-
-                    // check if EOS
-                    if (Helpers.CheckIfEOS(stream))
-                    {
-                        MessageBox.Show("Failed to read the model.", "Failure");
-                        return new Tuple<List<Mesh>, string>(meshes, "");
-                    }
-
-                    // Bones chunk continued
-                    Bone[] bones = new Bone[boneCount];
-                    if (boneCount > 0)
-                    {
-                        for (int i = 0; i < boneCount; i++)
-                        {
-                            bones[i] = new Bone
-                            {
-                                ID = reader.ReadInt64(),
-                                Type = reader.ReadInt32(),
-                                Name = reader.ReadInt32(),
-                                TransformMatrix = new Matrix4x4
-                                {
-                                    M11 = reader.ReadSingle(),
-                                    M12 = reader.ReadSingle(),
-                                    M13 = reader.ReadSingle(),
-                                    M14 = reader.ReadSingle(),
-                                    M21 = reader.ReadSingle(),
-                                    M22 = reader.ReadSingle(),
-                                    M23 = reader.ReadSingle(),
-                                    M24 = reader.ReadSingle(),
-                                    M31 = reader.ReadSingle(),
-                                    M32 = reader.ReadSingle(),
-                                    M33 = reader.ReadSingle(),
-                                    M34 = reader.ReadSingle(),
-                                    M41 = reader.ReadSingle(),
-                                    M42 = reader.ReadSingle(),
-                                    M43 = reader.ReadSingle(),
-                                    M44 = reader.ReadSingle()
-                                }
-                            };
-
-                            // invert matrix
-                            Matrix4x4 matrix = Matrix4x4.Identity;
-                            if (Matrix4x4.Invert(bones[i].TransformMatrix, out matrix))
-                            {
-                                bones[i].TransformMatrix = matrix;
-                            }
-
-                            reader.BaseStream.Seek(1, SeekOrigin.Current);
-                        }
-                    }*/
+                    // skip to the Mesh block, ignoring the Mesh block identifier
+                    reader.BaseStream.Seek(10, SeekOrigin.Current);
 
                     try
                     {
+                        // Mesh block
+                        MeshBlock meshBlock = new MeshBlock();
+                        reader.BaseStream.Seek(3, SeekOrigin.Current);
+                        meshBlock.ModelType = reader.ReadInt32();
+                        meshBlock.ACount = reader.ReadInt32();
+                        if (meshBlock.ACount > 0)
+                        {
+                            reader.BaseStream.Seek(4, SeekOrigin.Current);
+                            meshBlock.BoneCount = reader.ReadInt32();
+                        }
+
+                        // Bones block
+                        if (meshBlock.BoneCount > 0)
+                        {
+                            str.AppendLine($"Bone Count: {meshBlock.BoneCount}");
+
+                            // Bones block continued
+                            Mesh.Bone[] bones = new Mesh.Bone[meshBlock.BoneCount];
+                            for (int i = 0; i < meshBlock.BoneCount; i++)
+                            {
+                                bones[i] = new Mesh.Bone
+                                {
+                                    ID = reader.ReadInt64(),
+                                    Type = reader.ReadInt32(),
+                                    Name = reader.ReadInt32(),
+                                    TransformMatrix = new System.Numerics.Matrix4x4
+                                    {
+                                        M11 = reader.ReadSingle(),
+                                        M12 = reader.ReadSingle(),
+                                        M13 = reader.ReadSingle(),
+                                        M14 = reader.ReadSingle(),
+                                        M21 = reader.ReadSingle(),
+                                        M22 = reader.ReadSingle(),
+                                        M23 = reader.ReadSingle(),
+                                        M24 = reader.ReadSingle(),
+                                        M31 = reader.ReadSingle(),
+                                        M32 = reader.ReadSingle(),
+                                        M33 = reader.ReadSingle(),
+                                        M34 = reader.ReadSingle(),
+                                        M41 = reader.ReadSingle(),
+                                        M42 = reader.ReadSingle(),
+                                        M43 = reader.ReadSingle(),
+                                        M44 = reader.ReadSingle()
+                                    }
+                                };
+
+                                // invert matrix
+                                System.Numerics.Matrix4x4 matrix = System.Numerics.Matrix4x4.Identity;
+                                if (System.Numerics.Matrix4x4.Invert(bones[i].TransformMatrix, out matrix))
+                                {
+                                    bones[i].TransformMatrix = matrix;
+                                }
+
+                                reader.BaseStream.Seek(1, SeekOrigin.Current);
+                            }
+                        }
+
                         // locate the Compiled Mesh
                         Tuple<int[], long> cmOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.COMPILED_MESH));
-                        reader.BaseStream.Position = cmOffset.Item2;
                         reader.BaseStream.Seek(cmOffset.Item1[0], SeekOrigin.Begin);
-                        Console.WriteLine("Compiled Mesh OFFSET: " + cmOffset.Item1[0]);
+                        //Console.WriteLine("Compiled Mesh OFFSET: " + cmOffset.Item1[0]);
 
-                        // Compiled Mesh
-                        CompiledMeshBlock compiledMesh = new CompiledMeshBlock();
+                        // Compiled Mesh block
                         if (reader.ReadUInt32() != (uint)ResourceType.COMPILED_MESH)
                         {
                             MessageBox.Show("Failed to read model.", "Failure");
-                            return meshes;
+                            return new Model();
                         }
                         reader.BaseStream.Seek(22, SeekOrigin.Current);
-                        compiledMesh.VertexTableSize = reader.ReadInt32();
-                        str.AppendLine($"Vertex table size: {compiledMesh.VertexTableSize}");
-                        compiledMesh.Unknown1 = reader.ReadInt32();
-                        str.AppendLine($"Alternate vertex table size: {compiledMesh.Unknown1}");
-                        compiledMesh.Unknown2 = reader.ReadInt32();
-                        compiledMesh.MeshCount = reader.ReadInt32();
-                        reader.BaseStream.Seek(32, SeekOrigin.Current);
-                        compiledMesh.ShadowCount = reader.ReadInt32();
-                        reader.BaseStream.Seek(1, SeekOrigin.Current);
-
-                        // Clueless blocks
-                        /* I have no clue what this does. All I can say is the int at index 4 in the last int[]
-                         * gives the dataSize of the Unknown1 block. The identifier for each Clueless block is
-                         * 0x07b19a87. Most likely this Clueless block will be removed in Version 1.5.
-                         */
-                        Console.WriteLine("Cluesless OFFSET: " + reader.BaseStream.Position);
-                        Tuple<int[], long> cluelessIdentifier = Helpers.LocateBytes(reader, BitConverter.GetBytes(129079943));
-                        int occurencesOfCluelessIdentifier = cluelessIdentifier.Item1.Length;
-                        reader.BaseStream.Position = cluelessIdentifier.Item2;
-                        int[][] cluelessData = new int[occurencesOfCluelessIdentifier][];
-                        for (int i = 0; i < occurencesOfCluelessIdentifier; i++)
+                        CompiledMeshBlock compiledMesh = new CompiledMeshBlock
                         {
-                            cluelessData[i] = Helpers.ReadInt32s(reader, 6);
+                            VertexTableSize = reader.ReadInt32(),
+                            Unknown1 = reader.ReadInt32(),
+                            Unknown2 = reader.ReadInt32()
+                        };
+                        reader.BaseStream.Seek(29, SeekOrigin.Current);
+
+                        // Submesh block
+                        //Console.WriteLine("Submesh OFFSET: " + reader.BaseStream.Position);
+                        SubmeshBlock submeshBlock = new SubmeshBlock();
+                        submeshBlock.MeshCount = reader.ReadInt32();
+                        submeshBlock.Entries = new SubmeshEntry[submeshBlock.MeshCount];
+                        for (int i = 0; i < submeshBlock.MeshCount; i++)
+                        {
+                            reader.BaseStream.Seek(16, SeekOrigin.Current);
+                            submeshBlock.Entries[i] = new SubmeshEntry()
+                            {
+                                FaceOffset = reader.ReadInt32(),
+                                VertexOffset = reader.ReadInt32()
+                            };
                         }
 
-                        // Unknown1 block - does not exist in every model
-                        Console.WriteLine("Unknown1 OFFSET: " + reader.BaseStream.Position);
+                        // Unknown0 block - does not exist in every model
+                        //Console.WriteLine("Unknown0 OFFSET: " + reader.BaseStream.Position);
                         if (compiledMesh.Unknown2 != 0)
                         {
-                            int unknown1DataSize = cluelessData[cluelessData.Length - 1][4];
-                            reader.BaseStream.Seek(unknown1DataSize - 4, SeekOrigin.Current); // subtract 4 because the iHaveNoClue cuts into the Unknown1 data
+                            int unknown0DataSize = reader.ReadInt32();
+                            reader.BaseStream.Seek(unknown0DataSize, SeekOrigin.Current);
                         }
                         else
                         {
-                            reader.BaseStream.Seek(-8, SeekOrigin.Current);
+                            //reader.BaseStream.Seek(-8, SeekOrigin.Current);
                         }
 
                         // Vertex block
-                        Console.WriteLine("Vertex OFFSET: " + reader.BaseStream.Position);
+                        //Console.WriteLine("Vertex OFFSET: " + reader.BaseStream.Position);
                         int vertexDataSize = reader.ReadInt32();
-                        int actualVertexTableSize = compiledMesh.VertexTableSize != 8 && compiledMesh.VertexTableSize != 16 ? compiledMesh.VertexTableSize : compiledMesh.Unknown1;
+                        int actualVertexTableSize = compiledMesh.VertexTableSize != 8 && compiledMesh.VertexTableSize != 16 ? compiledMesh.VertexTableSize : compiledMesh.Unknown1; // this variable now holds the true vertex table size
                         long vertexOffset = reader.BaseStream.Position;
                         reader.BaseStream.Seek(vertexDataSize, SeekOrigin.Current);
 
-                        // Unknown2 block - does not exist in every model
-                        Console.WriteLine("Unknown2 OFFSET: " + reader.BaseStream.Position);
-                        if (compiledMesh.Unknown2 != 0)
-                        {
-                            int unknown2DataSize = reader.ReadInt32();
-                            reader.BaseStream.Seek(unknown2DataSize, SeekOrigin.Current);
-                        }
-                        else
+                        // Vertex Weight block - does not exist in every model
+                        //Console.WriteLine("Vertex Weight OFFSET: " + reader.BaseStream.Position);
+                        if (compiledMesh.Unknown2 == 0)
                         {
                             reader.BaseStream.Seek(8, SeekOrigin.Current);
                         }
+                        else
+                        {
+                            int vertexWeightDataSize = reader.ReadInt32();
+                            reader.BaseStream.Seek(vertexWeightDataSize, SeekOrigin.Current);
+                        }
 
                         // Face block
-                        Console.WriteLine("Face OFFSET: " + reader.BaseStream.Position);
+                        //Console.WriteLine("Face OFFSET: " + reader.BaseStream.Position);
                         int faceDataSize = reader.ReadInt32();
                         long faceOffset = reader.BaseStream.Position;
                         reader.BaseStream.Seek(faceDataSize, SeekOrigin.Current);
 
-                        // locate the Mesh Data
-                        Tuple<int[], long> mdOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.MESH_DATA));
-                        reader.BaseStream.Position = mdOffset.Item2;
-                        reader.BaseStream.Seek(mdOffset.Item1[0] + 10, SeekOrigin.Begin); // skip the identifier and 6 bytes
-                        Console.WriteLine("Mesh Data OFFSET: " + (mdOffset.Item1[0] + 10));
+                        // Unknown1 block
+                        int unknown1DataSize = reader.ReadInt32();
+                        reader.BaseStream.Seek(unknown1DataSize, SeekOrigin.Current);
+
+                        // Unknown2 block
+                        int unknown2DataSize = reader.ReadInt32();
+                        reader.BaseStream.Seek(unknown2DataSize, SeekOrigin.Current);
+
+                        // Unknown3 block
+                        int unknown3DataSize = reader.ReadInt32();
+                        reader.BaseStream.Seek(unknown3DataSize, SeekOrigin.Current);
+
+                        // go to the Mesh Data
+                        reader.BaseStream.Seek(18, SeekOrigin.Current);
+                        //Tuple<int[], long> mdOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.MESH_DATA));
+                        //reader.BaseStream.Position = mdOffset.Item2;
+                        //reader.BaseStream.Seek(mdOffset.Item1[0] + 10, SeekOrigin.Begin); // skip the identifier and 6 bytes
+                        //Console.WriteLine("Mesh Data OFFSET: " + (reader.BaseStream.Position));
 
                         // Mesh Data block
                         uint meshCount = reader.ReadUInt32();
-                        str.AppendLine($"Meshes: {meshCount}");
+                        int totalVertices = 0;
                         for (int i = 0; i < meshCount; i++)
                         {
                             Mesh mesh = new Mesh();
-
                             mesh.ID = reader.ReadInt16();
                             reader.BaseStream.Seek(18, SeekOrigin.Current);
-                            mesh.Vertices = new Vertex[reader.ReadInt32()];
+
+                            mesh.VertexCount = reader.ReadInt32();
                             reader.BaseStream.Seek(4, SeekOrigin.Current);
-                            mesh.Faces = new Face[reader.ReadInt32()];
+
+                            mesh.FaceCount = reader.ReadInt32();
+                            mesh.IndexCount = mesh.FaceCount * 3;
+                            mesh.MinFaceIndex = short.MaxValue; // an unlikely value, this will be set later
+
                             mesh.TextureIndex = reader.ReadInt32();
-                            mesh.OBJData = "";
-                            meshes.Add(mesh);
 
-                            str.AppendLine($"\tMesh {i}: {meshes[i].Faces.Length} faces\t{meshes[i].Vertices.Length} vertices");
-                        }
+                            // store the position for later use
+                            long pos = reader.BaseStream.Position;
 
-                        // populate the meshes with vertices
-                        reader.BaseStream.Seek(vertexOffset, SeekOrigin.Begin);
-                        for (int i = 0; i < meshes.Count; i++)
-                        {
-                            Mesh mesh = meshes[i];
-                            for (int j = 0; j < meshes[i].Vertices.Length; j++)
+                            // populate the meshes with vertices
+                            reader.BaseStream.Seek(vertexOffset + (submeshBlock.Entries[i].VertexOffset * actualVertexTableSize), SeekOrigin.Begin);
+                            for (int j = 0; j < mesh.VertexCount; j++)
                             {
-                                Vertex v = new Vertex
+                                short x = reader.ReadInt16();
+                                short y = reader.ReadInt16();
+                                short z = reader.ReadInt16();
+
+                                Mesh.Vertex v = new Mesh.Vertex
                                 {
-                                    Position = new Vector3
+                                    Position = new Vector3 // the coordinates are read like this, so that the model stands upright
                                     {
-                                        X = reader.ReadInt16(),
-                                        Z = reader.ReadInt16() * -1,
-                                        Y = reader.ReadInt16()
+                                        Z = x,
+                                        X = y,
+                                        Y = z
                                     }
                                 };
 
                                 int scaleFactor;
                                 switch (actualVertexTableSize)
                                 {
+                                    case 12:
+                                        reader.BaseStream.Seek(2, SeekOrigin.Current);
+                                        v.TextureCoordinate = new Vector2(reader.ReadInt16(), reader.ReadInt16());
+                                        break;
                                     case 16:
                                         scaleFactor = reader.ReadInt16();
                                         v.Position /= scaleFactor;
@@ -332,36 +366,72 @@ namespace Blacksmith.Games
                                         break;
                                 }
 
-                                mesh.Vertices[j] = v;
-                                mesh.OBJData += $"v {v.Position.X} {v.Position.Y} {v.Position.Z}\n";
-                                mesh.OBJData += $"vn {v.Normal.X} {v.Normal.Y} {v.Normal.X}\n";
-                                mesh.OBJData += $"vt {v.TextureCoordinate.X} {v.TextureCoordinate.Y}\n";
+                                v.TextureCoordinate = new Vector2(v.TextureCoordinate.X / 65536 * 32, 1 - (v.TextureCoordinate.Y / 65536 * 32));
+                                mesh.Vertices.Add(v);
+                                //mesh.Normals.Add(v.Normal);
                             }
-                            meshes[i] = mesh;
+
+                            // add to the total vertices
+                            if (i > 0)
+                            {
+                                totalVertices += model.Meshes[i - 1].VertexCount;
+                                mesh.NumOfVerticesBeforeMe = totalVertices;
+                            }
+
+                            // populate the meshes with faces
+                            reader.BaseStream.Seek(faceOffset + (submeshBlock.Entries[i].FaceOffset * 2), SeekOrigin.Begin);
+                            for (int j = 0; j < mesh.FaceCount; j++)
+                            {
+                                int x = reader.ReadUInt16() + mesh.NumOfVerticesBeforeMe;
+                                int y = reader.ReadUInt16() + mesh.NumOfVerticesBeforeMe; 
+                                int z = reader.ReadUInt16() + mesh.NumOfVerticesBeforeMe;
+
+                                if (x != y && y != z && x != z)
+                                {
+                                    if (x < mesh.MinFaceIndex)
+                                        mesh.MinFaceIndex = x;
+                                    if (y < mesh.MinFaceIndex)
+                                        mesh.MinFaceIndex = y;
+                                    if (z < mesh.MinFaceIndex)
+                                        mesh.MinFaceIndex = z;
+                                    if (x > mesh.MaxFaceIndex)
+                                        mesh.MaxFaceIndex = x;
+                                    if (y > mesh.MaxFaceIndex)
+                                        mesh.MaxFaceIndex = y;
+                                    if (z > mesh.MaxFaceIndex)
+                                        mesh.MaxFaceIndex = z;
+
+                                    Mesh.Face f = new Mesh.Face
+                                    {
+                                        X = x,
+                                        Y = y,
+                                        Z = z
+                                    };
+                                    mesh.Faces.Add(f);
+                                    
+                                    mesh.Indices.Add(x);
+                                    mesh.Indices.Add(y);
+                                    mesh.Indices.Add(z);
+                                }
+                            }
+                            model.Meshes.Add(mesh);
+
+                            // go back to the Mesh Data
+                            reader.BaseStream.Seek(pos, SeekOrigin.Begin);
                         }
 
-                        // populate the meshes with faces
-                        reader.BaseStream.Seek(faceOffset, SeekOrigin.Begin);
-                        for (int i = 0; i < meshes.Count; i++)
+                        // print information
+                        str.AppendLine($"Vertex table size: {actualVertexTableSize}");
+                        str.AppendLine($"Meshes: {meshCount}");
+                        for (int i = 0; i < model.Meshes.Count; i++)
                         {
-                            Mesh mesh = meshes[i];
-                            for (int j = 0; j < meshes[i].Faces.Length; j++)
-                            {
-                                Face f = new Face
-                                {
-                                    X = reader.ReadUInt16() + 1,
-                                    Y = reader.ReadUInt16() + 1,
-                                    Z = reader.ReadUInt16() + 1
-                                };
-
-                                mesh.Faces[j] = f;
-                                mesh.OBJData += $"f {f}\n";
-                            }
-
-                            str.AppendLine(meshes[i].OBJData);
-                            str.AppendLine();
-
-                            meshes[i] = mesh;
+                            model.Meshes[i].CalculateNormals();
+                            str.AppendLine($"\tMesh {i}:");
+                            str.AppendLine($"\t\tVertices: {model.Meshes[i].Vertices.Count}");
+                            str.AppendLine($"\t\tFaces: {model.Meshes[i].FaceCount}");
+                            str.AppendLine($"\t\tIndices: {model.Meshes[i].IndexCount}");
+                            str.AppendLine($"\t\tMin Face Index: {model.Meshes[i].MinFaceIndex}");
+                            str.AppendLine($"\t\tMax Face Index: {model.Meshes[i].MaxFaceIndex}");
                         }
                     }
                     catch (Exception e)
@@ -594,7 +664,7 @@ namespace Blacksmith.Games
                         }*/
                     #endregion
 
-                    #region Poop
+                    #region Not working code
                     /*// block A - 1
                     uint aCount = reader.ReadUInt32();
                     Block blockA = new Block();
@@ -785,7 +855,7 @@ namespace Blacksmith.Games
                 }
             }
 
-            return meshes;
+            return model;
         }
         #endregion
 

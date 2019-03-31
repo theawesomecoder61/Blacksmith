@@ -317,7 +317,7 @@ namespace Blacksmith.Games
                         Mip mip = mip0;
                         Helpers.WriteTempDDS(name, mipmapData, mip.Width, mip.Height, mip.Mipmaps, mip.DXTType, () =>
                         {
-                            Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) => {
+                            Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (error) => {
                                 if (error)
                                     completionAction("FAILED");
                                 else
@@ -353,7 +353,7 @@ namespace Blacksmith.Games
                     // write DDS file
                     Helpers.WriteTempDDS(name, data, mip.Width, mip.Height, mip.Mipmaps, mip.DXTType, () =>
                     {
-                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) =>
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (error) =>
                         {
                             if (error)
                                 completionAction("FAILED");
@@ -388,7 +388,7 @@ namespace Blacksmith.Games
                     // write DDS file
                     Helpers.WriteTempDDS(name, data, mip.Width, mip.Height, mip.Mipmaps, mip.DXTType, () =>
                     {
-                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", (bool error) =>
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (bool error) =>
                         {
                             if (error)
                                 completionAction("FAILED");

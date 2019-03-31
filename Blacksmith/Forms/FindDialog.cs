@@ -1,12 +1,16 @@
 ﻿using Blacksmith.Enums;
+using Blacksmith.FileTypes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Blacksmith.Forms
 {
     public partial class FindDialog : Form
     {
+        private List<Forge> forges = new List<Forge>();
+
         public FindDialog()
         {
             InitializeComponent();
@@ -43,16 +47,29 @@ namespace Blacksmith.Forms
             {
                 Query = queryTextBox.Text,
                 Type = type,
+                ForgeToSearchIn = forges.Where(x => FormatName(x) == (string)forgeComboBox.SelectedItem).FirstOrDefault(),
                 CaseSensitive = ((string)filterComboBox.SelectedItem).Contains("Case-Sensitive")
             });
         }
 
-        public void AddOrRemoveForge(string forge)
+        public void AddOrRemoveForge(Forge forge)
         {
-            if (forgeComboBox.Items.Contains(forge))
-                forgeComboBox.Items.Remove(forge);
+            // add to the combobox
+            string listName = FormatName(forge);
+            if (forgeComboBox.Items.Contains(listName))
+                forgeComboBox.Items.Remove(listName);
             else
-                forgeComboBox.Items.Add(forge);
+                forgeComboBox.Items.Add(listName);
+
+            // add to the forges list
+            if (forges.Contains(forge))
+                forges.Remove(forge);
+            else
+                forges.Add(forge);
+
+            // select the first item in the combobox
+            if (forgeComboBox.Items.Count == 1)
+                forgeComboBox.SelectedIndex = 0;
         }
 
         public void LoadResults(List<EntryTreeNode> results)
@@ -69,7 +86,7 @@ namespace Blacksmith.Forms
 
                 DataGridViewTextBoxCell size = new DataGridViewTextBoxCell
                 {
-                    Value = node.Size//Helpers.BytesToString()
+                    Value = node.Size //Helpers.BytesToString()
                 };
                 row.Cells.Add(size);
 
@@ -94,6 +111,27 @@ namespace Blacksmith.Forms
             });
         }
 
+        private void dataGridView_MouseUp(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < dataGridView.Rows.Count; i++)
+            {
+                if (dataGridView.GetRowDisplayRectangle(i, false).Contains(e.Location))
+                {
+                    dataGridView.Rows[i].Selected = true;
+                }
+            }
+        }
+
+        private void dataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            OnShowInList(new ShowInListArgs
+            {
+                Name = (string)dataGridView.SelectedRows[0].Cells[0].Value
+            });
+        }
+
+        private string FormatName(Forge forge) => string.Format("({0}) {1}", Helpers.ToTitleCase(forge.Game.ToString().ToLower()), forge.Name);
+
         protected virtual void OnFindAll(FindEventArgs e)
         {
             FindAll?.Invoke(this, e);
@@ -106,23 +144,13 @@ namespace Blacksmith.Forms
 
         public event EventHandler<FindEventArgs> FindAll;
         public event EventHandler<ShowInListArgs> ShowInList;
-
-        private void dataGridView_MouseUp(object sender, MouseEventArgs e)
-        {
-            for (int i = 0; i < dataGridView.Rows.Count; i++)
-            {
-                if (dataGridView.GetRowDisplayRectangle(i, false).Contains(e.Location))
-                {
-                    dataGridView.Rows[i].Selected = true;
-                }
-            }
-        }
     }
 
     public class FindEventArgs : EventArgs
     {
         public string Query;
         public FindType Type;
+        public Forge ForgeToSearchIn;
         public bool CaseSensitive;
     }
 

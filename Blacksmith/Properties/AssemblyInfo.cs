@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Blacksmith")]
 [assembly: AssemblyDescription("The .forge file explorer for AC: Odyssey, Origins, and Steep.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("theawesomecoder61/Andrew M.")]
+[assembly: AssemblyCompany("theawesomecoder61")]
 [assembly: AssemblyProduct("Blacksmith")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("Assassin's Creed franchise and Steep are properties of Ubisoft.")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.4.0.0")]
-[assembly: AssemblyFileVersion("1.4.0.0")]
+[assembly: AssemblyVersion("1.5.0.0")]
+[assembly: AssemblyFileVersion("1.5.0.0")]

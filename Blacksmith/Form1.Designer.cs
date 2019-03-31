@@ -36,7 +36,6 @@ namespace Blacksmith
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decompressFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showFileInTheViewersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decompileLocalizationDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +52,8 @@ namespace Blacksmith
             this.treeView = new System.Windows.Forms.TreeView();
             this.treeNodeContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyNameToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showInExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.buildTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractAllEntriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.datafileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,10 +64,9 @@ namespace Blacksmith
             this.createFilelistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertToAnotherFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.threeToolStripContainer = new System.Windows.Forms.ToolStripContainer();
@@ -75,6 +75,8 @@ namespace Blacksmith
             this.resetCameraStripButton = new System.Windows.Forms.ToolStripButton();
             this.threeToolStrip2 = new System.Windows.Forms.ToolStrip();
             this.sceneInfoStripLabel = new System.Windows.Forms.ToolStripLabel();
+            this.threeSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.meshCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.imageToolStrip = new System.Windows.Forms.ToolStrip();
@@ -88,6 +90,8 @@ namespace Blacksmith
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.export3DViewerDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showFileInTheViewersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -102,9 +106,13 @@ namespace Blacksmith
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.threeToolStripContainer.BottomToolStripPanel.SuspendLayout();
+            this.threeToolStripContainer.ContentPanel.SuspendLayout();
             this.threeToolStripContainer.SuspendLayout();
             this.threeToolStrip.SuspendLayout();
             this.threeToolStrip2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.threeSplitContainer)).BeginInit();
+            this.threeSplitContainer.Panel2.SuspendLayout();
+            this.threeSplitContainer.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.toolStripContainer2.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer2.ContentPanel.SuspendLayout();
@@ -158,7 +166,8 @@ namespace Blacksmith
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.decompressFileToolStripMenuItem,
             this.showFileInTheViewersToolStripMenuItem,
-            this.decompileLocalizationDataToolStripMenuItem});
+            this.decompileLocalizationDataToolStripMenuItem,
+            this.export3DViewerDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -169,13 +178,6 @@ namespace Blacksmith
             this.decompressFileToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.decompressFileToolStripMenuItem.Text = "Decompress File";
             this.decompressFileToolStripMenuItem.Click += new System.EventHandler(this.decompressFileToolStripMenuItem_Click);
-            // 
-            // showFileInTheViewersToolStripMenuItem
-            // 
-            this.showFileInTheViewersToolStripMenuItem.Name = "showFileInTheViewersToolStripMenuItem";
-            this.showFileInTheViewersToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.showFileInTheViewersToolStripMenuItem.Text = "Preview an Origins Model";
-            this.showFileInTheViewersToolStripMenuItem.Click += new System.EventHandler(this.showFileInTheViewersToolStripMenuItem_Click);
             // 
             // decompileLocalizationDataToolStripMenuItem
             // 
@@ -301,6 +303,9 @@ namespace Blacksmith
             this.splitContainer.Size = new System.Drawing.Size(884, 475);
             this.splitContainer.SplitterDistance = 310;
             this.splitContainer.TabIndex = 0;
+            this.splitContainer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.splitContainer_MouseDown);
+            this.splitContainer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splitContainer_MouseMove);
+            this.splitContainer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.splitContainer_MouseUp);
             // 
             // treeView
             // 
@@ -319,13 +324,15 @@ namespace Blacksmith
             // 
             this.treeNodeContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyNameToClipboardToolStripMenuItem,
+            this.showInExplorerToolStripMenuItem,
+            this.toolStripSeparator2,
             this.buildTableToolStripMenuItem,
             this.datafileToolStripMenuItem,
             this.forgeToolStripMenuItem,
             this.modelToolStripMenuItem,
             this.textureToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
-            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(207, 136);
+            this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(207, 164);
             // 
             // copyNameToClipboardToolStripMenuItem
             // 
@@ -333,6 +340,18 @@ namespace Blacksmith
             this.copyNameToClipboardToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.copyNameToClipboardToolStripMenuItem.Text = "Copy Name to Clipboard";
             this.copyNameToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyNameToClipboardToolStripMenuItem_Click);
+            // 
+            // showInExplorerToolStripMenuItem
+            // 
+            this.showInExplorerToolStripMenuItem.Name = "showInExplorerToolStripMenuItem";
+            this.showInExplorerToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.showInExplorerToolStripMenuItem.Text = "Show In Explorer";
+            this.showInExplorerToolStripMenuItem.Click += new System.EventHandler(this.showInExplorerToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
             // 
             // buildTableToolStripMenuItem
             // 
@@ -406,40 +425,32 @@ namespace Blacksmith
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveAsOBJToolStripMenuItem});
+            this.saveAsModelToolStripMenuItem});
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
             this.modelToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
-            // saveAsOBJToolStripMenuItem
+            // saveAsModelToolStripMenuItem
             // 
-            this.saveAsOBJToolStripMenuItem.Name = "saveAsOBJToolStripMenuItem";
-            this.saveAsOBJToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
-            this.saveAsOBJToolStripMenuItem.Text = "Save As Model";
-            this.saveAsOBJToolStripMenuItem.Click += new System.EventHandler(this.saveAsOBJToolStripMenuItem_Click);
+            this.saveAsModelToolStripMenuItem.Name = "saveAsModelToolStripMenuItem";
+            this.saveAsModelToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsModelToolStripMenuItem.Text = "Save As...";
+            this.saveAsModelToolStripMenuItem.Click += new System.EventHandler(this.saveAsModelToolStripMenuItem_Click);
             // 
             // textureToolStripMenuItem
             // 
             this.textureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertToAnotherFormatToolStripMenuItem,
-            this.saveAsDDSToolStripMenuItem});
+            this.saveAsTextureToolStripMenuItem});
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
             this.textureToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.textureToolStripMenuItem.Text = "Texture";
             // 
-            // convertToAnotherFormatToolStripMenuItem
+            // saveAsTextureToolStripMenuItem
             // 
-            this.convertToAnotherFormatToolStripMenuItem.Name = "convertToAnotherFormatToolStripMenuItem";
-            this.convertToAnotherFormatToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.convertToAnotherFormatToolStripMenuItem.Text = "Convert to Another Format";
-            this.convertToAnotherFormatToolStripMenuItem.Click += new System.EventHandler(this.convertToAnotherFormatToolStripMenuItem_Click);
-            // 
-            // saveAsDDSToolStripMenuItem
-            // 
-            this.saveAsDDSToolStripMenuItem.Name = "saveAsDDSToolStripMenuItem";
-            this.saveAsDDSToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.saveAsDDSToolStripMenuItem.Text = "Save As DDS";
-            this.saveAsDDSToolStripMenuItem.Click += new System.EventHandler(this.saveAsDDSToolStripMenuItem_Click);
+            this.saveAsTextureToolStripMenuItem.Name = "saveAsTextureToolStripMenuItem";
+            this.saveAsTextureToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsTextureToolStripMenuItem.Text = "Save As...";
+            this.saveAsTextureToolStripMenuItem.Click += new System.EventHandler(this.saveAsTextureToolStripMenuItem_Click);
             // 
             // tabControl
             // 
@@ -473,6 +484,7 @@ namespace Blacksmith
             // 
             // threeToolStripContainer.ContentPanel
             // 
+            this.threeToolStripContainer.ContentPanel.Controls.Add(this.threeSplitContainer);
             this.threeToolStripContainer.ContentPanel.Size = new System.Drawing.Size(562, 374);
             this.threeToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.threeToolStripContainer.Location = new System.Drawing.Point(0, 0);
@@ -528,6 +540,34 @@ namespace Blacksmith
             this.sceneInfoStripLabel.Name = "sceneInfoStripLabel";
             this.sceneInfoStripLabel.Size = new System.Drawing.Size(170, 22);
             this.sceneInfoStripLabel.Text = "Vertices: 0 | Faces: 0 | Meshes: 0";
+            // 
+            // threeSplitContainer
+            // 
+            this.threeSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.threeSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.threeSplitContainer.Location = new System.Drawing.Point(0, 0);
+            this.threeSplitContainer.Name = "threeSplitContainer";
+            // 
+            // threeSplitContainer.Panel2
+            // 
+            this.threeSplitContainer.Panel2.Controls.Add(this.meshCheckedListBox);
+            this.threeSplitContainer.Panel2MinSize = 98;
+            this.threeSplitContainer.Size = new System.Drawing.Size(562, 374);
+            this.threeSplitContainer.SplitterDistance = 460;
+            this.threeSplitContainer.TabIndex = 0;
+            this.threeSplitContainer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.splitContainer_MouseDown);
+            this.threeSplitContainer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splitContainer_MouseMove);
+            this.threeSplitContainer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.splitContainer_MouseUp);
+            // 
+            // meshCheckedListBox
+            // 
+            this.meshCheckedListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.meshCheckedListBox.FormattingEnabled = true;
+            this.meshCheckedListBox.Location = new System.Drawing.Point(0, 0);
+            this.meshCheckedListBox.Name = "meshCheckedListBox";
+            this.meshCheckedListBox.Size = new System.Drawing.Size(98, 374);
+            this.meshCheckedListBox.TabIndex = 0;
+            this.meshCheckedListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.meshCheckedListBox_ItemCheck);
             // 
             // tabPage2
             // 
@@ -675,6 +715,24 @@ namespace Blacksmith
             this.imageList.Images.SetKeyName(24, "table.png");
             this.imageList.Images.SetKeyName(25, "text_align_left.png");
             // 
+            // export3DViewerDataToolStripMenuItem
+            // 
+            this.export3DViewerDataToolStripMenuItem.Enabled = false;
+            this.export3DViewerDataToolStripMenuItem.Name = "export3DViewerDataToolStripMenuItem";
+            this.export3DViewerDataToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.export3DViewerDataToolStripMenuItem.Text = "Export 3D Viewer Data";
+            this.export3DViewerDataToolStripMenuItem.Visible = false;
+            this.export3DViewerDataToolStripMenuItem.Click += new System.EventHandler(this.export3DViewerDataToolStripMenuItem_Click);
+            // 
+            // showFileInTheViewersToolStripMenuItem
+            // 
+            this.showFileInTheViewersToolStripMenuItem.Enabled = false;
+            this.showFileInTheViewersToolStripMenuItem.Name = "showFileInTheViewersToolStripMenuItem";
+            this.showFileInTheViewersToolStripMenuItem.Size = new System.Drawing.Size(336, 22);
+            this.showFileInTheViewersToolStripMenuItem.Text = "Preview an Origins Model";
+            this.showFileInTheViewersToolStripMenuItem.Visible = false;
+            this.showFileInTheViewersToolStripMenuItem.Click += new System.EventHandler(this.showFileInTheViewersToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -708,12 +766,16 @@ namespace Blacksmith
             this.tabPage1.ResumeLayout(false);
             this.threeToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
             this.threeToolStripContainer.BottomToolStripPanel.PerformLayout();
+            this.threeToolStripContainer.ContentPanel.ResumeLayout(false);
             this.threeToolStripContainer.ResumeLayout(false);
             this.threeToolStripContainer.PerformLayout();
             this.threeToolStrip.ResumeLayout(false);
             this.threeToolStrip.PerformLayout();
             this.threeToolStrip2.ResumeLayout(false);
             this.threeToolStrip2.PerformLayout();
+            this.threeSplitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.threeSplitContainer)).EndInit();
+            this.threeSplitContainer.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.toolStripContainer2.BottomToolStripPanel.ResumeLayout(false);
             this.toolStripContainer2.BottomToolStripPanel.PerformLayout();
@@ -767,11 +829,10 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem decompressFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsDDSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem decompileLocalizationDataToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.ToolStripMenuItem convertToAnotherFormatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveAsTextureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyNameToClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showResourceViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripContainer threeToolStripContainer;
@@ -780,16 +841,21 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripButton resetCameraStripButton;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsOBJToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveAsModelToolStripMenuItem;
         private System.Windows.Forms.ToolStrip imageToolStrip;
         private System.Windows.Forms.ToolStripLabel imageDimensStatusLabel;
         private System.Windows.Forms.ToolStripButton toggleAlphaButton;
         private System.Windows.Forms.ToolStripDropDownButton zoomDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem buildTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractAllEntriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showFileInTheViewersToolStripMenuItem;
         private System.Windows.Forms.ToolStrip threeToolStrip2;
         private System.Windows.Forms.ToolStripLabel sceneInfoStripLabel;
+        private System.Windows.Forms.SplitContainer threeSplitContainer;
+        private System.Windows.Forms.CheckedListBox meshCheckedListBox;
+        private System.Windows.Forms.ToolStripMenuItem showInExplorerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem showFileInTheViewersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem export3DViewerDataToolStripMenuItem;
     }
 }
 

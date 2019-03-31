@@ -118,8 +118,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\ConvertDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConvertDialog.Designer.cs">
+      <DependentUpon>ConvertDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Three\Cube.cs" />
     <Compile Include="Enums\EntryTreeNodeType.cs" />
     <Compile Include="Enums\FindType.cs" />
+    <Compile Include="FileTypes\SMD.cs" />
+    <Compile Include="FileTypes\STL.cs" />
     <Compile Include="Forms\ResourceViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,16 +161,21 @@
     <Compile Include="Forms\SoundpackBrowser.Designer.cs">
       <DependentUpon>SoundpackBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Three\DAEWriter.cs" />
-    <Compile Include="Three\IO_DAE.cs" />
+    <Compile Include="FileTypes\DAEWriter.cs" />
+    <Compile Include="FileTypes\DAE.cs" />
     <Compile Include="Three\Mesh.cs" />
-    <Compile Include="Three\RenderMode.cs" />
+    <Compile Include="Three\Model.cs" />
+    <Compile Include="Enums\RenderMode.cs" />
     <Compile Include="Three\ShaderProgram.cs" />
     <Compile Include="Three\TextRenderer.cs" />
+    <Content Include="Binaries\x86\texconv.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Form1 backup.cs">
       <SubType>Form</SubType>
     </Content>
     <None Include="Resources\arrow_in.png" />
+    <Content Include="Games\Origins backup.txt" />
     <Content Include="Three\D3DScene.txt" />
     <Compile Include="Enums\DXT.cs" />
     <Compile Include="Enums\ResourceType.cs" />
@@ -186,9 +200,9 @@
     </Compile>
     <Compile Include="Three\Camera.cs" />
     <Compile Include="Three\GLViewer.cs" />
-    <Compile Include="Three\OBJModel.cs" />
+    <Compile Include="FileTypes\OBJ.cs" />
     <Content Include="Three\ThreeViewer.txt" />
-    <Compile Include="Three\Model.cs" />
+    <Compile Include="Three\GLMesh.cs" />
     <Content Include="Three\GLViewer backup.txt" />
     <Content Include="Shaders\fs.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -204,6 +218,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConvertDialog.resx">
+      <DependentUpon>ConvertDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindDialog.resx">
       <DependentUpon>FindDialog.cs</DependentUpon>
@@ -277,9 +294,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Binaries\x86\revorb.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Binaries\x86\texconv.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Binaries\x86\ww2ogg.exe">

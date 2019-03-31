@@ -102,6 +102,7 @@
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView.Size = new System.Drawing.Size(484, 385);
             this.dataGridView.TabIndex = 0;
+            this.dataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
             this.dataGridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseUp);
             // 
             // NameCol
@@ -113,10 +114,10 @@
             // 
             // SizeCol
             // 
-            this.SizeCol.HeaderText = "Size";
+            this.SizeCol.HeaderText = "Size (bytes)";
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
-            this.SizeCol.Width = 52;
+            this.SizeCol.Width = 86;
             // 
             // PathCol
             // 
@@ -167,7 +168,6 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Enabled = false;
             this.label2.Location = new System.Drawing.Point(11, 15);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(95, 13);
@@ -177,7 +177,6 @@
             // forgeComboBox
             // 
             this.forgeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.forgeComboBox.Enabled = false;
             this.forgeComboBox.FormattingEnabled = true;
             this.forgeComboBox.Location = new System.Drawing.Point(112, 12);
             this.forgeComboBox.Name = "forgeComboBox";
@@ -230,13 +229,13 @@
         private System.Windows.Forms.Button findAllBtn;
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NameCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PathCol;
         private System.Windows.Forms.ComboBox filterComboBox;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem showInListToolStripMenuItem;
         private System.Windows.Forms.ComboBox forgeComboBox;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NameCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PathCol;
     }
 }

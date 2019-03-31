@@ -1,81 +1,52 @@
 ﻿using OpenTK;
-using System;
-
-// adapted from: https://github.com/neokabuto/OpenTKTutorialContent/blob/master/OpenTKTutorial9-3/OpenTKTutorial9-3/Volume.cs
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Blacksmith.Three
 {
-    public abstract class Model
+    public class Model
     {
-        public Vector3 Position = Vector3.Zero;
-        public Vector3 Rotation = Vector3.Zero;
-        public Vector3 Scale = Vector3.One;
+        public List<Mesh> Meshes = new List<Mesh>();
 
-        public virtual int VertexCount { get; set; }
-        public virtual int FaceCount { get; set; }
-        public virtual int IndexCount { get; set; }
-        public virtual int ColorDataCount { get; set; }
-        public virtual int NormalCount { get { return Normals.Length; } }
-        public virtual int TextureCoordsCount { get; set; }
-
-        public Matrix4 ModelMatrix = Matrix4.Identity;
-        public Matrix4 ViewProjectionMatrix = Matrix4.Identity;
-        public Matrix4 ModelViewProjectionMatrix = Matrix4.Identity;
-
-        Vector3[] Normals = new Vector3[0];
-
-        public abstract Vector3[] GetVertices();
-        public abstract int[] GetIndices(int offset = 0);
-        public abstract Vector3[] GetColorData();
-        public abstract void CalculateModelMatrix();
-
-        public virtual Vector3[] GetNormals()
+        public Model(params Mesh[] meshes)
         {
-            return Normals;
+            Meshes.AddRange(meshes);
         }
 
-        public void CalculateNormals()
+        public Vector3 GetCenter()
         {
-            Vector3[] normals = new Vector3[VertexCount];
-            Vector3[] verts = GetVertices();
-            int[] inds = GetIndices();
+            if (Meshes.Count <= 0)
+                return Vector3.Zero;
 
-            // Compute normals for each face
-            for (int i = 0; i < IndexCount; i += 3)
-            {
-                Vector3 v1 = verts[inds[i]];
-                Vector3 v2 = verts[inds[i + 1]];
-                Vector3 v3 = verts[inds[i + 2]];
-
-                // The normal is the cross-product of two sides of the triangle
-                normals[inds[i]] += Vector3.Cross(v2 - v1, v3 - v1);
-                normals[inds[i + 1]] += Vector3.Cross(v2 - v1, v3 - v1);
-                normals[inds[i + 2]] += Vector3.Cross(v2 - v1, v3 - v1);
-            }
-
-            for (int i = 0; i < NormalCount; i++)
-            {
-                normals[i] = normals[i].Normalized();
-            }
-
-            Normals = normals;
+            // finds the centers of each mesh and calculates the average
+            List<Vector3> centers = new List<Vector3>();
+            Meshes.ForEach(x => centers.Add(x.GetCenterOfAABB(x.CalculateAABB())));
+            return new Vector3(centers.Select(x => x.X).Average(), centers.Select(x => x.Y).Average(), centers.Select(x => x.Z).Average());
         }
 
-        public bool IsTextured = false;
-        public int TextureID;
-        public abstract Vector2[] GetTextureCoords();
+        public Mesh.Vertex[] GetVertices()
+        {
+            List<Mesh.Vertex> vertices = new List<Mesh.Vertex>();
+            foreach (Mesh mesh in Meshes)
+            {
+                vertices.AddRange(mesh.Vertices);
+            }
+            return vertices.ToArray();
+        }
 
-        /// <summary>
-        /// Calculates the AABB (bounding box) of the model.
-        /// </summary>
-        /// <returns></returns>
-        public abstract Vector3[] CalculateAABB();
+        public static Model CreateFromMesh(Mesh mesh) => CreateFromMeshes(new List<Mesh>()
+        {
+            mesh
+        });
 
-        /// <summary>
-        /// Returns the center of the AABB (bounding box).
-        /// </summary>
-        /// <param name="aabb"></param>
-        /// <returns></returns>
-        public abstract Vector3 GetCenterOfAABB(Vector3[] aabb);
+        public static Model CreateFromMeshes(List<Mesh> meshes)
+        {
+            Model model = new Model();
+            foreach (Mesh mesh in meshes)
+            {
+                model.Meshes.Add(mesh);
+            }
+            return model;
+        }
     }
 }
