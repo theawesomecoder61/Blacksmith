@@ -11,10 +11,10 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | X                         | 🗸                         | X     |
+| Geometry            | X                         | 🗸 (partial)               | X     |
 | Normals             | X                         | 🗸                         | X     |
 | UV sets             | X                         | X                         | X     |
-| Skeleton & Skinning | X                         | X                         | X     |
+| Skeleton            | X                         | X                         | X     |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -23,6 +23,9 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
+### Version 1.5 [FUTURE VERSION] (3/2X/2019)
+- Let's just say no more deleting excess faces (stay tuned)
+
 ### Version 1.4 [CURRENT VERSION] (3/8/2019)
 
 Version 1.4: Initial Origins 3D model support, Find feature, 3D Viewer & UI improvements

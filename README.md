@@ -17,6 +17,7 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games or Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
 
 ![Version 1.3.1](https://i.imgur.com/0qQpFHP.png)
+![Version 1.4](https://i.imgur.com/t0XB38m.png)
 ![Version 1.3.1](https://i.imgur.com/wLcQ1qf.png)
 ![Version 1.3.1](https://i.imgur.com/nj28fQv.png)
 
@@ -29,9 +30,13 @@ PC versions of:
 ## Functionality
 - The main features are viewing and extraction of:
   - .forge files
-  - 3D models (conversion to: .obj)
-  - textures (conversion to: .bmp, .dds, .png, .tga)
-  - sounds (conversion to .ogg)
+  - 3D models
+    - conversion to: .dae, .obj, .smd, .stl
+    - (as of Version 1.5)
+  - textures
+    - conversion to: .bmp, .dds, .png, .tga
+  - sounds
+    - conversion to: .ogg
 - Also:
   - extraction of sounds and soundbanks from .pck files
   - creation of filelists from .forge files
