@@ -11,8 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | X                         | 🗸 (partial)               | X     |
-| Normals             | X                         | 🗸                         | X     |
+| Geometry            | 🗸                         | 🗸                         | X     |
+| Normals             | 🗸                         | 🗸                         | X     |
+| UVs                 | 🗸                        | 🗸                         | X     |
 | UV sets             | X                         | X                         | X     |
 | Skeleton            | X                         | X                         | X     |
 
@@ -23,8 +24,26 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.5 [FUTURE VERSION] (3/2X/2019)
-- Let's just say no more deleting excess faces (stay tuned)
+### Version 1.5 [CURRENT VERSION] (3/31/2019)
+- Added
+  - initial Odyssey model support
+  - the checkbox list next to the 3D Viewer - this allows you to toggle individuals meshes
+  - added `Show In Explorer` context menu item
+  - added more features to Find dialog: double-clicking reveals the entry in Blacksmith, "Forge to search in"
+  - "Forge to search in" in the Find window
+    - this allows you to specify which open .forge file to search, instead of the first open .forge file
+  - `Save As...` window to simplify saving as other formats
+- Updated
+  - better Origins 3D model support
+  - 3D Viewer displays models 5x larger
+  - output from 3D model in the Text Viewer
+  - the split containers update while dragging the splitter
+  - various UI and behavior improvements
+  - DAE, SMD, STL export removed temporarily
+- Fixed
+  - OBJ exporter
+- **Texture conversion will sit out on this version. texconv is not being friendly.** Expect this fixed in the next version.
+
 
 ### Version 1.4 [CURRENT VERSION] (3/8/2019)
 
