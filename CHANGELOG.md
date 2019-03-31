@@ -24,7 +24,7 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.5 [CURRENT VERSION] (3/31/2019)
+### Version 1.5 (preview) [CURRENT VERSION] (3/31/2019)
 - Added
   - initial Odyssey model support
   - the checkbox list next to the 3D Viewer - this allows you to toggle individuals meshes
