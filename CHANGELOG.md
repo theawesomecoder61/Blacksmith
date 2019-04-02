@@ -24,7 +24,26 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.5 (preview) [CURRENT VERSION] (3/31/2019)
+### Version 1.5.1 [CURRENT VERSION] (4/1/2019)
+- Added
+  - an option to exclude normals of 3D models in `Save As...` dialog
+  - a setting to suppress success, warning, and failure popups
+  - `Controls Help` in the 3D Viewer - you can view the controls for the 3D Viewer
+  - loading and saving Settings to .ini files
+  - ini-parser, a libray for reading and writing .ini files
+- Updated
+  - subentries/Resource Types will not show multiple times
+  - organized messages/popups throughout
+  - better Build Table support
+- Fixed
+  - ***texture conversion works again*** (texconv works again)
+  - DDS textures will not be converted from DDS
+  - the background color will be selected in the Color dialog when you open Settings
+  - your session will not be lost if you close the Settings, unless you changed the path of a game or the temporary file path
+  - a message will inform you that a Forge has not been selected in the Find window if you attempt to perform a search
+  - a crash caused by loading a Steep 3D model (support will come in Version 1.6)
+  - OBJ exporter again
+### Version 1.5 (preview) (3/31/2019)
 - Added
   - initial Odyssey model support
   - the checkbox list next to the 3D Viewer - this allows you to toggle individuals meshes
