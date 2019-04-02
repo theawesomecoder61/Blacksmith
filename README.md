@@ -31,8 +31,8 @@ PC versions of:
 - The main features are viewing and extraction of:
   - .forge files
   - 3D models
-    - conversion to: .dae, .obj, .smd, .stl
-    - (as of Version 1.5)
+    - conversion to: .obj
+    - planned: .dae, .smd, .stl
   - textures
     - conversion to: .bmp, .dds, .png, .tga
   - sounds

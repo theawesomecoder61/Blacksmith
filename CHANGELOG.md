@@ -11,8 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | X                         | 🗸 (partial)               | X     |
-| Normals             | X                         | 🗸                         | X     |
+| Geometry            | 🗸                         | 🗸                         | X     |
+| Normals             | 🗸                         | 🗸                         | X     |
+| UVs                 | 🗸                        | 🗸                         | X     |
 | UV sets             | X                         | X                         | X     |
 | Skeleton            | X                         | X                         | X     |
 
@@ -23,8 +24,45 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.5 [FUTURE VERSION] (3/2X/2019)
-- Let's just say no more deleting excess faces (stay tuned)
+### Version 1.5.1 [CURRENT VERSION] (4/1/2019)
+- Added
+  - an option to exclude normals of 3D models in `Save As...` dialog
+  - a setting to suppress success, warning, and failure popups
+  - `Controls Help` in the 3D Viewer - you can view the controls for the 3D Viewer
+  - loading and saving Settings to .ini files
+  - ini-parser, a libray for reading and writing .ini files
+- Updated
+  - subentries/Resource Types will not show multiple times
+  - organized messages/popups throughout
+  - better Build Table support
+- Fixed
+  - ***texture conversion works again*** (texconv works again)
+  - DDS textures will not be converted from DDS
+  - the background color will be selected in the Color dialog when you open Settings
+  - your session will not be lost if you close the Settings, unless you changed the path of a game or the temporary file path
+  - a message will inform you that a Forge has not been selected in the Find window if you attempt to perform a search
+  - a crash caused by loading a Steep 3D model (support will come in Version 1.6)
+  - OBJ exporter again
+### Version 1.5 (preview) (3/31/2019)
+- Added
+  - initial Odyssey model support
+  - the checkbox list next to the 3D Viewer - this allows you to toggle individuals meshes
+  - added `Show In Explorer` context menu item
+  - added more features to Find dialog: double-clicking reveals the entry in Blacksmith, "Forge to search in"
+  - "Forge to search in" in the Find window
+    - this allows you to specify which open .forge file to search, instead of the first open .forge file
+  - `Save As...` window to simplify saving as other formats
+- Updated
+  - better Origins 3D model support
+  - 3D Viewer displays models 5x larger
+  - output from 3D model in the Text Viewer
+  - the split containers update while dragging the splitter
+  - various UI and behavior improvements
+  - DAE, SMD, STL export removed temporarily
+- Fixed
+  - OBJ exporter
+- **Texture conversion will sit out on this version. texconv is not being friendly.** Expect this fixed in the next version.
+
 
 ### Version 1.4 [CURRENT VERSION] (3/8/2019)
 
