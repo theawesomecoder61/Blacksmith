@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.normalsComboBox = new System.Windows.Forms.ComboBox();
             this.combineMeshesCheckBox = new System.Windows.Forms.CheckBox();
             this.modelButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -39,8 +41,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textureComboBox = new System.Windows.Forms.ComboBox();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.label3 = new System.Windows.Forms.Label();
-            this.normalsComboBox = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -76,6 +76,28 @@
             this.tabPage1.Size = new System.Drawing.Size(246, 141);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Model";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(8, 59);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(48, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Normals:";
+            // 
+            // normalsComboBox
+            // 
+            this.normalsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.normalsComboBox.FormattingEnabled = true;
+            this.normalsComboBox.Items.AddRange(new object[] {
+            "Extracted from Model Data",
+            "Calculated",
+            "None/Excluded"});
+            this.normalsComboBox.Location = new System.Drawing.Point(62, 56);
+            this.normalsComboBox.Name = "normalsComboBox";
+            this.normalsComboBox.Size = new System.Drawing.Size(176, 21);
+            this.normalsComboBox.TabIndex = 2;
             // 
             // combineMeshesCheckBox
             // 
@@ -165,27 +187,6 @@
             this.textureComboBox.Name = "textureComboBox";
             this.textureComboBox.Size = new System.Drawing.Size(182, 21);
             this.textureComboBox.TabIndex = 0;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 59);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Normals:";
-            // 
-            // normalsComboBox
-            // 
-            this.normalsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.normalsComboBox.FormattingEnabled = true;
-            this.normalsComboBox.Items.AddRange(new object[] {
-            "Extracted from Model Data",
-            "Calculated"});
-            this.normalsComboBox.Location = new System.Drawing.Point(62, 56);
-            this.normalsComboBox.Name = "normalsComboBox";
-            this.normalsComboBox.Size = new System.Drawing.Size(176, 21);
-            this.normalsComboBox.TabIndex = 2;
             // 
             // ConvertDialog
             // 

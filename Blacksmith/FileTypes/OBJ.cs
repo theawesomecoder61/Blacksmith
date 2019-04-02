@@ -1,4 +1,5 @@
-﻿using Blacksmith.Three;
+﻿using Blacksmith.Enums;
+using Blacksmith.Three;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -193,8 +194,6 @@ namespace Blacksmith.FileTypes
             texs.Add(new Vector2());
             normals.Add(new Vector3());
 
-            //int currentindice = 0;
-
             // Read file line by line
             foreach (string line in lines)
             {
@@ -304,8 +303,6 @@ namespace Blacksmith.FileTypes
                         success |= int.TryParse(faceparts[1].Split('/')[0], out v2);
                         success |= int.TryParse(faceparts[2].Split('/')[0], out v3);
 
-                        faceIndices.Add(new Tuple<int, int, int>(v1, v2, v3));
-
                         if (faceparts[0].Count((char c) => c == '/') >= 2)
                         {
                             success |= int.TryParse(faceparts[0].Split('/')[1], out t1);
@@ -351,6 +348,8 @@ namespace Blacksmith.FileTypes
                         }
                         else
                         {
+                            faceIndices.Add(new Tuple<int, int, int>(v1, v2, v3));
+
                             TempVertex tv1 = new TempVertex(v1, n1, t1);
                             TempVertex tv2 = new TempVertex(v2, n2, t2);
                             TempVertex tv3 = new TempVertex(v3, n3, t3);
@@ -364,37 +363,33 @@ namespace Blacksmith.FileTypes
                     }
                 }
             }
-
-            Model mdl = new Model();
+            
             Mesh mesh = new Mesh();
-            for (int i = 0; i < verts.Count; i += 3)
+            for (int i = 0; i < faces.Count; i += 3)
             {
                 var face = faces[i];
-                FaceVertex v1 = new FaceVertex(verts[face.Item1.Vertex], normals[face.Item1.Normal], texs[face.Item1.Texcoord]);
-                FaceVertex v2 = new FaceVertex(verts[face.Item2.Vertex], normals[face.Item2.Normal], texs[face.Item2.Texcoord]);
-                FaceVertex v3 = new FaceVertex(verts[face.Item3.Vertex], normals[face.Item3.Normal], texs[face.Item3.Texcoord]);
 
                 Mesh.Vertex vert1 = new Mesh.Vertex
                 {
-                    Position = v1.Position,
-                    Normal = v1.Normal,
-                    TextureCoordinate = v1.TextureCoord
+                    Position = verts[face.Item1.Vertex],
+                    Normal = normals[face.Item1.Normal],
+                    TextureCoordinate = texs[face.Item1.Texcoord]
                 };
                 mesh.Vertices.Add(vert1);
 
                 Mesh.Vertex vert2 = new Mesh.Vertex
                 {
-                    Position = v2.Position,
-                    Normal = v2.Normal,
-                    TextureCoordinate = v2.TextureCoord
+                    Position = verts[face.Item2.Vertex],
+                    Normal = normals[face.Item2.Normal],
+                    TextureCoordinate = texs[face.Item2.Texcoord]
                 };
                 mesh.Vertices.Add(vert2);
 
                 Mesh.Vertex vert3 = new Mesh.Vertex
                 {
-                    Position = v3.Position,
-                    Normal = v3.Normal,
-                    TextureCoordinate = v3.TextureCoord
+                    Position = verts[face.Item3.Vertex],
+                    Normal = normals[face.Item3.Normal],
+                    TextureCoordinate = texs[face.Item3.Texcoord]
                 };
                 mesh.Vertices.Add(vert3);
 
@@ -416,12 +411,11 @@ namespace Blacksmith.FileTypes
             mesh.VertexCount = mesh.Vertices.Count;
             mesh.FaceCount = mesh.Faces.Count;
             mesh.IndexCount = mesh.Indices.Count;
-            mdl.Meshes.Add(mesh);
 
-            return mdl;
+            return Model.CreateFromMesh(mesh);
         }
-        
-        public static string Export(Model model, bool calculateNormals = false, bool exportingIndividually = false)
+
+        public static string Export(Model model, NormalExportMode normalMode, bool exportingIndividually = false)
         {
             StringBuilder obj = new StringBuilder();
             for (int i = 0; i < model.Meshes.Count; i++)
@@ -429,17 +423,29 @@ namespace Blacksmith.FileTypes
                 for (int j = 0; j < model.Meshes[i].Vertices.Count; j++)
                 {
                     Mesh.Vertex v = model.Meshes[i].Vertices[j];
+                    obj.AppendLine($"v {v.Position.X} {v.Position.Y} {v.Position.Z}");
+                }
+
+                for (int j = 0; j < model.Meshes[i].Vertices.Count; j++)
+                {
+                    Mesh.Vertex v = model.Meshes[i].Vertices[j];
                     Vector3 n = v.Normal;
-                    if (calculateNormals)
+
+                    if (normalMode == NormalExportMode.CALCULATED)
                         n = model.Meshes[i].CalculatedNormals[j];
 
-                    obj.AppendLine($"v {v.Position.X} {v.Position.Y} {v.Position.Z}");
-                    obj.AppendLine($"vn {n.X} {n.Y} {n.Z}");
+                    if (normalMode != NormalExportMode.NONE)
+                        obj.AppendLine($"vn {n.X} {n.Y} {n.Z}");
+                }
+
+                for (int j = 0; j < model.Meshes[i].Vertices.Count; j++)
+                {
+                    Mesh.Vertex v = model.Meshes[i].Vertices[j];
                     obj.AppendLine($"vt {v.TextureCoordinate.X} {v.TextureCoordinate.Y}");
                 }
 
                 obj.AppendLine($"g mesh{i}");
-                for (int j = 0; j < model.Meshes[i].FaceCount; j++)
+                for (int j = 0; j < model.Meshes[i].Faces.Count; j++)
                 {
                     Mesh.Face f = model.Meshes[i].Faces[j];
                     if (exportingIndividually)
@@ -448,9 +454,17 @@ namespace Blacksmith.FileTypes
                         f.Y -= model.Meshes[i].NumOfVerticesBeforeMe;
                         f.Z -= model.Meshes[i].NumOfVerticesBeforeMe;
                     }
-                    string x = $"{f.X + 1}/{f.X + 1}/{f.X + 1}";
-                    string y = $"{f.Y + 1}/{f.Y + 1}/{f.Y + 1}";
-                    string z = $"{f.Z + 1}/{f.Z + 1}/{f.Z + 1}";
+
+                    string x = $"{f.X + 1}/{f.X + 1}";
+                    string y = $"{f.Y + 1}/{f.Y + 1}";
+                    string z = $"{f.Z + 1}/{f.Z + 1}";
+                    if (normalMode != NormalExportMode.NONE)
+                    {
+                        x += f.X + 1;
+                        y += f.Y + 1;
+                        z += f.Z + 1;
+                    }
+
                     obj.AppendLine($"f {x} {y} {z}");
                 }
             }

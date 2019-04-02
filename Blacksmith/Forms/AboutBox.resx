@@ -121,6 +121,7 @@
     <value>Blacksmith aims to be a successor to ARchive_neXt (a Ubisoft AnvilNext .forge explorer) who shares similar functionality. It is compatible with Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. If you missed it, the source code is on GitHub.
 
 Third-Party/Open-Source Software:
+&gt; ini-parser
 &gt; libzstd
 &gt; lzo
 &gt; oodle

@@ -365,7 +365,7 @@ namespace Blacksmith
             }
             catch (IOException e)
             {
-                MessageBox.Show($"Could not create a dds file due an error:\n{e.Message}", "Failure");
+                Message.Fail("Could not create a DDS file. " + e.Message + e.StackTrace);
             }
 
             completedAction();
@@ -712,5 +712,7 @@ namespace Blacksmith
             TextInfo info = new CultureInfo("en-US", false).TextInfo;
             return info.ToTitleCase(str);
         }
+
+        public static string FormatType(ResourceType type) => ToTitleCase(type.ToString().ToLower().Replace("_", " "));
     }
 }

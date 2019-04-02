@@ -7,6 +7,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -100,6 +101,16 @@ namespace Blacksmith
 
             /*gl.TextRenderer.Clear(Color.Red);
             gl.TextRenderer.DrawString("Text", new Font(FontFamily.GenericMonospace, 24), Brushes.White, new PointF(100, 100));*/
+
+            // refresh the tree view only if a folder path was changed
+            Properties.Settings.Default.PropertyChanged += new PropertyChangedEventHandler(delegate (object s, PropertyChangedEventArgs a)
+            {
+                if (a.PropertyName == "odysseyPath" || a.PropertyName == "originsPath" || a.PropertyName == "steepPath" || a.PropertyName == "tempPath")
+                {
+                    LoadGamesIntoTreeView();
+                }
+                LoadSettings();
+            });
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -151,7 +162,7 @@ namespace Blacksmith
                     node.Tag = names;
 
                     treeView.Enabled = true;
-                    MessageBox.Show($"Loaded the entries from {node.Text}.", "Success");
+                    Message.Success($"Loaded the entries from {node.Text}.");
                 });
 
                 // update the "Forge to search in" combobox in the Find dialog
@@ -180,7 +191,7 @@ namespace Blacksmith
                     node.Nodes[0].Remove(); // remove the placeholder node
 
                     treeView.Enabled = true;
-                    MessageBox.Show($"Loaded the subentries from {node.Text}.", "Success");
+                    Message.Success($"Loaded the subentries from {node.Text}.");
                 });
             }
         }
@@ -278,12 +289,10 @@ namespace Blacksmith
                     {
                         IEnumerable<TreeNode> nodes = node.Nodes.Cast<TreeNode>();
                         IEnumerable<TreeNode> sNodes = sNode.Nodes.Cast<TreeNode>();
-                        Console.WriteLine("Nodes: " + string.Join(" ", nodes.Select(x => x.Text).ToArray()));
-                        Console.WriteLine("SNodes: " + string.Join(" ", sNodes.Select(x => x.Text).ToArray()));
 
-                        bool hasBuildTable = nodes.Where(x => x.Text == ResourceType.BUILD_TABLE.ToString()).Count() > 0 || sNodes.Where(x => x.Text == ResourceType.BUILD_TABLE.ToString()).Count() > 0;
-                        bool hasMesh = nodes.Where(x => x.Text == ResourceType.MESH.ToString()).Count() > 0 || sNodes.Where(x => x.Text == ResourceType.MESH.ToString()).Count() > 0;
-                        bool hasTextureMap = nodes.Where(x => x.Text == ResourceType.TEXTURE_MAP.ToString()).Count() > 0 || sNodes.Where(x => x.Text == ResourceType.TEXTURE_MAP.ToString()).Count() > 0;
+                        bool hasBuildTable = nodes.Where(x => x.Text == Helpers.FormatType(ResourceType.BUILD_TABLE)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatType(ResourceType.BUILD_TABLE)).Count() > 0;
+                        bool hasMesh = nodes.Where(x => x.Text == Helpers.FormatType(ResourceType.MESH)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatType(ResourceType.MESH)).Count() > 0;
+                        bool hasTextureMap = nodes.Where(x => x.Text == Helpers.FormatType(ResourceType.TEXTURE_MAP)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatType(ResourceType.TEXTURE_MAP)).Count() > 0;
                             
                         UpdateContextMenu(enableBuildTable: hasBuildTable, enableDatafile: true, enableModel: hasMesh, enableTexture: hasTextureMap);
                     }
@@ -357,6 +366,11 @@ namespace Blacksmith
             else
                 imagePanel.BackgroundImage = null;
         }
+
+        private void controlsSplitButton_ButtonClick(object sender, EventArgs e)
+        {
+            controlsSplitButton.ShowDropDown();
+        }
         #endregion
 
         #region Context menu
@@ -368,7 +382,7 @@ namespace Blacksmith
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
             Clipboard.SetText(node.Text);
 
-            MessageBox.Show("Copied the name to the clipboard.", "Success");
+            Message.Success("Copied the name to the clipboard.");
         }
 
         private void showInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -388,8 +402,11 @@ namespace Blacksmith
             if (treeView.SelectedNode == null)
                 return;
 
-            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode.Parent;
-
+            EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+            node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
+            Origins.ReadBuildTable(Helpers.GetTempPath(node.Text + "." + Helpers.GameToExtension(node.Game)), (entries) =>
+            {
+            });
         }
         // end Build Table
 
@@ -417,7 +434,7 @@ namespace Blacksmith
                 }
                 finally
                 {
-                    MessageBox.Show("Extracted decompressed data.", "Success");
+                    Message.Success("Extracted decompressed data.");
                 }
             }
         }
@@ -446,7 +463,7 @@ namespace Blacksmith
                 // failure
                 if (decompressedData.Length == 0 || decompressedData == null)
                 {
-                    MessageBox.Show("Could not decompress data.", "Failure");
+                    Message.Fail("Could not decompress data.");
                     return;
                 }
 
@@ -464,7 +481,7 @@ namespace Blacksmith
                     }
                     finally
                     {
-                        MessageBox.Show("Saved compressed data.", "Success");
+                        Message.Success("Saved compressed data.");
                     }
                 }
             });
@@ -492,6 +509,8 @@ namespace Blacksmith
                 return;
 
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+#warning x
+            node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
             Forge forge = node.GetForge();
 
             if (forge != null)
@@ -506,7 +525,7 @@ namespace Blacksmith
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
                             File.WriteAllText(dialog.FileName, filelist);
-                            MessageBox.Show("Created filelist.", "Success");
+                            Message.Success("Created filelist.");
                         }
                     }
                 }
@@ -518,6 +537,8 @@ namespace Blacksmith
             if (treeView.SelectedNode == null)
                 return;
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+#warning x
+            node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
 
             Forge forge = node.GetForge();
             if (forge != null && forge.FileEntries.Length > 0)
@@ -532,7 +553,7 @@ namespace Blacksmith
                             byte[] data = forge.GetRawData(fe);
                             File.WriteAllBytes(Path.Combine(dialog.SelectedPath, name), data);
                         });
-                        MessageBox.Show($"Extracted all of {forge.Name}.", "Success");
+                        Message.Success($"Extracted all of {forge.Name}.");
                     }
                 }
             }
@@ -586,7 +607,7 @@ namespace Blacksmith
                     {
                         if (Helpers.LocateRawDataIdentifier(reader).Length < 2)
                         {
-                            MessageBox.Show("Operation failed, due to improper data.", "Failure");
+                            Message.Fail("Operation failed, due to improper data.");
                             return;
                         }
 
@@ -614,18 +635,18 @@ namespace Blacksmith
                                 saveFileDialog.Filter = "Decompressed Data|*.dec|All Files|*.*";
                                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                                 {
-                                    MessageBox.Show("Decompressed file successfully. Check the folder where the compressed file is located.", "Success");
+                                    Message.Success("Decompressed file successfully. Check the folder where the compressed file is located.");
                                 }
                             }
                             else
-                                MessageBox.Show("Unknown compression type.", "Failure");
+                                Message.Fail("Unknown compression type.");
                         });
                     }
                 }
             }
         }
 
-#warning currently hidden (Version 1.6)
+#warning currently hidden
         private void showFileInTheViewersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog.Filter = Helpers.DECOMPRESSED_FILE_FORMATS;
@@ -668,7 +689,7 @@ namespace Blacksmith
                         }
                         else
                         {
-                            MessageBox.Show("Not yet supported.", "Failure");
+                            Message.Fail("Not yet supported.");
                         }
                     }
                     else if (type == ResourceType.TEXTURE_MAP)
@@ -720,17 +741,10 @@ namespace Blacksmith
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Settings settings = new Settings();
-            // refresh the tree view when the Settings window is about to close
-            settings.FormClosing += new FormClosingEventHandler((object o, FormClosingEventArgs args) =>
+            /*settings.FormClosing += new FormClosingEventHandler((object o, FormClosingEventArgs args) =>
             {
-                // ToDo: add Properties.Settings event handler here, so that I can detect when a game path was changed
-
-                // reload games in the tree view
-                LoadGamesIntoTreeView();
-
-                // update settings
                 LoadSettings();
-            });
+            });*/
             settings.ShowDialog();
         }
         #endregion
@@ -783,7 +797,7 @@ namespace Blacksmith
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show(e.Message + e.StackTrace, "Failure");
+                        Message.Fail(e.Message + e.StackTrace);
                     }
                     finally
                     {
@@ -880,25 +894,26 @@ namespace Blacksmith
                         }
                         else
                         {
-                            MessageBox.Show("Not yet supported.", "Failure");
+                            Message.Fail("Not yet supported.");
                         }
                     }, () =>
                     {
                         meshCheckedListBox.Items.Clear();
+
+                        if (gl.Model == null)
+                            return;
+
                         for (int i = 0; i < gl.Model.Meshes.Count; i++)
                         {
                             meshCheckedListBox.Items.Add($"Mesh {i}", true);
                         }
+                        
+                        gl.Model.Meshes.ForEach(x => x.Scale = MODEL_SCALE);
 
-                        if (gl.Model != null)
-                        {
-                            gl.Model.Meshes.ForEach(x => x.Scale = MODEL_SCALE);
-
-                            Vector3 center = gl.Model.GetCenter();
-                            //float farthestZ = gl.Model.Meshes.Select(x => x.Position.Z).Max();
-                            gl.SetCameraResetPosition(Vector3.Add(center, new Vector3(0, 0, 30)));
-                            gl.ResetCamera();
-                        }
+                        Vector3 center = gl.Model.GetCenter();
+                        //float farthestZ = gl.Model.Meshes.Select(x => x.Position.Z).Max();
+                        gl.SetCameraResetPosition(Vector3.Add(center, new Vector3(0, 0, 30)));
+                        gl.ResetCamera();
                     });
                     break;
                 case ResourceType.TEXTURE_MAP: // texture maps
@@ -1140,16 +1155,19 @@ namespace Blacksmith
                     {
                         if (Helpers.IMPORTANT_RESOURCE_TYPES.Contains(location.Type))
                         {
-                            nodes.Add(new EntryTreeNode
+                            if (nodes.Where(x => x.Text == Helpers.FormatType(location.Type)).Count() == 0)
                             {
-                                Game = node.Game,
-                                ImageIndex = GetImageIndex(location.Type),
-                                Path = Helpers.GetTempPath(file),
-                                ResourceOffset = location.Offset,
-                                ResourceType = location.Type,
-                                Text = location.Type.ToString(),
-                                Type = EntryTreeNodeType.SUBENTRY
-                            });
+                                nodes.Add(new EntryTreeNode
+                                {
+                                    Game = node.Game,
+                                    ImageIndex = GetImageIndex(location.Type),
+                                    Path = Helpers.GetTempPath(file),
+                                    ResourceOffset = location.Offset,
+                                    ResourceType = location.Type,
+                                    Text = Helpers.FormatType(location.Type),
+                                    Type = EntryTreeNodeType.SUBENTRY
+                                });
+                            }
                         }
                     }
                 }
@@ -1304,7 +1322,7 @@ namespace Blacksmith
         }
         #endregion
 
-        
+#warning I will remove at some point
         private void export3DViewerDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (gl.Model != null && gl.Model.Meshes.Count > 0)
@@ -1319,15 +1337,13 @@ namespace Blacksmith
                         File.WriteAllText(Path.Combine(Path.GetDirectoryName(saveFileDialog.FileName), Path.GetFileNameWithoutExtension(saveFileDialog.FileName) + i + ".smd"), smd[i]);
                     }*/
 
-                    File.WriteAllText(saveFileDialog.FileName, OBJ.Export(gl.Model));
+                    //File.WriteAllText(saveFileDialog.FileName, OBJ.Export(gl.Model));
                     //File.WriteAllText(saveFileDialog.FileName + ".smd", SMD.Export(gl.Model)[0]);
-                    STL.ExportBinary(saveFileDialog.FileName, gl.Model);
+                    //STL.ExportBinary(saveFileDialog.FileName, gl.Model);
 
-                    MessageBox.Show("Done.", "Success");
+                    Message.Success("Done");
                 }
             }
         }
-
-
     }
 }

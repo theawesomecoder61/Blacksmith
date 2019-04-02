@@ -158,7 +158,7 @@ namespace Blacksmith.Games
                         // Compiled Mesh block
                         if (reader.ReadUInt32() != (uint)ResourceType.COMPILED_MESH)
                         {
-                            MessageBox.Show("Failed to read model.", "Failure");
+                            Message.Fail("Failed to read model.");
                             return new Model();
                         }
                         reader.BaseStream.Seek(22, SeekOrigin.Current);
@@ -174,6 +174,12 @@ namespace Blacksmith.Games
                         //Console.WriteLine("Submesh OFFSET: " + reader.BaseStream.Position);
                         SubmeshBlock submeshBlock = new SubmeshBlock();
                         submeshBlock.MeshCount = reader.ReadInt32();
+                        if (submeshBlock.MeshCount < 0)
+                        {
+                            Message.Fail("Failed to read the model.");
+                            return model;
+                        }
+
                         submeshBlock.Entries = new SubmeshEntry[submeshBlock.MeshCount];
                         for (int i = 0; i < submeshBlock.MeshCount; i++)
                         {
@@ -436,7 +442,7 @@ namespace Blacksmith.Games
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show("Failed to read model. " + e.Message, "Failure");
+                        Message.Fail("Failed to read model. " + e.Message);
                     }
                     finally
                     {
@@ -604,7 +610,7 @@ namespace Blacksmith.Games
                         // show error
                         if (compiledMeshBlock.MeshCount > 1)
                         {
-                            MessageBox.Show("Currently, Blacksmith cannot handle models with more than 1 submesh.", "Failure");
+                            Messages.Fail("Currently, Blacksmith cannot handle models with more than 1 submesh.", "Failure");
                             return null;
                         }
 
@@ -860,16 +866,18 @@ namespace Blacksmith.Games
         #endregion
 
         #region Other
-        public BuildTableEntry[] ReadBuildTable(string fileName, Action<string> completionAction)
+        public static void ReadBuildTable(string fileName, Action<BuildTableEntry[]> completionAction)
         {
             List<BuildTableEntry> entries = new List<BuildTableEntry>();
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 if (stream.Length == 0)
-                    return null;
+                    return;
 
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
+                    BuildTableEntry entry = new BuildTableEntry();
+
                     // header
                     DatafileHeader header = new DatafileHeader
                     {
@@ -878,13 +886,17 @@ namespace Blacksmith.Games
                         FileNameSize = reader.ReadInt32()
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
+                    entry.Header = header;
+
+                    reader.BaseStream.Seek(1, SeekOrigin.Current);
+                    entry.Data = reader.ReadBytes(header.FileSize);
 
                     // go until we reach the end of the file
                     while (reader.BaseStream.Position < reader.BaseStream.Length)
-                        entries.Add(new BuildTableEntry());
+                        entries.Add(entry);
                 }
             }
-            return entries.ToArray();
+            completionAction(entries.ToArray());
         }
         #endregion
     }

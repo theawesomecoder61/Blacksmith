@@ -46,12 +46,18 @@ namespace Blacksmith.Forms
             this.tempButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.popupComboBox = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.filelistSeparatorComboBox = new System.Windows.Forms.ComboBox();
             this.deleteTempCheckbox = new System.Windows.Forms.CheckBox();
             this.threeDBGColorBtn = new System.Windows.Forms.Button();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.sensitivityTrackBar = new System.Windows.Forms.TrackBar();
+            this.label12 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.pointSizeBar = new System.Windows.Forms.TrackBar();
@@ -59,19 +65,22 @@ namespace Blacksmith.Forms
             this.label6 = new System.Windows.Forms.Label();
             this.renderModeComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.sensitivityTrackBar = new System.Windows.Forms.TrackBar();
-            this.label12 = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.saveAndLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pointSizeBar)).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox
@@ -79,7 +88,7 @@ namespace Blacksmith.Forms
             this.groupBox.Controls.Add(this.panel3);
             this.groupBox.Controls.Add(this.panel2);
             this.groupBox.Controls.Add(this.panel1);
-            this.groupBox.Location = new System.Drawing.Point(12, 12);
+            this.groupBox.Location = new System.Drawing.Point(12, 27);
             this.groupBox.Name = "groupBox";
             this.groupBox.Size = new System.Drawing.Size(362, 188);
             this.groupBox.TabIndex = 0;
@@ -226,14 +235,40 @@ namespace Blacksmith.Forms
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.popupComboBox);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.filelistSeparatorComboBox);
-            this.groupBox1.Location = new System.Drawing.Point(380, 206);
+            this.groupBox1.Location = new System.Drawing.Point(380, 221);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(220, 48);
+            this.groupBox1.Size = new System.Drawing.Size(220, 91);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Miscellaneous";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 49);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(71, 13);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "Hide Popups:";
+            // 
+            // popupComboBox
+            // 
+            this.popupComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.popupComboBox.FormattingEnabled = true;
+            this.popupComboBox.Items.AddRange(new object[] {
+            "Success",
+            "Failure",
+            "Success & Failure",
+            "None"});
+            this.popupComboBox.Location = new System.Drawing.Point(83, 46);
+            this.popupComboBox.Name = "popupComboBox";
+            this.popupComboBox.Size = new System.Drawing.Size(131, 21);
+            this.popupComboBox.TabIndex = 0;
+            this.popupComboBox.SelectedIndexChanged += new System.EventHandler(this.popupComboBox_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -278,6 +313,11 @@ namespace Blacksmith.Forms
             this.threeDBGColorBtn.UseVisualStyleBackColor = true;
             this.threeDBGColorBtn.Click += new System.EventHandler(this.threeDBGColorBtn_Click);
             // 
+            // colorDialog
+            // 
+            this.colorDialog.AnyColor = true;
+            this.colorDialog.FullOpen = true;
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label10);
@@ -291,12 +331,55 @@ namespace Blacksmith.Forms
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.threeDBGColorBtn);
             this.groupBox2.Controls.Add(this.renderModeComboBox);
-            this.groupBox2.Location = new System.Drawing.Point(380, 12);
+            this.groupBox2.Location = new System.Drawing.Point(380, 27);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(220, 188);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "3D Viewer";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.SystemColors.Control;
+            this.label10.Enabled = false;
+            this.label10.Location = new System.Drawing.Point(186, 129);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(29, 13);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "High";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.SystemColors.Control;
+            this.label11.Enabled = false;
+            this.label11.Location = new System.Drawing.Point(107, 129);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(27, 13);
+            this.label11.TabIndex = 0;
+            this.label11.Text = "Low";
+            // 
+            // sensitivityTrackBar
+            // 
+            this.sensitivityTrackBar.Enabled = false;
+            this.sensitivityTrackBar.LargeChange = 2;
+            this.sensitivityTrackBar.Location = new System.Drawing.Point(106, 97);
+            this.sensitivityTrackBar.Minimum = 1;
+            this.sensitivityTrackBar.Name = "sensitivityTrackBar";
+            this.sensitivityTrackBar.Size = new System.Drawing.Size(108, 45);
+            this.sensitivityTrackBar.TabIndex = 0;
+            this.sensitivityTrackBar.Value = 5;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Enabled = false;
+            this.label12.Location = new System.Drawing.Point(8, 104);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(92, 13);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Mouse Sensitivity:";
             // 
             // label9
             // 
@@ -367,72 +450,74 @@ namespace Blacksmith.Forms
             this.groupBox3.Controls.Add(this.tempTextBox);
             this.groupBox3.Controls.Add(this.deleteTempCheckbox);
             this.groupBox3.Controls.Add(this.tempButton);
-            this.groupBox3.Location = new System.Drawing.Point(12, 206);
+            this.groupBox3.Location = new System.Drawing.Point(12, 221);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(362, 92);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Temporary Files";
             // 
-            // label10
+            // menuStrip1
             // 
-            this.label10.AutoSize = true;
-            this.label10.BackColor = System.Drawing.SystemColors.Control;
-            this.label10.Enabled = false;
-            this.label10.Location = new System.Drawing.Point(186, 129);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(29, 13);
-            this.label10.TabIndex = 0;
-            this.label10.Text = "High";
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAndLoadToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(614, 24);
+            this.menuStrip1.TabIndex = 1;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // label11
+            // saveAndLoadToolStripMenuItem
             // 
-            this.label11.AutoSize = true;
-            this.label11.BackColor = System.Drawing.SystemColors.Control;
-            this.label11.Enabled = false;
-            this.label11.Location = new System.Drawing.Point(107, 129);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(27, 13);
-            this.label11.TabIndex = 0;
-            this.label11.Text = "Low";
+            this.saveAndLoadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadFromFileToolStripMenuItem,
+            this.saveToFileToolStripMenuItem});
+            this.saveAndLoadToolStripMenuItem.Name = "saveAndLoadToolStripMenuItem";
+            this.saveAndLoadToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.saveAndLoadToolStripMenuItem.Text = "Save and Load";
             // 
-            // sensitivityTrackBar
+            // loadFromFileToolStripMenuItem
             // 
-            this.sensitivityTrackBar.Enabled = false;
-            this.sensitivityTrackBar.LargeChange = 2;
-            this.sensitivityTrackBar.Location = new System.Drawing.Point(106, 97);
-            this.sensitivityTrackBar.Minimum = 1;
-            this.sensitivityTrackBar.Name = "sensitivityTrackBar";
-            this.sensitivityTrackBar.Size = new System.Drawing.Size(108, 45);
-            this.sensitivityTrackBar.TabIndex = 0;
-            this.sensitivityTrackBar.Value = 5;
+            this.loadFromFileToolStripMenuItem.Name = "loadFromFileToolStripMenuItem";
+            this.loadFromFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.loadFromFileToolStripMenuItem.Text = "Load From File...";
+            this.loadFromFileToolStripMenuItem.Click += new System.EventHandler(this.loadFromFileToolStripMenuItem_Click);
             // 
-            // label12
+            // saveToFileToolStripMenuItem
             // 
-            this.label12.AutoSize = true;
-            this.label12.Enabled = false;
-            this.label12.Location = new System.Drawing.Point(8, 104);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(92, 13);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "Mouse Sensitivity:";
+            this.saveToFileToolStripMenuItem.Name = "saveToFileToolStripMenuItem";
+            this.saveToFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveToFileToolStripMenuItem.Text = "Save To File...";
+            this.saveToFileToolStripMenuItem.Click += new System.EventHandler(this.saveToFileToolStripMenuItem_Click);
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.FileName = "settings";
+            this.saveFileDialog.Filter = "INI Files|*.ini|All Files|*.l*";
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "INI Files|*.ini|All Files|*.l*";
             // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 309);
+            this.ClientSize = new System.Drawing.Size(614, 321);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Settings";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Settings";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Settings_FormClosing);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.groupBox.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
@@ -445,11 +530,14 @@ namespace Blacksmith.Forms
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pointSizeBar)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -490,5 +578,13 @@ namespace Blacksmith.Forms
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TrackBar sensitivityTrackBar;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox popupComboBox;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem saveAndLoadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadFromFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToFileToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }

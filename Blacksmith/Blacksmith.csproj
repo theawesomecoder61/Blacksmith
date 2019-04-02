@@ -80,6 +80,9 @@
     <ApplicationIcon>Resources\noun_Blacksmith_1124400.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -118,12 +121,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\NormalExportMode.cs" />
     <Compile Include="Forms\ConvertDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ConvertDialog.Designer.cs">
       <DependentUpon>ConvertDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Message.cs" />
     <Compile Include="Three\Cube.cs" />
     <Compile Include="Enums\EntryTreeNodeType.cs" />
     <Compile Include="Enums\FindType.cs" />

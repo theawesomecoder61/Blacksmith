@@ -67,7 +67,7 @@ namespace Blacksmith.FileTypes
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Failure");
+                Message.Fail(e.Message + e.StackTrace);
             }
         }
     }

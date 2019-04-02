@@ -130,5 +130,17 @@ namespace Blacksmith.Properties {
                 this["pointSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int hidePopups {
+            get {
+                return ((int)(this["hidePopups"]));
+            }
+            set {
+                this["hidePopups"] = value;
+            }
+        }
     }
 }

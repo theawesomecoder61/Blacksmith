@@ -35,7 +35,6 @@ namespace Blacksmith.Forms
             node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node;
 
             string item = (string)modelComboBox.SelectedItem;
-            bool calculateNormals = normalsComboBox.SelectedIndex == 1;
 
             saveFileDialog.FileName = node.Text;
             saveFileDialog.Filter = $"{item}|All Files|*.*";
@@ -49,7 +48,7 @@ namespace Blacksmith.Forms
                             //DAE.Export(saveFileDialog.FileName, model, false, false);
                             break;*/
                         case 0: //obj
-                            File.WriteAllText(saveFileDialog.FileName, OBJ.Export(model, calculateNormals));
+                            File.WriteAllText(saveFileDialog.FileName, OBJ.Export(model, (NormalExportMode)normalsComboBox.SelectedIndex));
                             break;
                         /*case 2: //smd
                             File.WriteAllText(saveFileDialog.FileName, SMD.Export(model, calculateNormals));
@@ -60,7 +59,7 @@ namespace Blacksmith.Forms
                         default:
                             break;
                     }
-                    MessageBox.Show("Saved the model into a single file.", "Success");                    
+                    Message.Success("Saved the model into a single file.");                    
                 }
                 else
                 {
@@ -74,7 +73,7 @@ namespace Blacksmith.Forms
                                 //DAE.Export(fileName, mdl, false, false);
                                 break;*/
                             case 0: //obj
-                                File.WriteAllText(fileName, OBJ.Export(mdl, true));
+                                File.WriteAllText(fileName, OBJ.Export(mdl, (NormalExportMode)normalsComboBox.SelectedIndex, true));
                                 break;
                             /*case 2: //smd
                                 File.WriteAllText(fileName, SMD.Export(mdl, true));
@@ -86,7 +85,7 @@ namespace Blacksmith.Forms
                                 break;*/
                         }
                     }
-                    MessageBox.Show("Saved the model into separate files.", "Success");
+                    Message.Success("Saved the model into separate files.");
                 }
             }
         }
@@ -111,13 +110,21 @@ namespace Blacksmith.Forms
                 saveFileDialog.Filter = item;
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    Helpers.ConvertDDS(tex, Path.GetDirectoryName(saveFileDialog.FileName), ext, (error) =>
+                    // copy the file if the user selected DDS
+                    if (textureComboBox.SelectedIndex == 0)
                     {
-                        if (error)
-                            MessageBox.Show("Failed to convert the texture.", "Failure");
-                        else
-                            MessageBox.Show("Converted the texture.", "Success");
-                    });
+                        File.Copy(tex, saveFileDialog.FileName);
+                    }
+                    else
+                    {
+                        Helpers.ConvertDDS(tex, Path.GetDirectoryName(saveFileDialog.FileName), ext, (error) =>
+                        {
+                            if (error)
+                                Message.Fail("Failed to convert the texture.");
+                            else
+                                Message.Success("Converted the texture.");
+                        });
+                    }
                 }
             }
         }

@@ -4,7 +4,7 @@ namespace Blacksmith.Enums
 {
     public enum ResourceType : uint
     {
-        // http://wiki.tbotr.net/index.php?title=Assassins_Creed:File_Formats
+        // source: http://wiki.tbotr.net/index.php?title=Assassins_Creed:File_Formats
         _NONE = 4291144048, // something I chose randomly
         ANIMATION = 262342271,
         BUILD_TABLE = 585940579,

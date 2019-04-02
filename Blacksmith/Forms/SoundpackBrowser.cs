@@ -142,9 +142,9 @@ namespace Blacksmith.Forms
                     {
                         // change the message box if a soundbank was extracted
                         if (list.Where(l => l.Contains(".bnk")).Count() > 0)
-                            MessageBox.Show("Extracted all sounds and soundbanks. All sounds were converted to OGG and all soundbanks were dumped.", "Success");
+                            Message.Success("Extracted all sounds and soundbanks. All sounds were converted to OGG and all soundbanks were dumped.");
                         else
-                            MessageBox.Show("Extracted all sounds, which were converted to OGG.", "Success");
+                            Message.Success("Extracted all sounds, which were converted to OGG.");
                     });
                 }
             }

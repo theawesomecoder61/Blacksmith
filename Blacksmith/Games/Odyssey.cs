@@ -584,7 +584,7 @@ namespace Blacksmith.Games
                         // Compiled Mesh block
                         if (reader.ReadUInt32() != (uint)ResourceType.COMPILED_MESH)
                         {
-                            MessageBox.Show("Failed to read model.", "Failure");
+                            Message.Fail("Failed to read model.");
                             return new Model();
                         }
                         reader.BaseStream.Seek(22, SeekOrigin.Current);
@@ -865,7 +865,7 @@ namespace Blacksmith.Games
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show("Failed to read model. " + e.Message, "Failure");
+                        Message.Fail("Failed to read model. " + e.Message + e.StackTrace);
                     }
                     finally
                     {

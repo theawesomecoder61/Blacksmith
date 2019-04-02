@@ -35,6 +35,12 @@ namespace Blacksmith.Forms
 
         private void findAllBtn_Click(object sender, EventArgs e)
         {
+            if (forgeComboBox.SelectedIndex < 0 || forgeComboBox.Items.Count == 0)
+            {
+                Message.Fail("Either no .forge file is open/expanded in Blacksmith or none have been selected from the dropdown.");
+                return;
+            }
+
             dataGridView.Rows.Clear();
 
             FindType type = FindType.NORMAL;
@@ -86,7 +92,7 @@ namespace Blacksmith.Forms
 
                 DataGridViewTextBoxCell size = new DataGridViewTextBoxCell
                 {
-                    Value = node.Size //Helpers.BytesToString()
+                    Value = node.Size
                 };
                 row.Cells.Add(size);
 
