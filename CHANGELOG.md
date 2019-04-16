@@ -24,6 +24,9 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
+### Version 1.6 [FUTURE VERSION] (4/1X/2019)
+- Just you wait...
+
 ### Version 1.5.1 [CURRENT VERSION] (4/1/2019)
 - Added
   - an option to exclude normals of 3D models in `Save As...` dialog
@@ -43,6 +46,7 @@
   - a message will inform you that a Forge has not been selected in the Find window if you attempt to perform a search
   - a crash caused by loading a Steep 3D model (support will come in Version 1.6)
   - OBJ exporter again
+
 ### Version 1.5 (preview) (3/31/2019)
 - Added
   - initial Odyssey model support
@@ -63,10 +67,7 @@
   - OBJ exporter
 - **Texture conversion will sit out on this version. texconv is not being friendly.** Expect this fixed in the next version.
 
-
-### Version 1.4 [CURRENT VERSION] (3/8/2019)
-
-Version 1.4: Initial Origins 3D model support, Find feature, 3D Viewer & UI improvements
+### Version 1.4 (3/8/2019)
 - Added
   - *initial Origins 3D model support!*
   > Supported features: geometry, normals, texture coordinates (UVs)
