@@ -7,6 +7,8 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 
 >> **Another note**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
 
+>>> **Last note**: Blacksmith *DOES NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
+
 ----
 
 ***Check the [Current Support section](https://github.com/theawesomecoder61/Blacksmith/blob/master/CHANGELOG.md#current-support) to see what is supported.***
