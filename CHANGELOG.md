@@ -33,9 +33,10 @@
   - number of results displays in the Find window
   - `Filter By` in the Find window (easily locate 3D models and textures)
   - automatic normal map fixing feature (flips blue channel; credit to @cire992), can be turned off in the Settings
+  - save & load Settings to .ini files
   - 500+ new Resource Identifiers
   - if the entry is under 2 MB (compressed), all located Resource Identifiers will be displayed; otherwise, only the first Resource Identifier will be displayed
-  -- **note: extraction may take slightly longer as a result**
+    - **note: extraction may take slightly longer as a result**
 - Updated
   - you can now press Escape to close any popup/dialog
   - renamed "ResourceType" to "ResourceIdentifier"
