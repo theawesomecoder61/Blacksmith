@@ -7,6 +7,8 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 
 >> **Another note**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
 
+>>> **Last note**: Blacksmith *DOES NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
+
 ----
 
 ***Check the [Current Support section](https://github.com/theawesomecoder61/Blacksmith/blob/master/CHANGELOG.md#current-support) to see what is supported.***
@@ -52,7 +54,7 @@ PC versions of:
 3. Click the plus icon next to a .forge entry to see all subentries.
 > Doing this will extract and decompress that entry. The result is a `.acod`, `.acor`, or `.stp` file found in the Temporary Path with the same name.
 
-> If there is a `TEXTURE_MAP` or `MESH` subentry, Blacksmith will try to load these in either the 3D Viewer, Image Viewer, or Text Viewer.
+> If there is a `Texture Map` or `Mesh` subentry, Blacksmith will try to load these in one of the Viewers.
 
 ## Downloads
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
@@ -77,6 +79,7 @@ You will need:
 Blacksmith is licensed under the MIT License.
 
 ## Third-Party Software
+- ini-parser
 - libzstd
 - lzo
 - oodle
