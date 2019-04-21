@@ -26,6 +26,7 @@
 ## Changelog
 ### Version 1.6 [CURRENT VERSION] (4/20/2019)
 - Added
+  - Texture Set support, data will display in the Text Viewer
   - "Multifile Entry" support, any entry that contains additional files (Build Table, LOD Selector, to name a couple)
     - **found by right-clicking an entry or subentry and selecting `Multifile Entry > Extract Contained Files`, which reveals the Multifile Entry Exporter**
   - `Tools > Show File in the Viewers` and `Tools > Export 3D Viewer Contents`; both features are self-explanatory
