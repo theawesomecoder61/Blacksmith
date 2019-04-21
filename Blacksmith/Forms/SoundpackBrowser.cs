@@ -21,6 +21,66 @@ namespace Blacksmith.Forms
             InitializeComponent();
         }
 
+        private void SoundpackBrowser_Load(object sender, System.EventArgs e)
+        {
+            Text = $"Soundpack Browser - {FileName}";
+        }
+
+        private void SoundpackBrowser_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
+        private void dataGridView_SelectionChanged(object sender, EventArgs e)
+        {
+        }
+
+        // pp = play/pause
+        private void ppBtn_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(playingFile))
+            {
+                if (dataGridView.SelectedRows.Count == 0)
+                    return;
+                
+                ExtractAndConvert(dataGridView.SelectedRows.Cast<DataGridViewRow>().Take(1).ToArray(), null, (list) => {
+                    playingFile = list[0].Replace(".wem", ".ogg");
+                });
+            }
+            else
+            {
+                /*using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader(playingFile))
+                using (var waveOut = new NAudio.Wave.WaveOutEvent())
+                {
+                    waveOut.Init(vorbisStream);
+                    waveOut.Play();
+                }*/
+            }
+        }
+
+        private void stopBtn_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void extractBtn_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    ExtractAndConvert(dataGridView.SelectedRows.Cast<DataGridViewRow>().ToArray(), dialog.SelectedPath, (list) =>
+                    {
+                        // change the message box if a soundbank was extracted
+                        if (list.Where(l => l.Contains(".bnk")).Count() > 0)
+                            Message.Success("Extracted all sounds and soundbanks. All sounds were converted to OGG and all soundbanks were dumped.");
+                        else
+                            Message.Success("Extracted all sounds, which were converted to OGG.");
+                    });
+                }
+            }
+        }
+
         public void LoadPack(string fileName)
         {
             FileName = fileName;
@@ -78,7 +138,7 @@ namespace Blacksmith.Forms
                             Value = entry.Path
                         };
                         row.Cells.Add(path);
-                        
+
                         rows.Add(row);
                         entries++;
                     }
@@ -94,60 +154,6 @@ namespace Blacksmith.Forms
             });
 
             t.Start();
-        }
-
-        private void SoundpackBrowser_Load(object sender, System.EventArgs e)
-        {
-            Text = $"Soundpack Browser - {FileName}";
-        }
-
-        private void dataGridView_SelectionChanged(object sender, EventArgs e)
-        {
-        }
-
-        // pp = play/pause
-        private void ppBtn_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(playingFile))
-            {
-                if (dataGridView.SelectedRows.Count == 0)
-                    return;
-                
-                ExtractAndConvert(dataGridView.SelectedRows.Cast<DataGridViewRow>().Take(1).ToArray(), null, (list) => {
-                    playingFile = list[0].Replace(".wem", ".ogg");
-                });
-            }
-            else
-            {
-                /*using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader(playingFile))
-                using (var waveOut = new NAudio.Wave.WaveOutEvent())
-                {
-                    waveOut.Init(vorbisStream);
-                    waveOut.Play();
-                }*/
-            }
-        }
-
-        private void stopBtn_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void extractBtn_Click(object sender, EventArgs e)
-        {
-            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
-            {
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    ExtractAndConvert(dataGridView.SelectedRows.Cast<DataGridViewRow>().ToArray(), dialog.SelectedPath, (list) =>
-                    {
-                        // change the message box if a soundbank was extracted
-                        if (list.Where(l => l.Contains(".bnk")).Count() > 0)
-                            Message.Success("Extracted all sounds and soundbanks. All sounds were converted to OGG and all soundbanks were dumped.");
-                        else
-                            Message.Success("Extracted all sounds, which were converted to OGG.");
-                    });
-                }
-            }
         }
 
         private void ExtractAndConvert(DataGridViewRow[] rows, string parentDir = null, Action<List<string>> completedAction = null)

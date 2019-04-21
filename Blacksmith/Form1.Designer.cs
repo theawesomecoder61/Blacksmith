@@ -36,9 +36,11 @@ namespace Blacksmith
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decompressFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.showFileInTheViewersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.decompileLocalizationDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.export3DViewerDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.decompileLocalizationDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sourceCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,8 +58,6 @@ namespace Blacksmith
             this.copyNameToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showInExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.buildTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.extractAllEntriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.datafileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveRawDataAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveDecompressedDataAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,12 +67,27 @@ namespace Blacksmith
             this.extractAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractAllEntriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.threeToolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.threeToolStrip = new System.Windows.Forms.ToolStrip();
+            this.controlsSplitButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.rResetCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.cameraStripLabel = new System.Windows.Forms.ToolStripLabel();
             this.resetCameraStripButton = new System.Windows.Forms.ToolStripButton();
             this.threeToolStrip2 = new System.Windows.Forms.ToolStrip();
@@ -89,22 +104,8 @@ namespace Blacksmith
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
-            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.controlsSplitButton = new System.Windows.Forms.ToolStripSplitButton();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.rResetCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -178,9 +179,11 @@ namespace Blacksmith
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.decompressFileToolStripMenuItem,
+            this.toolStripSeparator4,
             this.showFileInTheViewersToolStripMenuItem,
-            this.decompileLocalizationDataToolStripMenuItem,
-            this.export3DViewerDataToolStripMenuItem});
+            this.toolStripSeparator5,
+            this.export3DViewerDataToolStripMenuItem,
+            this.decompileLocalizationDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -192,14 +195,29 @@ namespace Blacksmith
             this.decompressFileToolStripMenuItem.Text = "Decompress File";
             this.decompressFileToolStripMenuItem.Click += new System.EventHandler(this.decompressFileToolStripMenuItem_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(221, 6);
+            // 
             // showFileInTheViewersToolStripMenuItem
             // 
-            this.showFileInTheViewersToolStripMenuItem.Enabled = false;
             this.showFileInTheViewersToolStripMenuItem.Name = "showFileInTheViewersToolStripMenuItem";
             this.showFileInTheViewersToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.showFileInTheViewersToolStripMenuItem.Text = "Preview an Origins Model";
-            this.showFileInTheViewersToolStripMenuItem.Visible = false;
+            this.showFileInTheViewersToolStripMenuItem.Text = "Show File in the Viewers";
             this.showFileInTheViewersToolStripMenuItem.Click += new System.EventHandler(this.showFileInTheViewersToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(221, 6);
+            // 
+            // export3DViewerDataToolStripMenuItem
+            // 
+            this.export3DViewerDataToolStripMenuItem.Name = "export3DViewerDataToolStripMenuItem";
+            this.export3DViewerDataToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.export3DViewerDataToolStripMenuItem.Text = "Export 3D Viewer Contents";
+            this.export3DViewerDataToolStripMenuItem.Click += new System.EventHandler(this.export3DViewerDataToolStripMenuItem_Click);
             // 
             // decompileLocalizationDataToolStripMenuItem
             // 
@@ -209,15 +227,6 @@ namespace Blacksmith
             this.decompileLocalizationDataToolStripMenuItem.Text = "Decompile Localization Data";
             this.decompileLocalizationDataToolStripMenuItem.Visible = false;
             this.decompileLocalizationDataToolStripMenuItem.Click += new System.EventHandler(this.decompileLocalizationDataToolStripMenuItem_Click);
-            // 
-            // export3DViewerDataToolStripMenuItem
-            // 
-            this.export3DViewerDataToolStripMenuItem.Enabled = false;
-            this.export3DViewerDataToolStripMenuItem.Name = "export3DViewerDataToolStripMenuItem";
-            this.export3DViewerDataToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.export3DViewerDataToolStripMenuItem.Text = "Export 3D Viewer Data";
-            this.export3DViewerDataToolStripMenuItem.Visible = false;
-            this.export3DViewerDataToolStripMenuItem.Click += new System.EventHandler(this.export3DViewerDataToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -357,10 +366,10 @@ namespace Blacksmith
             this.copyNameToClipboardToolStripMenuItem,
             this.showInExplorerToolStripMenuItem,
             this.toolStripSeparator2,
-            this.buildTableToolStripMenuItem,
             this.datafileToolStripMenuItem,
             this.forgeToolStripMenuItem,
             this.modelToolStripMenuItem,
+            this.buildTableToolStripMenuItem,
             this.textureToolStripMenuItem});
             this.treeNodeContextMenuStrip.Name = "treeNodeContextMenuStrip";
             this.treeNodeContextMenuStrip.Size = new System.Drawing.Size(207, 164);
@@ -383,21 +392,6 @@ namespace Blacksmith
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
-            // 
-            // buildTableToolStripMenuItem
-            // 
-            this.buildTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.extractAllEntriesToolStripMenuItem});
-            this.buildTableToolStripMenuItem.Name = "buildTableToolStripMenuItem";
-            this.buildTableToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.buildTableToolStripMenuItem.Text = "Build Table";
-            // 
-            // extractAllEntriesToolStripMenuItem
-            // 
-            this.extractAllEntriesToolStripMenuItem.Name = "extractAllEntriesToolStripMenuItem";
-            this.extractAllEntriesToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.extractAllEntriesToolStripMenuItem.Text = "Extract All Entries";
-            this.extractAllEntriesToolStripMenuItem.Click += new System.EventHandler(this.extractAllEntriesToolStripMenuItem_Click);
             // 
             // datafileToolStripMenuItem
             // 
@@ -467,6 +461,21 @@ namespace Blacksmith
             this.saveAsModelToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.saveAsModelToolStripMenuItem.Text = "Save As...";
             this.saveAsModelToolStripMenuItem.Click += new System.EventHandler(this.saveAsModelToolStripMenuItem_Click);
+            // 
+            // buildTableToolStripMenuItem
+            // 
+            this.buildTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractAllEntriesToolStripMenuItem});
+            this.buildTableToolStripMenuItem.Name = "buildTableToolStripMenuItem";
+            this.buildTableToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.buildTableToolStripMenuItem.Text = "Multifile Entry";
+            // 
+            // extractAllEntriesToolStripMenuItem
+            // 
+            this.extractAllEntriesToolStripMenuItem.Name = "extractAllEntriesToolStripMenuItem";
+            this.extractAllEntriesToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.extractAllEntriesToolStripMenuItem.Text = "Extract Contained Files";
+            this.extractAllEntriesToolStripMenuItem.Click += new System.EventHandler(this.extractAllEntriesToolStripMenuItem_Click);
             // 
             // textureToolStripMenuItem
             // 
@@ -539,6 +548,98 @@ namespace Blacksmith
             this.threeToolStrip.Size = new System.Drawing.Size(562, 25);
             this.threeToolStrip.Stretch = true;
             this.threeToolStrip.TabIndex = 0;
+            // 
+            // controlsSplitButton
+            // 
+            this.controlsSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.controlsSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem3,
+            this.toolStripMenuItem4,
+            this.toolStripMenuItem5,
+            this.toolStripMenuItem6,
+            this.rResetCameraToolStripMenuItem,
+            this.toolStripMenuItem7,
+            this.toolStripMenuItem8,
+            this.toolStripMenuItem9,
+            this.toolStripMenuItem10});
+            this.controlsSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.controlsSplitButton.Name = "controlsSplitButton";
+            this.controlsSplitButton.Size = new System.Drawing.Size(96, 22);
+            this.controlsSplitButton.Text = "Controls Help";
+            this.controlsSplitButton.ButtonClick += new System.EventHandler(this.controlsSplitButton_ButtonClick);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem1.Text = "W - Move Forward";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem2.Text = "S - Move Backward";
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem3.Text = "A - Move Left";
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem4.Text = "D - Move Right";
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem5.Text = "Q - Move Up";
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem6.Text = "E - Move Down";
+            // 
+            // rResetCameraToolStripMenuItem
+            // 
+            this.rResetCameraToolStripMenuItem.Name = "rResetCameraToolStripMenuItem";
+            this.rResetCameraToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.rResetCameraToolStripMenuItem.Text = "R - Reset Camera";
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem7.Text = "Up Arrow - Rotate Up";
+            // 
+            // toolStripMenuItem8
+            // 
+            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem8.Text = "Down Arrow - Rotate Down";
+            // 
+            // toolStripMenuItem9
+            // 
+            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem9.Text = "Left Arrow - Rotate Left";
+            // 
+            // toolStripMenuItem10
+            // 
+            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem10.Text = "Right Arrow - Rotate Right";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // cameraStripLabel
             // 
@@ -717,129 +818,6 @@ namespace Blacksmith
             this.richTextBox.TabIndex = 0;
             this.richTextBox.Text = "";
             // 
-            // imageList
-            // 
-            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
-            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList.Images.SetKeyName(0, "tp.png");
-            this.imageList.Images.SetKeyName(1, "application.png");
-            this.imageList.Images.SetKeyName(2, "application_side_list.png");
-            this.imageList.Images.SetKeyName(3, "box.png");
-            this.imageList.Images.SetKeyName(4, "brick.png");
-            this.imageList.Images.SetKeyName(5, "bricks.png");
-            this.imageList.Images.SetKeyName(6, "cog.png");
-            this.imageList.Images.SetKeyName(7, "database.png");
-            this.imageList.Images.SetKeyName(8, "disk.png");
-            this.imageList.Images.SetKeyName(9, "drive.png");
-            this.imageList.Images.SetKeyName(10, "film.png");
-            this.imageList.Images.SetKeyName(11, "folder.png");
-            this.imageList.Images.SetKeyName(12, "help.png");
-            this.imageList.Images.SetKeyName(13, "map.png");
-            this.imageList.Images.SetKeyName(14, "music.png");
-            this.imageList.Images.SetKeyName(15, "package.png");
-            this.imageList.Images.SetKeyName(16, "page.png");
-            this.imageList.Images.SetKeyName(17, "photo.png");
-            this.imageList.Images.SetKeyName(18, "picture.png");
-            this.imageList.Images.SetKeyName(19, "pictures.png");
-            this.imageList.Images.SetKeyName(20, "plugin.png");
-            this.imageList.Images.SetKeyName(21, "script.png");
-            this.imageList.Images.SetKeyName(22, "sound.png");
-            this.imageList.Images.SetKeyName(23, "tag_blue.png");
-            this.imageList.Images.SetKeyName(24, "table.png");
-            this.imageList.Images.SetKeyName(25, "text_align_left.png");
-            // 
-            // controlsSplitButton
-            // 
-            this.controlsSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.controlsSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
-            this.toolStripMenuItem2,
-            this.toolStripMenuItem3,
-            this.toolStripMenuItem4,
-            this.toolStripMenuItem5,
-            this.toolStripMenuItem6,
-            this.rResetCameraToolStripMenuItem,
-            this.toolStripMenuItem7,
-            this.toolStripMenuItem8,
-            this.toolStripMenuItem9,
-            this.toolStripMenuItem10});
-            this.controlsSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.controlsSplitButton.Name = "controlsSplitButton";
-            this.controlsSplitButton.Size = new System.Drawing.Size(96, 22);
-            this.controlsSplitButton.Text = "Controls Help";
-            this.controlsSplitButton.ButtonClick += new System.EventHandler(this.controlsSplitButton_ButtonClick);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem1.Text = "W - Move Forward";
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem2.Text = "S - Move Backward";
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem3.Text = "A - Move Left";
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem4.Text = "D - Move Right";
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem5.Text = "Q - Move Up";
-            // 
-            // toolStripMenuItem6
-            // 
-            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem6.Text = "E - Move Down";
-            // 
-            // toolStripMenuItem7
-            // 
-            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem7.Text = "Up Arrow - Rotate Up";
-            // 
-            // toolStripMenuItem8
-            // 
-            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem8.Text = "Down Arrow - Rotate Down";
-            // 
-            // toolStripMenuItem9
-            // 
-            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem9.Text = "Left Arrow - Rotate Left";
-            // 
-            // toolStripMenuItem10
-            // 
-            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(219, 22);
-            this.toolStripMenuItem10.Text = "Right Arrow - Rotate Right";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // rResetCameraToolStripMenuItem
-            // 
-            this.rResetCameraToolStripMenuItem.Name = "rResetCameraToolStripMenuItem";
-            this.rResetCameraToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-            this.rResetCameraToolStripMenuItem.Text = "R - Reset Camera";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -946,7 +924,6 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStrip threeToolStrip;
         private System.Windows.Forms.ToolStripLabel cameraStripLabel;
         private System.Windows.Forms.ToolStripButton resetCameraStripButton;
-        private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsModelToolStripMenuItem;
         private System.Windows.Forms.ToolStrip imageToolStrip;
@@ -976,6 +953,8 @@ namespace Blacksmith
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem rResetCameraToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
 

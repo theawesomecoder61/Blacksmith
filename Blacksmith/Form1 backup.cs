@@ -239,7 +239,7 @@ namespace Blacksmith
                                         {
                                             Text = loc.Type.ToString(),
                                             Tag = $"{tag}{FORGE_SUBENTRY_IDENTIFIER}{loc.Type.ToString()}",
-                                            ResourceType = loc.Type,
+                                            ResourceIdentifier = loc.Type,
                                             Game = node.Game
                                         });
                                     }
@@ -283,7 +283,7 @@ namespace Blacksmith
             string text = node.Text;
             string tag = (string)node.Tag;
             long size = node.Size;
-            ResourceType type = node.ResourceType;
+            ResourceIdentifier type = node.ResourceIdentifier;
 
             // reset the picture box and rich text box
             // ToDo: empty 3D viewer
@@ -306,7 +306,7 @@ namespace Blacksmith
                     // forge subentry
                     if (tag.Contains(FORGE_ENTRY_IDENTIFIER) && tag.Contains(FORGE_SUBENTRY_IDENTIFIER))
                     {
-                        if (type == ResourceType.TEXTURE_MAP)
+                        if (type == ResourceIdentifier.TEXTURE_MAP)
                         {
                             string parentText = Helpers.GetTempPath(parent.Text);
                             if (node.Game == Game.ODYSSEY || node.Game == Game.ORIGINS)
@@ -413,7 +413,7 @@ namespace Blacksmith
                         UpdateContextMenu(true, true, false, true);
                     else
                     {
-                        if (text == ResourceType.TEXTURE_MAP.ToString())
+                        if (text == ResourceIdentifier.TEXTURE_MAP.ToString())
                             UpdateContextMenu(false, false, false, true);
                         else
                             UpdateContextMenu(false, false, false, false);

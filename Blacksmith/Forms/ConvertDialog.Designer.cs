@@ -134,8 +134,6 @@
             // 
             this.modelComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.modelComboBox.FormattingEnabled = true;
-            this.modelComboBox.Items.AddRange(new object[] {
-            "OBJ|*.obj"});
             this.modelComboBox.Location = new System.Drawing.Point(56, 6);
             this.modelComboBox.Name = "modelComboBox";
             this.modelComboBox.Size = new System.Drawing.Size(182, 21);
@@ -195,10 +193,13 @@
             this.ClientSize = new System.Drawing.Size(254, 150);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.Name = "ConvertDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Save As...";
+            this.Load += new System.EventHandler(this.ConvertDialog_Load);
             this.Shown += new System.EventHandler(this.ConvertDialog_Shown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ConvertDialog_KeyUp);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();

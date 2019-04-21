@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
+// ToDo: (NEW INFO) Cell datablocks contain auto-texturing data
+// ToDo: (NEW INFO) Entity/Entity Groups contain references to meshes and transformation matrices of each mesh
+
 namespace Blacksmith
 {
     public partial class Form1 : Form
@@ -95,9 +98,10 @@ namespace Blacksmith
             LoadSettings();
 
             // load the Utah teapot
-            gl.Model = OBJ.LoadFromFile(Application.ExecutablePath + "\\..\\Shaders\\teapot.obj");
+            //gl.Model = OBJ.LoadFromFile(Application.ExecutablePath + "\\..\\Shaders\\teapot.obj");
 
-            //gl.Model = new Model(new Cube());
+            // load a cube
+            gl.Model = new Model(new Cube());
 
             /*gl.TextRenderer.Clear(Color.Red);
             gl.TextRenderer.DrawString("Text", new Font(FontFamily.GenericMonospace, 24), Brushes.White, new PointF(100, 100));*/
@@ -111,12 +115,23 @@ namespace Blacksmith
                 }
                 LoadSettings();
             });
+
+            // create a temporary directory
+            if (string.IsNullOrEmpty(Properties.Settings.Default.tempPath))
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Blacksmith");
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                    Properties.Settings.Default.tempPath = dir;
+                }
+            }
         }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
             if (pictureBox.Image != null)
-                UpdatePictureBox(pictureBox.Image, false);
+                UpdatePictureBox(new Bitmap(pictureBox.Image), false);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -191,7 +206,11 @@ namespace Blacksmith
                     node.Nodes[0].Remove(); // remove the placeholder node
 
                     treeView.Enabled = true;
-                    Message.Success($"Loaded the subentries from {node.Text}.");
+
+                    if (node.Nodes.Count > 0)
+                    {
+                        Message.Success($"Loaded the subentries from {node.Text}.");
+                    }
                 });
             }
         }
@@ -233,7 +252,7 @@ namespace Blacksmith
             // clear the 3D/Image/Text Viewers
             ClearTheViewers();
 
-            Console.WriteLine("Resource Type: " + node.ResourceType);
+            Console.WriteLine("Resource Type: " + node.ResourceIdentifier);
 
             if (node.Type == EntryTreeNodeType.SUBENTRY) // forge subentry
                 HandleSubentryNode(node);
@@ -290,16 +309,28 @@ namespace Blacksmith
                         IEnumerable<TreeNode> nodes = node.Nodes.Cast<TreeNode>();
                         IEnumerable<TreeNode> sNodes = sNode.Nodes.Cast<TreeNode>();
 
-                        bool hasBuildTable = nodes.Where(x => x.Text == Helpers.FormatType(ResourceType.BUILD_TABLE)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatType(ResourceType.BUILD_TABLE)).Count() > 0;
-                        bool hasMesh = nodes.Where(x => x.Text == Helpers.FormatType(ResourceType.MESH)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatType(ResourceType.MESH)).Count() > 0;
-                        bool hasTextureMap = nodes.Where(x => x.Text == Helpers.FormatType(ResourceType.TEXTURE_MAP)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatType(ResourceType.TEXTURE_MAP)).Count() > 0;
-                            
-                        UpdateContextMenu(enableBuildTable: hasBuildTable, enableDatafile: true, enableModel: hasMesh, enableTexture: hasTextureMap);
+                        bool hasBuildTable = nodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.BUILD_TABLE)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.BUILD_TABLE)).Count() > 0;
+                        bool hasMesh = nodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.MESH)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.MESH)).Count() > 0;
+                        bool hasTextureMap = nodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.TEXTURE_MAP)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.TEXTURE_MAP)).Count() > 0;
+                        bool hasUniverse = nodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.UNIVERSE)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.UNIVERSE)).Count() > 0;
+                        bool hasWorld = nodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.WORLD)).Count() > 0 || sNodes.Where(x => x.Text == Helpers.FormatNicely(ResourceIdentifier.WORLD)).Count() > 0;
+
+                        UpdateContextMenu(
+                            enableDatafile: true,
+                            enableExtractAll: true, //hasBuildTable || hasMesh || hasUniverse || hasWorld,
+                            enableModel: hasMesh,
+                            enableTexture: hasTextureMap
+                            );
                     }
                 }
                 else if (node.Type == EntryTreeNodeType.SUBENTRY || sNode.Type == EntryTreeNodeType.SUBENTRY)
                 {
-                    UpdateContextMenu(enableBuildTable: node.ResourceType == ResourceType.BUILD_TABLE || sNode.ResourceType == ResourceType.BUILD_TABLE, enableDatafile: true, enableModel: node.ResourceType == ResourceType.MESH || sNode.ResourceType == ResourceType.MESH, enableTexture: node.ResourceType == ResourceType.TEXTURE_MAP || sNode.ResourceType == ResourceType.TEXTURE_MAP);
+                    UpdateContextMenu(
+                        enableDatafile: true,
+                        enableExtractAll: true,
+                        enableModel: node.ResourceIdentifier == ResourceIdentifier.MESH || sNode.ResourceIdentifier == ResourceIdentifier.MESH,
+                        enableTexture: node.ResourceIdentifier == ResourceIdentifier.TEXTURE_MAP || sNode.ResourceIdentifier == ResourceIdentifier.TEXTURE_MAP
+                        );
                 }
             }
         }
@@ -404,8 +435,13 @@ namespace Blacksmith
 
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
             node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
-            Origins.ReadBuildTable(Helpers.GetTempPath(node.Text + "." + Helpers.GameToExtension(node.Game)), (entries) =>
+
+            Origins.ReadMultifileEntry(Helpers.GetTempPath(node.Text + "." + Helpers.GameToExtension(node.Game)), (entries) =>
             {
+                MultifileDialog mfd = new MultifileDialog();
+                mfd.LoadEntries(entries);
+                mfd.SetGame(node.Game);
+                mfd.ShowDialog();
             });
         }
         // end Build Table
@@ -493,6 +529,7 @@ namespace Blacksmith
                 return;
 
             EntryTreeNode node = (EntryTreeNode)treeView.SelectedNode;
+            node = node.Type == EntryTreeNodeType.SUBENTRY ? (EntryTreeNode)node.Parent : node; // get the entry node, not subentry node
             if (node.Nodes.Count == 0)
                 return;
 
@@ -645,14 +682,13 @@ namespace Blacksmith
                 }
             }
         }
-
-#warning currently hidden
+        
         private void showFileInTheViewersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog.Filter = Helpers.DECOMPRESSED_FILE_FORMATS;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                ResourceType type = Helpers.GetFirstResourceType(openFileDialog.FileName);
+                ResourceIdentifier type = Helpers.GetFirstResourceIdentifier(openFileDialog.FileName);
                 Game game = Helpers.ExtensionToGame(Path.GetExtension(openFileDialog.FileName).Substring(1));
                 Console.WriteLine($"Selected file: {openFileDialog.FileName}");
                 Console.WriteLine($"Selected file resource type: {type}");
@@ -663,7 +699,7 @@ namespace Blacksmith
 
                 Helpers.DoBackgroundWork(() =>
                 {
-                    if (type == ResourceType.MESH)
+                    if (type == ResourceIdentifier.MESH)
                     {
                         if (game == Game.ODYSSEY)
                         {
@@ -687,12 +723,19 @@ namespace Blacksmith
                                 }));
                             });
                         }
-                        else
+                        else if (game == Game.STEEP)
                         {
-                            Message.Fail("Not yet supported.");
+                            gl.Model = Steep.ExtractModel(openFileDialog.FileName, (string text) =>
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    tabControl.SelectedIndex = 0;
+                                    richTextBox.Text = text;
+                                }));
+                            });
                         }
                     }
-                    else if (type == ResourceType.TEXTURE_MAP)
+                    else if (type == ResourceIdentifier.TEXTURE_MAP)
                     {
                         if (game == Game.ODYSSEY || game == Game.ORIGINS)
                         {
@@ -703,17 +746,30 @@ namespace Blacksmith
                         }
                         else if (game == Game.STEEP)
                         {
-                            /*Steep.ExtractTextureMap(Helpers.GetTempPath(node.Path), node, (string path) =>
+                            Steep.ExtractTextureMapFromFile(openFileDialog.FileName, (string path) =>
                             {
                                 HandleTextureMap(path);
-                            });*/
+                            });
+                        }
+                    }
+                    else if (type == ResourceIdentifier.TEXTURE_SET)
+                    {
+// ToDo: test with Steep texture sets
+                        if (game == Game.ODYSSEY || game == Game.ORIGINS)
+                        {
+                            Odyssey.ExtractTextureSet(openFileDialog.FileName, (List<long> ids) =>
+                            {
+                                string t = "Texture Set:\n\tFound Texture File IDs:\n";
+                                ids.ForEach(x => t += $"\t\t{x} (0x{x.ToString("X16")})\n" );
+                                HandleTextNode(t);
+                            });
                         }
                     }
                 }, () =>
                 {
                     EndMarquee();
 
-                    if (type == ResourceType.MESH)
+                    if (type == ResourceIdentifier.MESH)
                     {
                         meshCheckedListBox.Items.Clear();
                         for (int i = 0; i < gl.Model.Meshes.Count; i++)
@@ -733,6 +789,20 @@ namespace Blacksmith
             }
         }
 
+        private void export3DViewerDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (gl.Model != null && gl.Model.Meshes.Count > 0)
+            {
+                saveFileDialog.FileName = "model";
+                saveFileDialog.Filter = "obj|*.obj|All Files|*.*";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllText(saveFileDialog.FileName, OBJ.Export(gl.Model, NormalExportMode.NONE, false));
+                    Message.Success("Done");
+                }
+            }
+        }
+
         private void decompileLocalizationDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
@@ -740,12 +810,7 @@ namespace Blacksmith
         #region Settings
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings settings = new Settings();
-            /*settings.FormClosing += new FormClosingEventHandler((object o, FormClosingEventArgs args) =>
-            {
-                LoadSettings();
-            });*/
-            settings.ShowDialog();
+            new Settings().ShowDialog();
         }
         #endregion
         #region More
@@ -807,7 +872,52 @@ namespace Blacksmith
                             {
                                 foreach (string n2 in nameResults)
                                 {
-                                    if (n1.Text.Equals(n2))
+                                    if (args.FilterBy == FilterBy.NONE)
+                                    {
+                                        if (n1.Text.Equals(n2))
+                                            nodeResults.Add(n1);
+                                    }
+                                    else if (args.FilterBy == FilterBy.MESH)
+                                    {
+                                        if (n1.Text.Equals(n2) && n1.ResourceIdentifier == ResourceIdentifier.MESH)
+                                            nodeResults.Add(n1);
+                                    }
+                                    else if (args.FilterBy == FilterBy.TEXTURE_MAP)
+                                    {
+                                        if (n1.Text.Equals(n2) && n1.ResourceIdentifier == ResourceIdentifier.TEXTURE_MAP)
+                                            nodeResults.Add(n1);
+                                    }
+                                    else if (args.FilterBy == FilterBy.LOD_SELECTOR)
+                                    {
+                                        if (n1.Text.Equals(n2) && n1.ResourceIdentifier == ResourceIdentifier.LOD_SELECTOR)
+                                            nodeResults.Add(n1);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (args.FilterBy == FilterBy.MESH)
+                            {
+                                foreach (EntryTreeNode n1 in nodeToSearchIn.Nodes)
+                                {
+                                    if (n1.ResourceIdentifier == ResourceIdentifier.MESH)
+                                        nodeResults.Add(n1);
+                                }
+                            }
+                            else if (args.FilterBy == FilterBy.TEXTURE_MAP)
+                            {
+                                foreach (EntryTreeNode n1 in nodeToSearchIn.Nodes)
+                                {
+                                    if (n1.ResourceIdentifier == ResourceIdentifier.TEXTURE_MAP)
+                                        nodeResults.Add(n1);
+                                }
+                            }
+                            else if (args.FilterBy == FilterBy.LOD_SELECTOR)
+                            {
+                                foreach (EntryTreeNode n1 in nodeToSearchIn.Nodes)
+                                {
+                                    if (n1.ResourceIdentifier == ResourceIdentifier.LOD_SELECTOR)
                                         nodeResults.Add(n1);
                                 }
                             }
@@ -861,13 +971,22 @@ namespace Blacksmith
             tabControl.SelectedIndex = 2;
         }
 
+        private void HandleTextNode(string txt)
+        {
+            Invoke(new Action(() =>
+            {
+                richTextBox.Text = txt;
+                tabControl.SelectedIndex = 2;
+            }));
+        }
+
         private void HandleSubentryNode(EntryTreeNode node)
         {
             ClearTheViewers(true);
 
-            switch (node.ResourceType)
+            switch (node.ResourceIdentifier)
             {
-                case ResourceType.MESH: // meshes/models                    
+                case ResourceIdentifier.MESH: // meshes/models                    
                     Helpers.DoBackgroundWork(() =>
                     {
                         if (node.Game == Game.ODYSSEY)
@@ -892,9 +1011,16 @@ namespace Blacksmith
                                 }));
                             });
                         }
-                        else
+                        else if (node.Game == Game.STEEP)
                         {
-                            Message.Fail("Not yet supported.");
+                            gl.Model = Steep.ExtractModel(node.Path, (string text) =>
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    tabControl.SelectedIndex = 0;
+                                    richTextBox.Text = text;
+                                }));
+                            });
                         }
                     }, () =>
                     {
@@ -916,7 +1042,7 @@ namespace Blacksmith
                         gl.ResetCamera();
                     });
                     break;
-                case ResourceType.TEXTURE_MAP: // texture maps
+                case ResourceIdentifier.TEXTURE_MAP: // texture maps
                     if (node.Game == Game.ODYSSEY || node.Game == Game.ORIGINS)
                     {
                         Odyssey.ExtractTextureMap(node.Path, node, (string path) =>
@@ -932,6 +1058,14 @@ namespace Blacksmith
                         });
                     }
                     break;
+                case ResourceIdentifier.TEXTURE_SET:
+                    Odyssey.ExtractTextureSet(node.Path, (List<long> ids) =>
+                    {
+                        string t = "Texture Set:\n\tFound Texture File IDs:\n";
+                        ids.ForEach(x => t += $"\t\t{x} (0x{x.ToString("X16")})\n");
+                        HandleTextNode(t);
+                    });
+                    break;
             } 
         }
 
@@ -939,9 +1073,7 @@ namespace Blacksmith
         {
             if (texturePath == "FAILED")
             {
-#warning remove once texconv works again
-                //MessageBox.Show("Texture failed to convert to PNG. Alternatively, you can right-click the TEXTURE_MAP node, select \"Texture\">\"Save As DDS\".", "Failure");
-                if (MessageBox.Show("Texture conversion failed. Show the .dds file in the associated program?", "Failure", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (Message.Fail("Texture conversion failed. Show the .dds file in the associated program?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     if (node != null)
                     {
@@ -966,7 +1098,7 @@ namespace Blacksmith
             {
                 Invoke(new Action(() =>
                 {
-                    UpdatePictureBox(Image.FromFile(currentImgPath));
+                    UpdatePictureBox((Bitmap)Image.FromFile(currentImgPath));
                     zoomDropDownButton.Text = "Zoom Level: 100%";
                     tabControl.SelectedIndex = 1;
                 }));
@@ -1022,17 +1154,6 @@ namespace Blacksmith
             gl.BackgroundColor = Properties.Settings.Default.threeBG;
             gl.RenderMode = Properties.Settings.Default.renderMode == 0 ? RenderMode.SOLID : Properties.Settings.Default.renderMode == 1 ? RenderMode.WIREFRAME : RenderMode.POINTS;
             gl.PointSize = Properties.Settings.Default.pointSize;
-
-            // create a temporary directory, if the user forgot
-            if (string.IsNullOrEmpty(Properties.Settings.Default.tempPath))
-            {
-                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Blacksmith");
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                    Properties.Settings.Default.tempPath = dir;
-                }
-            }
         }
         
         private void PopulateTreeView(string dir, EntryTreeNode parent)
@@ -1111,14 +1232,15 @@ namespace Blacksmith
             {
                 EntryTreeNode n = new EntryTreeNode
                 {
+                    FileID = entry.IndexTable.FileDataID,
                     Game = node.Game,
                     Offset = entry.IndexTable.OffsetToRawDataTable,
                     Path = Path.Combine(node.Path, entry.NameTable.Name),
+                    ResourceIdentifier = forge.GetResourceIdentifierOfFileEntry(entry),
                     Size = entry.IndexTable.RawDataSize,
                     Text = entry.NameTable.Name,
                     Type = EntryTreeNodeType.ENTRY
                 };
-
                 n.Nodes.Add(new EntryTreeNode(""));
                 entryNodes.Add(n);
             }
@@ -1143,6 +1265,12 @@ namespace Blacksmith
 
             // path will hold the file name
             node.Path = Helpers.GetTempPath(file);
+            
+            if (!File.Exists(Helpers.GetTempPath(file)))
+            {
+                Message.Fail("File not found.");
+                return new List<EntryTreeNode>();
+            }
 
             // get resource locations and create nodes
             List<EntryTreeNode> nodes = new List<EntryTreeNode>();
@@ -1153,22 +1281,19 @@ namespace Blacksmith
                     Helpers.ResourceLocation[] locations = Helpers.LocateResourceIdentifiers(reader);
                     foreach (Helpers.ResourceLocation location in locations)
                     {
-                        if (Helpers.IMPORTANT_RESOURCE_TYPES.Contains(location.Type))
+                        EntryTreeNode n = new EntryTreeNode
                         {
-                            if (nodes.Where(x => x.Text == Helpers.FormatType(location.Type)).Count() == 0)
-                            {
-                                nodes.Add(new EntryTreeNode
-                                {
-                                    Game = node.Game,
-                                    ImageIndex = GetImageIndex(location.Type),
-                                    Path = Helpers.GetTempPath(file),
-                                    ResourceOffset = location.Offset,
-                                    ResourceType = location.Type,
-                                    Text = Helpers.FormatType(location.Type),
-                                    Type = EntryTreeNodeType.SUBENTRY
-                                });
-                            }
-                        }
+                            Game = node.Game,
+                            Path = Helpers.GetTempPath(file),
+                            ResourceOffset = location.Offset,
+                            ResourceIdentifier = location.Type,
+                            Text = Helpers.FormatNicely(location.Type),
+                            Type = EntryTreeNodeType.SUBENTRY
+                        };
+                        /*if (nodes.Where(x => x.Text == Helpers.FormatNicely(location.Type)).Count() == 0)
+                        {
+                        }*/
+                        nodes.Add(n);
                     }
                 }
             }
@@ -1181,6 +1306,7 @@ namespace Blacksmith
             if (clear3D)
                 gl.Model = null;
             pictureBox.Image = null;
+            currentImgPath = "";
             richTextBox.Text = "";
         }
 
@@ -1196,10 +1322,10 @@ namespace Blacksmith
             toolStripProgressBar.Visible = false;
         }
         
-        private void UpdateContextMenu(bool enableBuildTable = false, bool enableDatafile = false, bool enableForge = false, bool enableModel = false, bool enableTexture = false)
+        private void UpdateContextMenu(bool enableDatafile = false, bool enableExtractAll = false, bool enableForge = false, bool enableModel = false, bool enableTexture = false)
         {
-            buildTableToolStripMenuItem.Visible = enableBuildTable;
             datafileToolStripMenuItem.Visible = enableDatafile;
+            extractAllEntriesToolStripMenuItem.Visible = enableExtractAll;
             forgeToolStripMenuItem.Visible = enableForge;
             modelToolStripMenuItem.Visible = enableModel;
             textureToolStripMenuItem.Visible = enableTexture;
@@ -1215,9 +1341,9 @@ namespace Blacksmith
             }
         }
         
-        private void UpdatePictureBox(Image image, bool reload = true, bool flip = true, bool isZoomed = false)
+        private void UpdatePictureBox(Bitmap bmp, bool reload = true, bool flip = true, bool isZoomed = false)
         {
-            if (image.Height <= pictureBox.ClientSize.Height && !isZoomed)
+            if (bmp.Height <= pictureBox.ClientSize.Height && !isZoomed)
             {
                 pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
                 pictureBox.Dock = DockStyle.Fill;
@@ -1228,37 +1354,17 @@ namespace Blacksmith
                 pictureBox.Dock = DockStyle.None;
             }
 
-            // reload, if true, causes the image to refresh and dimensions label to update
+            // if true, causes the image to refresh and dimensions label to update
             if (!reload)
                 return;
 
             // rotate
             if (flip)
-                image.RotateFlip(RotateFlipType.Rotate180FlipX);
-
-            pictureBox.Image = image;
+                bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
+            
+            pictureBox.Image = bmp;
             pictureBox.Refresh();
-            imageDimensStatusLabel.Text = $"Dimensions: {image.Width}x{image.Height}";
-        }
-
-        private int GetImageIndex(ResourceType type)
-        {
-            if (type == ResourceType.COMRPESSED_LOCALIZATION_DATA)
-                return 25;
-            else if (type == ResourceType.LOCALIZATION_MANAGER)
-                return 6;
-            else if (type == ResourceType.LOCALIZATION_PACKAGE)
-                return 15;
-            else if (type == ResourceType.MATERIAL)
-                return 16;
-            else if (type == ResourceType.MESH)
-                return 4;
-            else if (type == ResourceType.MIPMAP)
-                return 17;
-            else if (type == ResourceType.TEXTURE_MAP)
-                return 13;
-            else
-                return 0;
+            imageDimensStatusLabel.Text = $"Dimensions: {bmp.Width}x{bmp.Height}";
         }
 
         private void ShowConvertDialog(int selectedTab, EntryTreeNode node, Model model = null)
@@ -1321,29 +1427,5 @@ namespace Blacksmith
             }
         }
         #endregion
-
-#warning I will remove at some point
-        private void export3DViewerDataToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (gl.Model != null && gl.Model.Meshes.Count > 0)
-            {
-                saveFileDialog.FileName = "fountain";
-                saveFileDialog.Filter = "obj|*.obj|All Files|*.*";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    /*string[] smd = SMD.GenerateModelFromOBJ(objModels);
-                    for (int i = 0; i < smd.Length; i++)
-                    {
-                        File.WriteAllText(Path.Combine(Path.GetDirectoryName(saveFileDialog.FileName), Path.GetFileNameWithoutExtension(saveFileDialog.FileName) + i + ".smd"), smd[i]);
-                    }*/
-
-                    //File.WriteAllText(saveFileDialog.FileName, OBJ.Export(gl.Model));
-                    //File.WriteAllText(saveFileDialog.FileName + ".smd", SMD.Export(gl.Model)[0]);
-                    //STL.ExportBinary(saveFileDialog.FileName, gl.Model);
-
-                    Message.Success("Done");
-                }
-            }
-        }
     }
 }

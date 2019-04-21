@@ -71,6 +71,7 @@ namespace Blacksmith.Forms
             this.saveToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.fixNormalsCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -235,13 +236,14 @@ namespace Blacksmith.Forms
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.fixNormalsCheckBox);
             this.groupBox1.Controls.Add(this.label13);
             this.groupBox1.Controls.Add(this.popupComboBox);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.filelistSeparatorComboBox);
             this.groupBox1.Location = new System.Drawing.Point(380, 221);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(220, 91);
+            this.groupBox1.Size = new System.Drawing.Size(220, 125);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Miscellaneous";
@@ -249,7 +251,7 @@ namespace Blacksmith.Forms
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 49);
+            this.label13.Location = new System.Drawing.Point(8, 49);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(71, 13);
             this.label13.TabIndex = 0;
@@ -264,16 +266,16 @@ namespace Blacksmith.Forms
             "Failure",
             "Success & Failure",
             "None"});
-            this.popupComboBox.Location = new System.Drawing.Point(83, 46);
+            this.popupComboBox.Location = new System.Drawing.Point(81, 46);
             this.popupComboBox.Name = "popupComboBox";
-            this.popupComboBox.Size = new System.Drawing.Size(131, 21);
+            this.popupComboBox.Size = new System.Drawing.Size(133, 21);
             this.popupComboBox.TabIndex = 0;
             this.popupComboBox.SelectedIndexChanged += new System.EventHandler(this.popupComboBox_SelectedIndexChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 22);
+            this.label5.Location = new System.Drawing.Point(8, 22);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(87, 13);
             this.label5.TabIndex = 0;
@@ -286,9 +288,9 @@ namespace Blacksmith.Forms
             this.filelistSeparatorComboBox.Items.AddRange(new object[] {
             "Tabs",
             "Commas (CSV)"});
-            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(99, 19);
+            this.filelistSeparatorComboBox.Location = new System.Drawing.Point(101, 19);
             this.filelistSeparatorComboBox.Name = "filelistSeparatorComboBox";
-            this.filelistSeparatorComboBox.Size = new System.Drawing.Size(115, 21);
+            this.filelistSeparatorComboBox.Size = new System.Drawing.Size(113, 21);
             this.filelistSeparatorComboBox.TabIndex = 0;
             this.filelistSeparatorComboBox.SelectedIndexChanged += new System.EventHandler(this.filelistSeparatorComboBox_SelectedIndexChanged);
             // 
@@ -499,17 +501,30 @@ namespace Blacksmith.Forms
             // 
             this.openFileDialog.Filter = "INI Files|*.ini|All Files|*.l*";
             // 
+            // fixNormalsCheckBox
+            // 
+            this.fixNormalsCheckBox.AutoSize = true;
+            this.fixNormalsCheckBox.Location = new System.Drawing.Point(11, 73);
+            this.fixNormalsCheckBox.Name = "fixNormalsCheckBox";
+            this.fixNormalsCheckBox.Size = new System.Drawing.Size(187, 43);
+            this.fixNormalsCheckBox.TabIndex = 0;
+            this.fixNormalsCheckBox.Text = "Automatically fix normal maps (flips\r\nblue channel, fixes green/yellow\r\nappearanc" +
+    "e)";
+            this.fixNormalsCheckBox.UseVisualStyleBackColor = true;
+            this.fixNormalsCheckBox.CheckedChanged += new System.EventHandler(this.fixNormalsCheckBox_CheckedChanged);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 321);
+            this.ClientSize = new System.Drawing.Size(614, 361);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -519,6 +534,7 @@ namespace Blacksmith.Forms
             this.Text = "Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Settings_FormClosing);
             this.Load += new System.EventHandler(this.Settings_Load);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Settings_KeyUp);
             this.groupBox.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
@@ -586,5 +602,6 @@ namespace Blacksmith.Forms
         private System.Windows.Forms.ToolStripMenuItem saveToFileToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.CheckBox fixNormalsCheckBox;
     }
 }

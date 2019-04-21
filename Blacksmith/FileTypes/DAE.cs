@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OpenTK;
+using System.Collections.Generic;
 using System.Linq;
 
 // adapted from: https://github.com/Ploaj/SSBHLib/blob/fe395033f4/CrossMod/IO/IO_DAE.cs
@@ -64,9 +65,7 @@ namespace Blacksmith.Three
                     writer.StartGeometryMesh("Mesh " + mesh.ID);
 
                     /*if (mesh.MaterialIndex != -1)
-                    {
-                        writer.CurrentMaterial = m.Materials[mesh.MaterialIndex].Name;
-                    }*/
+                        writer.CurrentMaterial = m.Materials[mesh.MaterialIndex].Name;*/
 
                     // collect sources
                     List<float> Position = new List<float>();
@@ -140,17 +139,44 @@ namespace Blacksmith.Three
 
                     // write sources
                     if (mesh.Vertices.Count > 0)
-                        writer.WriteGeometrySource(name, DAEWriter.VERTEX_SEMANTIC.POSITION, Position.ToArray(), mesh.Indices.Cast<uint>().ToArray());
+                    {
+                        List<uint> indices = new List<uint>();
+                        foreach (Mesh.Face f in mesh.Faces)
+                        {
+                            indices.Add((uint)(f.X - mesh.NumOfVerticesBeforeMe));
+                            indices.Add((uint)(f.Y - mesh.NumOfVerticesBeforeMe));
+                            indices.Add((uint)(f.Z - mesh.NumOfVerticesBeforeMe));
+                        }
+                        writer.WriteGeometrySource(name, DAEWriter.VERTEX_SEMANTIC.POSITION, Position.ToArray(), indices.ToArray());
+                    }
 
-#warning needs fixing
+                    // ToDo: fix DAE export
                     if (mesh.Normals.Count > 0)
-                        writer.WriteGeometrySource(name, DAEWriter.VERTEX_SEMANTIC.NORMAL, Normal.ToArray(), new uint[0]);
+                    {
+                        List<uint> normals = new List<uint>();
+                        foreach (Vector3 n in mesh.Normals)
+                        {
+                            normals.Add((uint)n.X);
+                            normals.Add((uint)n.Y);
+                            normals.Add((uint)n.Z);
+                        }
+                        writer.WriteGeometrySource(name, DAEWriter.VERTEX_SEMANTIC.NORMAL, Normal.ToArray(), normals.ToArray());
+                    }
 
                     /*if (mesh.HasColor)
                         writer.WriteGeometrySource(mesh.Name, DAEWriter.VERTEX_SEMANTIC.COLOR, Color.ToArray(), mesh.Indices.ToArray());*/
 
-                    //if (mesh.HasUV0)
-                        //writer.WriteGeometrySource(mesh.Name, DAEWriter.VERTEX_SEMANTIC.TEXCOORD, UV0.ToArray(), ii, 0); // ToDo: fix ii
+                    if (mesh.Vertices.Select(x => x.TextureCoordinate).Count() > 0)
+                    {
+                        List<uint> indices = new List<uint>();
+                        foreach (Mesh.Face f in mesh.Faces)
+                        {
+                            indices.Add((uint)(f.X - mesh.NumOfVerticesBeforeMe));
+                            indices.Add((uint)(f.Y - mesh.NumOfVerticesBeforeMe));
+                            indices.Add((uint)(f.Z - mesh.NumOfVerticesBeforeMe));
+                        }
+                        writer.WriteGeometrySource(name, DAEWriter.VERTEX_SEMANTIC.TEXCOORD, UV0.ToArray(), indices.ToArray(), 0);
+                    }
 
                     /*if (mesh.HasUV1)
                         writer.WriteGeometrySource(mesh.Name, DAEWriter.VERTEX_SEMANTIC.TEXCOORD, UV1.ToArray(), mesh.Indices.ToArray(), 1);
@@ -161,8 +187,8 @@ namespace Blacksmith.Three
                     if (mesh.HasUV3)
                         writer.WriteGeometrySource(mesh.Name, DAEWriter.VERTEX_SEMANTIC.TEXCOORD, UV3.ToArray(), mesh.Indices.ToArray(), 3);*/
 
-                    if (mesh.Vertices[0].BoneWeights.Length > 0)
-                        writer.AttachGeometryController(BoneIndices, BoneWeights);
+                    /*if (mesh.Vertices.Select(x => x.BoneWeights).Count() > 0)
+                        writer.AttachGeometryController(BoneIndices, BoneWeights);*/
 
                     writer.EndGeometryMesh();
                 }

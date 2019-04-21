@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.NameHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Size = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Offset = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsSoundbank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FolderID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,7 +69,7 @@
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.NameHash,
-            this.SizeCol,
+            this.Size,
             this.Offset,
             this.IsSoundbank,
             this.FolderID,
@@ -94,9 +94,9 @@
             // 
             // Size
             // 
-            this.SizeCol.HeaderText = "Size";
-            this.SizeCol.Name = "Size";
-            this.SizeCol.ReadOnly = true;
+            this.Size.HeaderText = "Size";
+            this.Size.Name = "Size";
+            this.Size.ReadOnly = true;
             // 
             // Offset
             // 
@@ -238,10 +238,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 461);
             this.Controls.Add(this.toolStripContainer1);
+            this.KeyPreview = true;
             this.Name = "SoundpackBrowser";
             this.ShowIcon = false;
             this.Text = "Soundpack Browser";
             this.Load += new System.EventHandler(this.SoundpackBrowser_Load);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SoundpackBrowser_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
@@ -279,5 +281,6 @@
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripLabel entriesToolStripLabel;
         private System.Windows.Forms.ToolStripLabel foldersToolStripLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Size;
     }
 }

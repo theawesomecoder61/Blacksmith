@@ -142,5 +142,17 @@ namespace Blacksmith.Properties {
                 this["hidePopups"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool fixNormals {
+            get {
+                return ((bool)(this["fixNormals"]));
+            }
+            set {
+                this["fixNormals"] = value;
+            }
+        }
     }
 }

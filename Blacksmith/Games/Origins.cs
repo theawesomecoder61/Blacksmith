@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,67 +8,17 @@ using System.Windows.Forms;
 using Blacksmith.Enums;
 using Blacksmith.Three;
 using OpenTK;
+using static Blacksmith.Structs;
 
 namespace Blacksmith.Games
 {
     public class Origins
     {
-        private static byte[] MESH_DATA = new byte[]
-        {
-            0x68, 0x95, 0x5D, 0x41
-        };
-
-        private static byte[] COMPILED_MESH_DATA = new byte[]
-        {
-            0x95, 0x15, 0x9E, 0xFC
-        };
-
-        #region Structs
-        public struct DatafileHeader
-        {
-            public int ResourceType { get; internal set; }
-            public int FileSize { get; internal set; }
-            public int FileNameSize { get; internal set; }
-            public char[] FileName { get; internal set; }
-        }
-
-        public struct MeshBlock
-        {
-            public int ModelType { get; internal set; }
-            public int ACount { get; internal set; }
-            public int BoneCount { get; internal set; }
-            public Mesh.Bone[] Bones { get; internal set; }
-        }
-
-        public struct CompiledMeshBlock
-        {
-            public int VertexTableSize { get; internal set; }
-            public int Unknown1 { get; internal set; }
-            public int Unknown2 { get; internal set; }
-        }
-
-        public struct SubmeshBlock
-        {
-            public int MeshCount { get; internal set; }
-            public SubmeshEntry[] Entries { get; internal set; }
-        }
-
-        public struct SubmeshEntry
-        {
-            public int FaceOffset { get; internal set; }
-            public int VertexOffset { get; internal set; }
-        }
-
-        public struct BuildTableEntry
-        {
-            public DatafileHeader Header { get; internal set; }
-            public byte[] Data { get; internal set; }
-        }
-        #endregion
-
         #region Models
         public static Model ExtractModel(string fileName, Action<string> completionAction = null)
         {
+            // ToDo: add skeleton/skeleton-related data support for Origins
+
             Model model = new Model();
             StringBuilder str = new StringBuilder(); // used to print information in the Text Viewer
             byte[] allData = File.ReadAllBytes(fileName);
@@ -82,11 +33,17 @@ namespace Blacksmith.Games
                     // header
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
+
+                    if (header.ResourceIdentifier != (uint)ResourceIdentifier.MESH)
+                    {
+                        Message.Fail("This is not proper Mesh data.");
+                        return model;
+                    }
 
                     // skip to the Mesh block, ignoring the Mesh block identifier
                     reader.BaseStream.Seek(10, SeekOrigin.Current);
@@ -151,12 +108,12 @@ namespace Blacksmith.Games
                         }
 
                         // locate the Compiled Mesh
-                        Tuple<int[], long> cmOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.COMPILED_MESH));
+                        Tuple<int[], long> cmOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceIdentifier.COMPILED_MESH));
                         reader.BaseStream.Seek(cmOffset.Item1[0], SeekOrigin.Begin);
                         //Console.WriteLine("Compiled Mesh OFFSET: " + cmOffset.Item1[0]);
 
                         // Compiled Mesh block
-                        if (reader.ReadUInt32() != (uint)ResourceType.COMPILED_MESH)
+                        if (reader.ReadUInt32() != (uint)ResourceIdentifier.COMPILED_MESH)
                         {
                             Message.Fail("Failed to read model.");
                             return new Model();
@@ -242,7 +199,7 @@ namespace Blacksmith.Games
 
                         // go to the Mesh Data
                         reader.BaseStream.Seek(18, SeekOrigin.Current);
-                        //Tuple<int[], long> mdOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.MESH_DATA));
+                        //Tuple<int[], long> mdOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceIdentifier.MESH_DATA));
                         //reader.BaseStream.Position = mdOffset.Item2;
                         //reader.BaseStream.Seek(mdOffset.Item1[0] + 10, SeekOrigin.Begin); // skip the identifier and 6 bytes
                         //Console.WriteLine("Mesh Data OFFSET: " + (reader.BaseStream.Position));
@@ -372,7 +329,7 @@ namespace Blacksmith.Games
                                         break;
                                 }
 
-                                v.TextureCoordinate = new Vector2(v.TextureCoordinate.X / 65536 * 32, 1 - (v.TextureCoordinate.Y / 65536 * 32));
+                                //v.TextureCoordinate = new Vector2(v.TextureCoordinate.X / 65536 * 32, 1 - (v.TextureCoordinate.Y / 65536 * 32));
                                 mesh.Vertices.Add(v);
                                 //mesh.Normals.Add(v.Normal);
                             }
@@ -866,9 +823,14 @@ namespace Blacksmith.Games
         #endregion
 
         #region Other
-        public static void ReadBuildTable(string fileName, Action<BuildTableEntry[]> completionAction)
+        /// <summary>
+        /// A few examples of a MultifileEntry are Build Table, World, Mesh (any entry that contains multiple files within)
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="completionAction"></param>
+        public static void ReadMultifileEntry(string fileName, Action<MultifileEntry[]> completionAction)
         {
-            List<BuildTableEntry> entries = new List<BuildTableEntry>();
+            List<MultifileEntry> entries = new List<MultifileEntry>();
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 if (stream.Length == 0)
@@ -876,24 +838,30 @@ namespace Blacksmith.Games
 
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    BuildTableEntry entry = new BuildTableEntry();
-
-                    // header
-                    DatafileHeader header = new DatafileHeader
-                    {
-                        ResourceType = reader.ReadInt32(),
-                        FileSize = reader.ReadInt32(),
-                        FileNameSize = reader.ReadInt32()
-                    };
-                    header.FileName = reader.ReadChars(header.FileNameSize);
-                    entry.Header = header;
-
-                    reader.BaseStream.Seek(1, SeekOrigin.Current);
-                    entry.Data = reader.ReadBytes(header.FileSize);
-
-                    // go until we reach the end of the file
                     while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
+                        MultifileEntry entry = new MultifileEntry();
+
+                        // header
+                        long beginning = reader.BaseStream.Position;
+                        DatafileHeader header = new DatafileHeader
+                        {
+                            ResourceIdentifier = reader.ReadUInt32(),
+                            FileSize = reader.ReadInt32(),
+                            FileNameSize = reader.ReadInt32()
+                        };
+                        header.FileName = reader.ReadChars(header.FileNameSize);
+                        entry.Header = header;
+
+                        reader.BaseStream.Seek(1, SeekOrigin.Current);
+                        long end = reader.BaseStream.Position;
+
+                        reader.BaseStream.Seek(beginning, SeekOrigin.Begin);
+                        entry.AllData = reader.ReadBytes((int)(end - beginning) + header.FileSize);
+
+                        // go until we reach the end of the file
                         entries.Add(entry);
+                    }
                 }
             }
             completionAction(entries.ToArray());

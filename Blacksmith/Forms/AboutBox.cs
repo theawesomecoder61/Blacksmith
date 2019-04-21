@@ -12,6 +12,12 @@ namespace Blacksmith.Forms
             labelVersion.Text = string.Format("Version {0}", AssemblyVersion);
         }
 
+        private void AboutBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
         #region Assembly Attribute Accessors
 
         public string AssemblyTitle

@@ -128,7 +128,14 @@
     <Compile Include="Forms\ConvertDialog.Designer.cs">
       <DependentUpon>ConvertDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MultifileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MultifileDialog.Designer.cs">
+      <DependentUpon>MultifileDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Message.cs" />
+    <Compile Include="Structs.cs" />
     <Compile Include="Three\Cube.cs" />
     <Compile Include="Enums\EntryTreeNodeType.cs" />
     <Compile Include="Enums\FindType.cs" />
@@ -183,7 +190,7 @@
     <Content Include="Games\Origins backup.txt" />
     <Content Include="Three\D3DScene.txt" />
     <Compile Include="Enums\DXT.cs" />
-    <Compile Include="Enums\ResourceType.cs" />
+    <Compile Include="Enums\ResourceIdentifier.cs" />
     <Compile Include="FileTypes\Forge.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -229,6 +236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindDialog.resx">
       <DependentUpon>FindDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MultifileDialog.resx">
+      <DependentUpon>MultifileDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ResourceViewer.resx">
       <DependentUpon>ResourceViewer.cs</DependentUpon>

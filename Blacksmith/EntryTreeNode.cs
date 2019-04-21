@@ -6,12 +6,13 @@ namespace Blacksmith
 {
     public class EntryTreeNode : TreeNode
     {
+        public long FileID;
         public Forge Forge;
         public Game Game;
         public long Offset;
         public string Path;
         public long ResourceOffset = -1;
-        public ResourceType ResourceType = ResourceType._NONE;
+        public ResourceIdentifier ResourceIdentifier = ResourceIdentifier._NONE;
         public long Size = -1;
         public EntryTreeNodeType Type = EntryTreeNodeType.NONE;
 

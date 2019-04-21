@@ -20,10 +20,6 @@ namespace Blacksmith
     public static class Helpers
     {
         public const string DECOMPRESSED_FILE_FORMATS = "Assassin's Creed: Origins decompressed file|*.acor|Assassin's Creed: Odyssey decompressed file|*.acod|Steep decompressed file|*.stp|All files|*.*";
-        public static ResourceType[] IMPORTANT_RESOURCE_TYPES =
-        {
-            ResourceType.MESH, ResourceType.MATERIAL, ResourceType.LOCALIZATION_PACKAGE, ResourceType.TEXTURE_SET, ResourceType.TEXTURE_MAP, ResourceType.MIPMAP
-        };
         public const string MODEL_CONVERSION_FORMATS = "Collada|*.dae|Valve SMD|*.smd|STL|*.stl|Wavefront OBJ|*.obj|All files|*.*";
         private const string SUPPORTED_FILES = @"(.forge|.pck|.png|.txt|.ini|.log)";
         public const string TEXTURE_CONVERSION_FORMATS = "Targa|*.tga|Portable Network Graphics|*.png|Tagged Image File Format|*.tif|Joint Photographic Experts Group|*.jpg|All files|*.*";
@@ -31,7 +27,7 @@ namespace Blacksmith
         public struct ResourceLocation
         {
             public long Offset { get; internal set; }
-            public ResourceType Type { get; internal set; }
+            public ResourceIdentifier Type { get; internal set; }
         }
 
         /// <summary>
@@ -106,7 +102,7 @@ namespace Blacksmith
         }
 
         /// <summary>
-        /// Returns the offsets of where 0x33 0xAA 0xFB 0x57 0x99 0xFA 0x04 0x10 can be found in a raw data file
+        /// Returns the offsets of where 0x1004FA9957FBAA33 can be found in a raw data file
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
@@ -129,34 +125,47 @@ namespace Blacksmith
         }
         
         /// <summary>
-        /// Returns the offsets of any supported Resource Type
+        /// Returns the offsets of any located ResourceIdentifier
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
         public static ResourceLocation[] LocateResourceIdentifiers(BinaryReader reader)
         {
             List<ResourceLocation> locs = new List<ResourceLocation>();
+            reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
-            // read the entire stream
-            reader.BaseStream.Position = 0;
-            byte[] allData = reader.ReadBytes((int)reader.BaseStream.Length);
-
-            // find all supported ResourceTypes
-            foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+            // read the entire stream if the data is under 2 MB
+            if (reader.BaseStream.Length < 2 * 1024 * 1024)
             {
-                uint value = (uint)type;
-                byte[] valueAsBytes = BitConverter.GetBytes(value);
-                foreach (Tuple<int, int> tuple in RecurringIndexes(allData, valueAsBytes, 4))
-                {
-                    locs.Add(new ResourceLocation
-                    {
-                        Offset = tuple.Item1,
-                        Type = type
-                    });
-                }
-            }
+                byte[] allData = reader.ReadBytes((int)reader.BaseStream.Length);
 
-            return locs.ToArray();
+                // find all supported ResourceIdentifiers
+                foreach (ResourceIdentifier type in Enum.GetValues(typeof(ResourceIdentifier)))
+                {
+                    byte[] typeAsBytes = BitConverter.GetBytes((uint)type);
+                    foreach (Tuple<int, int> tuple in RecurringIndexes(allData, typeAsBytes, 4))
+                    {
+                        locs.Add(new ResourceLocation
+                        {
+                            Offset = tuple.Item1,
+                            Type = type
+                        });
+                    }
+                }
+
+                return locs.ToArray();
+            }
+            else // return the first Resource Type
+            {
+                return new ResourceLocation[]
+                {
+                    new ResourceLocation
+                    {
+                        Offset = 0,
+                        Type = (ResourceIdentifier)reader.ReadUInt32()
+                    }
+               };
+            }
         }
 
         /// <summary>
@@ -317,7 +326,6 @@ namespace Blacksmith
             Console.WriteLine("DXT: " + dxtType.ToString());
 
             char[] dxtArr = { 'D', 'X', '\x0', '\x0' };
-            int pls = imageData.Length; //Math.Max(1, (width + 3) / 4) * 8
             try
             {
                 using (FileStream stream = new FileStream($"{GetTempPath(fileName)}.dds", FileMode.Create, FileAccess.Write, FileShare.None))
@@ -326,40 +334,49 @@ namespace Blacksmith
                     {
                         foreach (char c in new char[] { 'D', 'D', 'S', ' ' }) // DDS magic
                             writer.Write(c);
-                        writer.Write(124); // size of DDS header
-                        writer.Write(659463); // flags
+                        writer.Write(BitConverter.GetBytes(124)); // size of DDS header
+                        writer.Write(new byte[]{ 0x7, 0x10, 0x8, 0x0 }); // flags
                         writer.Write(height); // height
                         writer.Write(width); // width
-                        writer.Write(pls); // pitch or linear size
-                        writer.Write(0); // depth
+                        writer.Write(BitConverter.GetBytes(2048)); // pitch or linear size
+                        writer.Write(1); // depth
                         writer.Write(1); // mipmap count, "1" for now
                         for (int i = 0; i < 11; i++) // reserved
                             writer.Write(0);
-                        writer.Write(32); // size of PIXELFORMAT chunk
+
+                        // DDS_PIXELFORMAT
+                        writer.Write(32); // size of PIXELFORMAT
                         if (dxtType == 0 ? false : (int)dxtType != 7) // flags
-                            writer.Write(4);
+                            writer.Write(BitConverter.GetBytes(4));
                         else
-                            writer.Write(64);
+                            writer.Write(BitConverter.GetBytes(64));
                         foreach (char c in DXTExtensions.GetDXTAsChars((int)dxtType)) // DXT type/four CC
                             writer.Write(c);
                         for (int n = 0; n < 5; n++) // RGBBitCount, RBitMask, GBitMask, BBitMask, ABitMask
                             writer.Write(0);
+
                         writer.Write(4198408); // caps
                         for (int i = 0; i < 4; i++) // caps2, caps3, caps4, reserved2
                             writer.Write(0);
+
+                        // DDS_HEADER_DX10
                         if (dxtType.ToString().Contains("DX10")) // add the DX10 header, if necessary
                         {
                             string fileNameNoExt = Path.GetFileNameWithoutExtension(fileName);
                             if (fileNameNoExt.Contains("NormalMap") || fileNameNoExt.EndsWith("_Map")) // this stays until I devise a better tactic
-                                writer.Write(98); // normal maps
+                                writer.Write(BitConverter.GetBytes(98)); // BC7_UNORM (normal maps)
+                            else if (false)
+                                writer.Write(BitConverter.GetBytes(71)); // BC1_UNORM (mask maps)
                             else
-                                writer.Write(72); // all others use BC1_UNORM_SRGB
-                            writer.Write(3); // resourceDimension
-                            writer.Write(0); // miscFlags
-                            writer.Write(1); // array size
-                            writer.Write(0); // miscFlags2
+                                writer.Write(BitConverter.GetBytes(72)); // BC1_UNORM_SRGB
+                            writer.Write(BitConverter.GetBytes(3)); // resource dimension
+                            writer.Write(0); // misc flags
+                            writer.Write(BitConverter.GetBytes(1)); // array size
+                            writer.Write(0); // misc flags 2
                         }
-                        writer.Write(imageData); // image data
+
+                        // image data
+                        writer.Write(imageData);
                     }
                 }
             }
@@ -377,12 +394,12 @@ namespace Blacksmith
         /// <param name="fileName"></param>
         /// <param name="format"></param>
         /// <param name="completionAction"></param>
-        public static void ConvertDDS(string fileName, string format = "png", Action<bool> completionAction = null)
+        /*public static void ConvertDDS(string fileName, string format = "png", bool fixNormals = false, Action<bool> completionAction = null)
         {
-            string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
+            string texconv = Application.StartupPath + "\\Binaries\\x86\\texconv.exe";
             if (File.Exists(texconv))
             {
-                string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{GetTempPath()}\" \"{fileName}\"";
+                string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 {(fixNormals ? "-inverty" : "")} -o \"{GetTempPath()}\" \"{fileName}\"";
                 Console.WriteLine($"> {0} {1}", texconv, args);
                 Process p = new Process();
                 p.StartInfo.FileName = texconv;
@@ -406,7 +423,7 @@ namespace Blacksmith
             }
             else
                 throw new Exception("texconv is not found. Blacksmith needs it to convert the texture.");
-        }
+        }*/
 
         /// <summary>
         /// Converts a .dds texture with texconv. Outputs to outputDir. Has a callback if you wish to use it.
@@ -415,12 +432,14 @@ namespace Blacksmith
         /// <param name="outputDir"></param>
         /// <param name="format"></param>
         /// <param name="completionAction"></param>
-        public static void ConvertDDS(string fileName, string outputDir, string format = "png", Action<bool> completionAction = null)
+        public static void ConvertDDS(string fileName, string outputDir = "", string format = "png", bool fixNormals = false, Action<bool> completionAction = null)
         {
-            string texconv = string.Concat(Application.StartupPath, "\\Binaries\\x86\\texconv.exe");
+            string texconv = Application.StartupPath + "\\Binaries\\x86\\texconv.exe";
+            if (outputDir == "")
+                outputDir = GetTempPath();
             if (File.Exists(texconv))
             {
-                string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 -o \"{outputDir}\" \"{fileName}\"";
+                string args = $"-ft {format} -f R8G8B8A8_UNORM -m 1 {(fixNormals && Properties.Settings.Default.fixNormals ? "-invertz" : "")} -o \"{outputDir}\" \"{fileName}\"";
                 Console.WriteLine($"> {0} {1}", texconv, args);
                 Process p = new Process();
                 p.StartInfo.FileName = texconv;
@@ -597,10 +616,7 @@ namespace Blacksmith
         /// <param name="magic"></param>
         /// <param name="comparison"></param>
         /// <returns></returns>
-        public static bool MagicMatches(byte[] magic, byte[] comparison) => magic[0] == comparison[0] &&
-                magic[1] == comparison[1] &&
-                magic[2] == comparison[2] &&
-                magic[3] == comparison[3];
+        public static bool MagicMatches(byte[] magic, byte[] comparison) => magic == comparison; /*magic[0] == comparison[0] && magic[1] == comparison[1] && magic[2] == comparison[2] && magic[3] == comparison[3];*/
 
         /// <summary>
         /// Returns if the magic matches the comparison
@@ -608,10 +624,7 @@ namespace Blacksmith
         /// <param name="magic"></param>
         /// <param name="comparison"></param>
         /// <returns></returns>
-        public static bool MagicMatches(char[] magic, char[] comparison) => magic[0] == comparison[0] &&
-                magic[1] == comparison[1] &&
-                magic[2] == comparison[2] &&
-                magic[3] == comparison[3];
+        public static bool MagicMatches(char[] magic, char[] comparison) => magic == comparison; /* magic[0] == comparison[0] && magic[1] == comparison[1] &&  magic[2] == comparison[2] && magic[3] == comparison[3]; */
 
         /// <summary>
         /// Counts the occurences of a string within another string
@@ -676,16 +689,16 @@ namespace Blacksmith
         }
 
         /// <summary>
-        /// Get the first ResourceType in a file (provided from fileName)
+        /// Get the first ResourceIdentifier in a file (provided from fileName)
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static ResourceType GetFirstResourceType(string fileName)
+        public static ResourceIdentifier GetFirstResourceIdentifier(string fileName)
         {
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 if (stream.Length == 0)
-                    return ResourceType._NONE;
+                    return ResourceIdentifier._NONE;
 
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -699,7 +712,7 @@ namespace Blacksmith
                     }
                 }
             }
-            return ResourceType._NONE;
+            return ResourceIdentifier._NONE;
         }
 
         /// <summary>
@@ -712,7 +725,29 @@ namespace Blacksmith
             TextInfo info = new CultureInfo("en-US", false).TextInfo;
             return info.ToTitleCase(str);
         }
+        
+        /// <summary>
+        /// Formats a string nicely
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string FormatNicely(string type) => ToTitleCase(type.ToLower().Replace("_", " "));
 
-        public static string FormatType(ResourceType type) => ToTitleCase(type.ToString().ToLower().Replace("_", " "));
+        /// <summary>
+        /// Formats a ResourceIdentifier nicely
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string FormatNicely(ResourceIdentifier type) => FormatNicely(type.ToString());
+
+        public static string FullPathWithoutExtension(string str) => Path.Combine(Path.GetDirectoryName(str), Path.GetFileNameWithoutExtension(str));
+
+        // unused
+        public static int PeekInt32(BinaryReader r1, out BinaryReader r2)
+        {
+            int i = r1.ReadInt32();
+            r2 = r1;
+            return i;
+        }
     }
 }

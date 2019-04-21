@@ -25,19 +25,13 @@ namespace Blacksmith.Enums
         /// </summary>
         /// <param name="dxt"></param>
         /// <returns></returns>
-        public static DXT GetDXT(int dxt)
-        {
-            return (DXT)Enum.ToObject(typeof(DXT), dxt);
-        }
+        public static DXT GetDXT(int dxt) => (DXT)Enum.ToObject(typeof(DXT), dxt);
 
         /// <summary>
         /// Returns an DXT enum as a char array for an int
         /// </summary>
         /// <param name="dxtType"></param>
         /// <returns></returns>
-        public static char[] GetDXTAsChars(int dxt)
-        {
-            return Enum.ToObject(typeof(DXT), dxt).ToString().Replace("_", "").ToCharArray();
-        }
+        public static char[] GetDXTAsChars(int dxt) => Enum.ToObject(typeof(DXT), dxt).ToString().Replace("_", "").ToCharArray();
     }
 }

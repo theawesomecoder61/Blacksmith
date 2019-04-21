@@ -12,14 +12,14 @@ namespace Blacksmith
         {
             Vector3[] v = new Vector3[]
             {
-                new Vector3(-0.5f, -0.5f, -0.5f),
-                new Vector3(0.5f, -0.5f, -0.5f),
-                new Vector3(0.5f, 0.5f, -0.5f),
-                new Vector3(-0.5f, 0.5f, -0.5f),
-                new Vector3(-0.5f, -0.5f, 0.5f),
-                new Vector3(0.5f, -0.5f, 0.5f),
-                new Vector3(0.5f, 0.5f, 0.5f),
-                new Vector3(-0.5f, 0.5f, 0.5f),
+                new Vector3(-1, -1, -1),
+                new Vector3(1, -1, -1),
+                new Vector3(1, 1, -1),
+                new Vector3(-1, 1, -1),
+                new Vector3(-1, -1, 1),
+                new Vector3(1, -1, 1),
+                new Vector3(1, 1, 1),
+                new Vector3(-1, 1, 1),
             };
             for (int i = 0; i < v.Length; i++)
             {

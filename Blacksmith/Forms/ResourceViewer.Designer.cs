@@ -55,11 +55,11 @@
             this.dataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView.Size = new System.Drawing.Size(800, 450);
-            this.dataGridView.TabIndex = 1;
+            this.dataGridView.TabIndex = 0;
             // 
             // Type
             // 
-            this.Type.HeaderText = "Type";
+            this.Type.HeaderText = "Identifier";
             this.Type.Name = "Type";
             this.Type.ReadOnly = true;
             // 
@@ -75,9 +75,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.dataGridView);
+            this.KeyPreview = true;
             this.Name = "ResourceViewer";
             this.ShowIcon = false;
             this.Text = "Resource Identifiers Viewer";
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ResourceViewer_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 

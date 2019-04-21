@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Blacksmith.FileTypes
 {
-    public class Forge
+    public class Forge : IDisposable
     {
         public string Path { get; private set; }
         public string Name { get; private set; }
@@ -62,13 +62,15 @@ namespace Blacksmith.FileTypes
         {
             public int RawDataSize { get; set; }
             public long FileDataID { get; set; }
-            public int[] Unknown1 { get; set; } //4
+            public int Unknown1 { get; set; }
+            public uint ResourceIdentifier { get; set; }
+            public int[] Unknown2 { get; set; } //2
             public int NextFileCount { get; set; }
             public int PreviousFileCount { get; set; }
-            public int Unknown2 { get; set; }
+            public int Unknown3 { get; set; }
             public int Timestamp { get; set; } // really an int
             public string Name { get; set; } // actually char [128], but strings are MUCH easier to work with
-            public int[] Unknown3 { get; set; } //5
+            public int[] Unknown4 { get; set; } //5
         }
 
         public struct FileEntry
@@ -182,13 +184,15 @@ namespace Blacksmith.FileTypes
                         {
                             RawDataSize = reader.ReadInt32(),
                             FileDataID = reader.ReadInt64(),
-                            Unknown1 = Helpers.ReadInt32s(reader, 4),
+                            Unknown1 = reader.ReadInt32(),
+                            ResourceIdentifier = reader.ReadUInt32(),
+                            Unknown2 = Helpers.ReadInt32s(reader, 2),
                             NextFileCount = reader.ReadInt32(),
                             PreviousFileCount = reader.ReadInt32(),
-                            Unknown2 = reader.ReadInt32(),
+                            Unknown3 = reader.ReadInt32(),
                             Timestamp = reader.ReadInt32(),
                             Name = new string(reader.ReadChars(128)),
-                            Unknown3 = Helpers.ReadInt32s(reader, 5)
+                            Unknown4 = Helpers.ReadInt32s(reader, 5)
                         };
 
                         // remove non-ASCII characters from the name
@@ -239,6 +243,16 @@ namespace Blacksmith.FileTypes
         }
 
         /// <summary>
+        /// Returns the Resource Type of the specified FileEntry
+        /// </summary>
+        /// <param name="fileEntry"></param>
+        /// <returns></returns>
+        public ResourceIdentifier GetResourceIdentifierOfFileEntry(FileEntry fileEntry)
+        {
+            return (ResourceIdentifier)fileEntry.NameTable.ResourceIdentifier;
+        }
+
+        /// <summary>
         /// Returns the raw data with an offset and size
         /// </summary>
         /// <param name="offset"></param>
@@ -256,7 +270,7 @@ namespace Blacksmith.FileTypes
                 }
             }
             return data;
-        }
+        }        
 
         /// <summary>
         /// Creates a filelist
@@ -283,16 +297,19 @@ namespace Blacksmith.FileTypes
         /// <summary>
         /// Sets everything to null, basically dumping the resources used by the forge's fields
         /// </summary>
-        public void Dump()
+        public void Dispose()
         {
             isFullyRead = false;
-            Path = "";
+            Path = Name = "";
             Header = null;
             DataHeader1 = null;
             DataHeader2 = null;
             FileEntries = null;
             Indices = null;
             Names = null;
+            isFullyRead = false;
+
+            GC.SuppressFinalize(this);
         }
     }
 }

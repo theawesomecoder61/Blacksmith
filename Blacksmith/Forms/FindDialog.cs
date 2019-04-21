@@ -19,14 +19,20 @@ namespace Blacksmith.Forms
         private void FindDialog_Load(object sender, EventArgs e)
         {
             queryTextBox.Focus();
-            filterComboBox.SelectedIndex = 0;
+            filterComboBox.SelectedIndex = filterByComboBox.SelectedIndex = 0;
         }
 
         private void FindDialog_Shown(object sender, EventArgs e)
         {
             FindDialog_Load(sender, e);
         }
-        
+
+        private void FindDialog_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
         private void queryTextBox_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
@@ -54,6 +60,7 @@ namespace Blacksmith.Forms
                 Query = queryTextBox.Text,
                 Type = type,
                 ForgeToSearchIn = forges.Where(x => FormatName(x) == (string)forgeComboBox.SelectedItem).FirstOrDefault(),
+                FilterBy = (FilterBy)filterByComboBox.SelectedIndex,
                 CaseSensitive = ((string)filterComboBox.SelectedItem).Contains("Case-Sensitive")
             });
         }
@@ -104,6 +111,8 @@ namespace Blacksmith.Forms
 
                 dataGridView.Rows.Add(row);
             }
+
+            resultsToolStripLabel.Text = $"Results: {results.Count}";
         }
 
         private void showInListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -157,11 +166,20 @@ namespace Blacksmith.Forms
         public string Query;
         public FindType Type;
         public Forge ForgeToSearchIn;
+        public FilterBy FilterBy;
         public bool CaseSensitive;
     }
 
     public class ShowInListArgs : EventArgs
     {
         public string Name;
+    }
+
+    public enum FilterBy
+    {
+        NONE = 0,
+        MESH = 1,
+        TEXTURE_MAP = 2,
+        LOD_SELECTOR = 3
     }
 }

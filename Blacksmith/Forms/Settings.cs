@@ -27,6 +27,13 @@ namespace Blacksmith.Forms
             filelistSeparatorComboBox.SelectedIndex = Properties.Settings.Default.useCSV ? 1 : 0;
             popupComboBox.SelectedIndex = Properties.Settings.Default.hidePopups;
             colorDialog.Color = Properties.Settings.Default.threeBG;
+            fixNormalsCheckBox.Checked = Properties.Settings.Default.fixNormals;
+        }
+
+        private void Settings_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
         }
 
         private void Settings_FormClosing(object sender, FormClosingEventArgs e)
@@ -175,6 +182,13 @@ namespace Blacksmith.Forms
         }
         #endregion
 
+        #region Fix normals
+        private void fixNormalsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.fixNormals = fixNormalsCheckBox.Checked;
+        }
+        #endregion
+
         #region Saving and loading
         private void loadFromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -192,6 +206,7 @@ namespace Blacksmith.Forms
                 pointSizeBar.Value = int.Parse(data["3D"]["PointSize"]);
                 filelistSeparatorComboBox.SelectedIndex = int.Parse(data["Misc"]["FilelistSeparator"]);
                 popupComboBox.SelectedIndex = int.Parse(data["Misc"]["Popups"]);
+                fixNormalsCheckBox.Checked = bool.Parse(data["Misc"]["FixNormals"]);
 
                 int[] values = data["3D"]["Background"].Split(',').ToList().Select(x => int.Parse(x)).ToArray();
                 colorDialog.Color = Color.FromArgb(values[3], values[0], values[1], values[2]);
@@ -205,18 +220,19 @@ namespace Blacksmith.Forms
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var parser = new FileIniDataParser();
-                IniData data = new IniData();                
+                IniData data = new IniData();
 
                 data["Games"]["Odyssey"] = acOdTextBox.Text;
                 data["Games"]["Origins"] = acOrTextBox.Text;
                 data["Games"]["Steep"] = steepTextBox.Text;
                 data["Temp"]["Path"] = tempTextBox.Text;
                 data["Temp"]["DeleteOnExit"] = deleteTempCheckbox.Checked.ToString();
-                data["3D"]["RenderMode"] = renderModeComboBox.SelectedIndex.ToString();         
+                data["3D"]["RenderMode"] = renderModeComboBox.SelectedIndex.ToString();
                 data["3D"]["PointSize"] = pointSizeBar.Value.ToString();
+                data["3D"]["Background"] = string.Format("{0},{1},{2},{3}", colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B, colorDialog.Color.A);
                 data["Misc"]["FilelistSeparator"] = filelistSeparatorComboBox.SelectedIndex.ToString();
                 data["Misc"]["Popups"] = popupComboBox.SelectedIndex.ToString();
-                data["3D"]["Background"] = string.Format("{0},{1},{2},{3}", colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B, colorDialog.Color.A);
+                data["Misc"]["FixNormals"] = fixNormalsCheckBox.Checked.ToString();
 
                 parser.WriteFile(saveFileDialog.FileName, data);
                 Message.Success("Saved settings to file.");

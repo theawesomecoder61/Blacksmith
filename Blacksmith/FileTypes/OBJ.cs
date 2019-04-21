@@ -441,7 +441,8 @@ namespace Blacksmith.FileTypes
                 for (int j = 0; j < model.Meshes[i].Vertices.Count; j++)
                 {
                     Mesh.Vertex v = model.Meshes[i].Vertices[j];
-                    obj.AppendLine($"vt {v.TextureCoordinate.X} {v.TextureCoordinate.Y}");
+                    v.TextureCoordinate = new Vector2(v.TextureCoordinate.X / 32768, v.TextureCoordinate.Y / -32768);
+                    obj.AppendLine($"vt {v.TextureCoordinate.X.ToString("F4")} {v.TextureCoordinate.Y.ToString("F4")}");
                 }
 
                 obj.AppendLine($"g mesh{i}");
@@ -460,12 +461,12 @@ namespace Blacksmith.FileTypes
                     string z = $"{f.Z + 1}/{f.Z + 1}";
                     if (normalMode != NormalExportMode.NONE)
                     {
-                        x += f.X + 1;
-                        y += f.Y + 1;
-                        z += f.Z + 1;
+                        x += $"/{f.X + 1}";
+                        y += $"/{f.Y + 1}";
+                        z += $"/{f.Z + 1}";
                     }
 
-                    obj.AppendLine($"f {x} {y} {z}");
+                    obj.AppendLine($"f {y} {x} {z}");
                 }
             }
             return obj.ToString();

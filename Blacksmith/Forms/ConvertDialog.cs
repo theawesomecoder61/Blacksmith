@@ -17,6 +17,18 @@ namespace Blacksmith.Forms
             InitializeComponent();
         }
 
+        private void ConvertDialog_Load(object sender, EventArgs e)
+        {
+            //modelComboBox.Items.Add("DAE|*.dae");
+            modelComboBox.Items.Add("OBJ|*.obj");
+        }
+
+        private void ConvertDialog_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
         public void SetValues(int selectedTab, EntryTreeNode node, Model model = null)
         {
             tabControl1.SelectedIndex = selectedTab;
@@ -45,7 +57,7 @@ namespace Blacksmith.Forms
                     switch (modelComboBox.SelectedIndex)
                     {
                         /*case 0: //dae
-                            //DAE.Export(saveFileDialog.FileName, model, false, false);
+                            DAE.Export(saveFileDialog.FileName, model, false, false);
                             break;*/
                         case 0: //obj
                             File.WriteAllText(saveFileDialog.FileName, OBJ.Export(model, (NormalExportMode)normalsComboBox.SelectedIndex));
@@ -67,10 +79,11 @@ namespace Blacksmith.Forms
                     {
                         string fileName = string.Concat(Path.Combine(Path.GetDirectoryName(saveFileDialog.FileName), Path.GetFileNameWithoutExtension(saveFileDialog.FileName)), "-", i, Path.GetExtension(saveFileDialog.FileName));
                         Model mdl = Model.CreateFromMesh(model.Meshes[i]);
+
                         switch (modelComboBox.SelectedIndex)
                         {
                             /*case 0: //dae
-                                //DAE.Export(fileName, mdl, false, false);
+                                DAE.Export(fileName, mdl, false, false);
                                 break;*/
                             case 0: //obj
                                 File.WriteAllText(fileName, OBJ.Export(mdl, (NormalExportMode)normalsComboBox.SelectedIndex, true));
@@ -117,7 +130,7 @@ namespace Blacksmith.Forms
                     }
                     else
                     {
-                        Helpers.ConvertDDS(tex, Path.GetDirectoryName(saveFileDialog.FileName), ext, (error) =>
+                        Helpers.ConvertDDS(tex, Path.GetDirectoryName(saveFileDialog.FileName), format: ext, completionAction: (error) =>
                         {
                             if (error)
                                 Message.Fail("Failed to convert the texture.");

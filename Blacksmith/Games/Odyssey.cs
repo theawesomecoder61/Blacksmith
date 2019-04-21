@@ -9,68 +9,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using static Blacksmith.Games.Origins;
+using static Blacksmith.Structs;
 
-// not Super Mario Odyssey!
+// do not confuse with Super Mario Odyssey!
 
 namespace Blacksmith.Games
 {
     public class Odyssey
     {
-        #region Structs
-        public struct HeaderBlock
-        {
-            public long Identifier { get; internal set; }
-            public short Version { get; internal set; }
-            public Compression Compression { get; internal set; }
-            // skip 4 bytes
-            public int BlockCount { get; internal set; }
-        }
-
-        public struct BlockIndex
-        {
-            public int UncompressedSize { get; internal set; } // both are uint, but who cares?
-            public int CompressedSize { get; internal set; }
-        }
-
-        public struct DataChunk
-        {
-            public int Checksum { get; internal set; }
-            public byte[] Data { get; internal set; }
-        }
-
-        public struct DatafileHeader
-        {
-            public int ResourceType { get; internal set; }
-            public int FileSize { get; internal set; }
-            public int FileNameSize { get; internal set; }
-            public char[] FileName { get; internal set; }
-        }
-
-        public struct TopMip
-        {
-            public int Width { get; internal set; }
-            public int Height { get; internal set; }
-            // skip 8 bytes
-            public DXT DXTType { get; internal set; }
-            // skip 4 bytes
-            public int Mipmaps { get; internal set; }
-        }
-
-        public struct TextureMap
-        {
-            public int Width { get; internal set; }
-            public int Height { get; internal set; }
-            // skip 8 bytes
-            public DXT DXTType { get; internal set; }
-            // skip 8 bytes
-            public int MipmapCount { get; internal set; }
-            // skip 130 bytes
-            public int DataSize { get; internal set; }
-            public byte[] Data { get; internal set; }
-        }
-        #endregion
-
         #region Raw Files
         /// <summary>
         /// Reads a file extracted from the forge file and writes all its decompressed data chunks to a file
@@ -94,10 +40,11 @@ namespace Blacksmith.Games
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
                         long[] identifierOffsets = Helpers.LocateRawDataIdentifier(reader);
-                        long x = identifierOffsets[1];
+                        if (identifierOffsets.Length < 2)
+                            return false;
 
                         // skip to this Raw Data Block's offset
-                        reader.BaseStream.Seek(x, SeekOrigin.Begin);
+                        reader.BaseStream.Seek(identifierOffsets[1], SeekOrigin.Begin);
 
                         // Header Block
                         HeaderBlock header = new HeaderBlock
@@ -236,7 +183,7 @@ namespace Blacksmith.Games
                 {
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
@@ -256,76 +203,101 @@ namespace Blacksmith.Games
                 {
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
+                    reader.BaseStream.Seek(10, SeekOrigin.Current); // fileID + 2 skipped bytes
 
-                    // ignore the 2 bytes, file ID, and resource type
-                    reader.BaseStream.Seek(14, SeekOrigin.Current);
+                    if (header.ResourceIdentifier != (uint)ResourceIdentifier.TEXTURE_MAP)
+                        Message.Fail("This is not proper Texture Map data.");
 
-                    // toppmip 0
-                    TopMip mip0 = new TopMip
+                    // TextureMap
+                    reader.BaseStream.Seek(4, SeekOrigin.Current); // identifier
+                    TextureMap textureMap = new TextureMap
                     {
-                        Height = reader.ReadInt32(),
-                        Width = reader.ReadInt32()
+                        Width = reader.ReadInt32(),
+                        Height = reader.ReadInt32()
                     };
-                    reader.BaseStream.Seek(8, SeekOrigin.Current);
-                    mip0.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
-                    reader.BaseStream.Seek(4, SeekOrigin.Current);
-                    mip0.Mipmaps = reader.ReadInt32();
+                    reader.BaseStream.Seek(8, SeekOrigin.Current); // 8 skipped bytes
+                    textureMap.DXT = (DXT)reader.ReadInt32();
+                    reader.BaseStream.Seek(8, SeekOrigin.Current); // 8 skipped bytes
+                    textureMap.Mipmaps = reader.ReadInt32();
+                    reader.BaseStream.Seek(20, SeekOrigin.Current); // 5 skipped ints
 
-                    reader.BaseStream.Seek(81, SeekOrigin.Current);
+                    reader.BaseStream.Seek(2, SeekOrigin.Current);
 
-                    // topmip 1, ignored
-                    TopMip mip1 = new TopMip
+                    // CompiledTopMip
+                    CompiledTopMip[] compiledTopMips = new CompiledTopMip[2];
+                    for (int i = 0; i < 2; i++)
                     {
-                        Height = reader.ReadInt32(),
-                        Width = reader.ReadInt32()
+                        reader.BaseStream.Seek(5, SeekOrigin.Current); // identifier + 1 skipped byte
+                        compiledTopMips[i].FileID = reader.ReadInt64();
+                        reader.BaseStream.Seek(8, SeekOrigin.Current); // 8 skipped bytes
+                    }
+
+                    reader.BaseStream.Seek(1, SeekOrigin.Current);
+
+                    // CompiledTextureMap
+                    reader.BaseStream.Seek(12, SeekOrigin.Current); // identifier + two skipped ints
+                    CompiledTextureMap compiledTextureMap = new CompiledTextureMap
+                    {
+                        Width = reader.ReadInt32(),
+                        Height = reader.ReadInt32()
                     };
-                    reader.BaseStream.Seek(8, SeekOrigin.Current);
-                    mip1.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
-                    reader.BaseStream.Seek(4, SeekOrigin.Current);
-                    mip1.Mipmaps = reader.ReadInt32();
+                    reader.BaseStream.Seek(8, SeekOrigin.Current); // 2 skipped ints
+                    compiledTextureMap.Mipmaps = reader.ReadInt32();
+                    compiledTextureMap.DXT = (DXT)reader.ReadInt32();
+                    reader.BaseStream.Seek(28, SeekOrigin.Current); // 7 skipped ints
 
-                    // locate the two topmips, if they exist
-                    if (node.GetForge().FileEntries.Where(x => x.NameTable.Name.Contains(name + "_TopMip")).Count() > 0)
+                    reader.BaseStream.Seek(1, SeekOrigin.Current);
+
+                    // locate the parent forge tree node
+                    EntryTreeNode forgeNode = (EntryTreeNode)node.Parent.Parent;
+                    if (forgeNode.Type != EntryTreeNodeType.FORGE)
                     {
-                        Forge.FileEntry topMipEntry = node.GetForge().FileEntries.Where(x => x.NameTable.Name == name + "_TopMip_0").First();
+                        Message.Fail("Failed to locate the forge node.");
+                        return;
+                    }
 
-                        // extract, read, and create a DDS image with the first topmip
-                        byte[] rawTopMipData = node.GetForge().GetRawData(topMipEntry);
-                        //Helpers.WriteToFile(topMipEntry.NameTable.Name, rawTopMipData, true);
+                    // check to see if there is a topmip
+                    if (compiledTopMips.Select(x => x.FileID).Count() > 0 && compiledTopMips.Select(x => x.FileID).First() != 0)
+                    {
+                        // search for file IDs from the CompiledTextureMaps
+                        if (forgeNode.Nodes.Cast<EntryTreeNode>().Where(x => x.FileID == compiledTopMips[0].FileID).Count() == 0)
+                        {
+                            if (Message.Show("Failed to locate the Mip0. Would you like to try extracting the TextureMap's internal image data?", "Failed", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                ExtractInternalTexture(reader, textureMap, name, completionAction);
+                                return;
+                            }
+                            else
+                                return;
+                        }
+                        EntryTreeNode topMip0Node = forgeNode.Nodes.Cast<EntryTreeNode>().Where(x => x.FileID == compiledTopMips[0].FileID).First();
+
+                        if (node.GetForge().FileEntries.Where(x => x.IndexTable.FileDataID == compiledTopMips[0].FileID).Count() == 0)
+                        {
+                            Message.Fail("Failed to locate the Mip0 in the forge.");
+                            return;
+                        }
+                        Forge.FileEntry topMip0Entry = node.GetForge().FileEntries.Where(x => x.IndexTable.FileDataID == compiledTopMips[0].FileID).First();
 
                         // read
-                        //ReadFile(Helpers.GetTempPath(topMipEntry.NameTable.Name));
-                        byte[] topMipData = ReadFile(rawTopMipData);
+                        byte[] rawTopMip0Data = node.GetForge().GetRawData(topMip0Entry);
+                        byte[] topMip0Data = ReadFile(rawTopMip0Data);
+
+                        // save for future use
+                        File.WriteAllBytes(Helpers.GetTempPath($"{topMip0Entry.NameTable.Name}.{Helpers.GameToExtension(node.Game)}"), topMip0Data);
 
                         // extract
-                        //ExtractTopMip(Helpers.GetTempPath(topMipEntry.NameTable.Name), mip0, completionAction);
-                        ExtractTopMip(topMipData, topMipEntry.NameTable.Name, mip0, completionAction);
+                        ExtractTopMip(topMip0Data, topMip0Entry.NameTable.Name, compiledTextureMap, completionAction);
                     }
-                    else // topmips do not exist. fear not! there is still image data found here. let us use that.
+                    else
                     {
-                        reader.BaseStream.Seek(25, SeekOrigin.Current);
-                        TextureMap map = new TextureMap
-                        {
-                            DataSize = reader.ReadInt32()
-                        };
-                        byte[] mipmapData = reader.ReadBytes(map.DataSize);
-
-                        // write DDS file
-                        Helpers.WriteTempDDS(name, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
-                        {
-                            Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (error) =>
-                            {
-                                if (error)
-                                    completionAction("FAILED");
-                                else
-                                    completionAction($"{Helpers.GetTempPath(name)}.png");
-                            });
-                        });
+                        // use the image data within this file
+                        ExtractInternalTexture(reader, textureMap, name, completionAction);
                     }
                 }
             }
@@ -333,14 +305,15 @@ namespace Blacksmith.Games
 
         public static void ExtractTextureMapFromFile(string fileName, Action<string> completionAction)
         {
-            string name = Path.GetFileNameWithoutExtension(fileName);
+            /*string name = Path.GetFileNameWithoutExtension(fileName);
+            Game game = Helpers.ExtensionToGame(Path.GetExtension(fileName).Substring(1));
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
@@ -362,39 +335,33 @@ namespace Blacksmith.Games
 
                     reader.BaseStream.Seek(81, SeekOrigin.Current);
 
-                    // topmip 1, ignored
-                    TopMip mip1 = new TopMip
-                    {
-                        Height = reader.ReadInt32(),
-                        Width = reader.ReadInt32()
-                    };
-                    reader.BaseStream.Seek(8, SeekOrigin.Current);
-                    mip1.DXTType = DXTExtensions.GetDXT(reader.ReadInt32());
-                    reader.BaseStream.Seek(4, SeekOrigin.Current);
-                    mip1.Mipmaps = reader.ReadInt32();
+                    // ignore topmip 1
+                    reader.BaseStream.Seek(28, SeekOrigin.Current);
 
                     // locate the two topmips, if they exist
                     string origin = Path.GetDirectoryName(fileName);
-                    string ext = Path.GetExtension(fileName);
+                    string ext = "." + Helpers.GameToExtension(game);
                     string[] files = Directory.GetFiles(Path.GetDirectoryName(fileName));
                     files = files.Select(x => x = Path.GetFileNameWithoutExtension(x)).ToArray();
 
                     if (files.Where(x => x.Contains(name + "_TopMip")).Count() > 0)
                     {
-                        string topMipEntry = files.Where(x => x == name + "_TopMip_0").First();
-                        if (topMipEntry != null)
+                        string[] topMipEntries = files.Where(x => x.Contains(name + "_TopMip_0")).ToArray();
+                        if (topMipEntries != null && topMipEntries.Length > 0)
                         {
-                            // extract, read, and create a DDS image with the first topmip
-                            byte[] rawTopMipData = File.ReadAllBytes(Path.Combine(origin, topMipEntry + ext));
-                            //Helpers.WriteToFile(topMipEntry.NameTable.Name, rawTopMipData, true);
+                            string topMipEntry = topMipEntries[0] + ext;
 
                             // read
-                            //ReadFile(Helpers.GetTempPath(topMipEntry.NameTable.Name));
-                            byte[] topMipData = ReadFile(rawTopMipData);
+                            byte[] topMipData = File.ReadAllBytes(Path.Combine(origin, topMipEntry));
+
+                            // test if the data has been decompressed
+                            if (BitConverter.ToUInt32(topMipData, 0) != (uint)ResourceIdentifier.MIPMAP)
+                            {
+                                topMipData = ReadFile(topMipData);
+                            }
 
                             // extract
-                            //ExtractTopMip(Helpers.GetTempPath(topMipEntry.NameTable.Name), mip0, completionAction);
-                            ExtractTopMip(topMipData, topMipEntry, mip0, completionAction);
+                            ExtractTopMip(topMipData, Path.GetFileNameWithoutExtension(topMipEntry), mip0, completionAction);
                         }
                     }
                     else // topmips do not exist. fear not! there is still image data found here. let us use that.
@@ -404,12 +371,13 @@ namespace Blacksmith.Games
                         {
                             DataSize = reader.ReadInt32()
                         };
+
                         byte[] mipmapData = reader.ReadBytes(map.DataSize);
 
                         // write DDS file
                         Helpers.WriteTempDDS(name, mipmapData, mip0.Width, mip0.Height, mip0.Mipmaps, mip0.DXTType, () =>
                         {
-                            Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (error) =>
+                            Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", fixNormals: name.Contains("NormalMap"), completionAction: (error) =>
                             {
                                 if (error)
                                     completionAction("FAILED");
@@ -419,43 +387,103 @@ namespace Blacksmith.Games
                         });
                     }
                 }
-            }
-        }
+            }*/
 
-        private static void ExtractTopMip(string fileName, TopMip topMip, Action<string> completionAction)
-        {
             string name = Path.GetFileNameWithoutExtension(fileName);
+            Game game = Helpers.ExtensionToGame(Path.GetExtension(fileName).Substring(1));
             using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
                     header.FileName = reader.ReadChars(header.FileNameSize);
+                    reader.BaseStream.Seek(10, SeekOrigin.Current); // fileID + 2 skipped bytes
 
-                    reader.BaseStream.Seek(18, SeekOrigin.Current);
-                    byte[] data = reader.ReadBytes(header.FileSize - 18);
+                    if (header.ResourceIdentifier != (uint)ResourceIdentifier.TEXTURE_MAP)
+                        Message.Fail("This is not proper Texture Map data.");
 
-                    // write DDS file
-                    Helpers.WriteTempDDS(name, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType, () =>
+                    // TextureMap
+                    reader.BaseStream.Seek(4, SeekOrigin.Current); // identifier
+                    TextureMap textureMap = new TextureMap
                     {
-                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (error) =>
+                        Width = reader.ReadInt32(),
+                        Height = reader.ReadInt32()
+                    };
+                    reader.BaseStream.Seek(8, SeekOrigin.Current); // 8 skipped bytes
+                    textureMap.DXT = (DXT)reader.ReadInt32();
+                    reader.BaseStream.Seek(8, SeekOrigin.Current); // 8 skipped bytes
+                    textureMap.Mipmaps = reader.ReadInt32();
+                    reader.BaseStream.Seek(20, SeekOrigin.Current); // 5 skipped ints
+
+                    reader.BaseStream.Seek(2, SeekOrigin.Current);
+
+                    // CompiledTopMip
+                    CompiledTopMip[] compiledTopMips = new CompiledTopMip[2];
+                    for (int i = 0; i < 2; i++)
+                    {
+                        reader.BaseStream.Seek(5, SeekOrigin.Current); // identifier + 1 skipped byte
+                        compiledTopMips[i].FileID = reader.ReadInt64();
+                        reader.BaseStream.Seek(8, SeekOrigin.Current); // 8 skipped bytes
+                    }
+
+                    reader.BaseStream.Seek(1, SeekOrigin.Current);
+
+                    // CompiledTextureMap
+                    reader.BaseStream.Seek(12, SeekOrigin.Current); // identifier + two skipped ints
+                    CompiledTextureMap compiledTextureMap = new CompiledTextureMap
+                    {
+                        Width = reader.ReadInt32(),
+                        Height = reader.ReadInt32()
+                    };
+                    reader.BaseStream.Seek(8, SeekOrigin.Current); // 2 skipped ints
+                    compiledTextureMap.Mipmaps = reader.ReadInt32();
+                    compiledTextureMap.DXT = (DXT)reader.ReadInt32();
+                    reader.BaseStream.Seek(28, SeekOrigin.Current); // 7 skipped ints
+
+                    reader.BaseStream.Seek(1, SeekOrigin.Current);
+
+                    // locate the two topmips, if they exist
+                    string origin = Path.GetDirectoryName(fileName);
+                    string ext = "." + Helpers.GameToExtension(game);
+                    string[] files = Directory.GetFiles(Path.GetDirectoryName(fileName));
+                    files = files.Select(x => x = Path.GetFileNameWithoutExtension(x)).ToArray();
+
+                    // check to see if there is a topmip
+                    if (compiledTopMips.Select(x => x.FileID).Count() > 0 && compiledTopMips.Select(x => x.FileID).First() != 0)
+                    {
+                        string[] topMipEntries = files.Where(x => x.Contains(name + "_TopMip_0")).ToArray();
+                        if (topMipEntries != null && topMipEntries.Length > 0)
                         {
-                            if (!error)
-                                completionAction("FAILED");
-                            else
-                                completionAction($"{Helpers.GetTempPath(name)}.png");
-                        });
-                    });
+                            string topMipEntry = topMipEntries[0] + ext;
+
+                            // read
+                            byte[] topMip0Data = File.ReadAllBytes(Path.Combine(origin, topMipEntry));
+
+                            // test if the data has been decompressed
+                            if (BitConverter.ToUInt32(topMip0Data, 0) != (uint)ResourceIdentifier.MIPMAP)
+                                topMip0Data = ReadFile(topMip0Data);
+
+                            // extract
+                            ExtractTopMip(topMip0Data, Path.GetFileNameWithoutExtension(topMipEntry), compiledTextureMap, completionAction);
+                        }
+                    }
+                    else
+                    {
+                        // use the image data within this file
+                        ExtractInternalTexture(reader, textureMap, name, completionAction);
+                    }
                 }
             }
         }
 
-        private static void ExtractTopMip(byte[] topMipData, string name, TopMip topMip, Action<string> completionAction)
+        public static void ExtractTopMip(string fileName, CompiledTextureMap compiledTextureMap, Action<string> completionAction) => ExtractTopMip(File.ReadAllBytes(fileName), fileName, compiledTextureMap, completionAction);
+
+        public static void ExtractTopMip(byte[] topMipData, string name, CompiledTextureMap compiledTextureMap, Action<string> completionAction)
         {
             using (Stream stream = new MemoryStream(topMipData))
             {
@@ -463,7 +491,7 @@ namespace Blacksmith.Games
                 {
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
@@ -473,9 +501,9 @@ namespace Blacksmith.Games
                     byte[] data = reader.ReadBytes(header.FileSize - 18);
 
                     // write DDS file
-                    Helpers.WriteTempDDS(name, data, topMip.Width, topMip.Height, topMip.Mipmaps, topMip.DXTType, () =>
+                    Helpers.WriteTempDDS(name, data, compiledTextureMap.Width, compiledTextureMap.Height, compiledTextureMap.Mipmaps, compiledTextureMap.DXT, () =>
                     {
-                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", "png", (error) =>
+                        Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", fixNormals: name.Contains("NormalMap"), completionAction: (error) =>
                         {
                             if (error)
                                 completionAction("FAILED");
@@ -486,9 +514,70 @@ namespace Blacksmith.Games
                 }
             }
         }
+
+        private static void ExtractInternalTexture(BinaryReader reader, TextureMap textureMap, string name, Action<string> completionAction)
+        {
+            int imageDataSize = reader.ReadInt32();
+            byte[] imageData = reader.ReadBytes(imageDataSize);
+
+            // write DDS file
+            Helpers.WriteTempDDS(name, imageData, textureMap.Width, textureMap.Height, textureMap.Mipmaps, textureMap.DXT, () =>
+            {
+                Helpers.ConvertDDS($"{Helpers.GetTempPath(name)}.dds", fixNormals: name.Contains("NormalMap"), completionAction: (error) =>
+                {
+                    if (error)
+                        completionAction("FAILED");
+                    else
+                        completionAction($"{Helpers.GetTempPath(name)}.png");
+                });
+            });
+        }
         #endregion
 
-        #region Materials
+        #region Texture Sets
+        public static void ExtractTextureSet(string fileName, Action<List<long>> completionAction)
+        {
+            ExtractTextureSet(File.ReadAllBytes(fileName), completionAction);
+        }
+
+        public static void ExtractTextureSet(byte[] textureSetData, Action<List<long>> completionAction)
+        {
+            List<long> fileIDs = new List<long>();
+            using (Stream stream = new MemoryStream(textureSetData))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    DatafileHeader header = new DatafileHeader
+                    {
+                        ResourceIdentifier = reader.ReadUInt32(),
+                        FileSize = reader.ReadInt32(),
+                        FileNameSize = reader.ReadInt32()
+                    };
+                    header.FileName = reader.ReadChars(header.FileNameSize);
+
+                    if (header.ResourceIdentifier != (uint)ResourceIdentifier.TEXTURE_SET)
+                    {
+                        Message.Fail("This is not proper Texture Set data.");
+                    }
+
+                    // ignore the 2 bytes, file ID, and resource type
+                    reader.BaseStream.Seek(14, SeekOrigin.Current);
+
+                    while (reader.BaseStream.Position < reader.BaseStream.Length - 10) // 10 because each Texture Entry occupies 10 bytes
+                    {
+                        reader.ReadByte();
+                        reader.ReadByte();
+                        long id = reader.ReadInt64();
+                        if (id > 0)
+                        {
+                            fileIDs.Add(id);
+                        }
+                    }
+
+                    completionAction(fileIDs);
+                }
+            }
+        }
         #endregion
 
         #region Models
@@ -508,7 +597,7 @@ namespace Blacksmith.Games
                     // header
                     DatafileHeader header = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };
@@ -577,15 +666,20 @@ namespace Blacksmith.Games
                         }
 
                         // locate the Compiled Mesh
-                        Tuple<int[], long> cmOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.COMPILED_MESH));
+                        Tuple<int[], long> cmOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceIdentifier.COMPILED_MESH));
+                        if (cmOffset == null)
+                        {
+                            Message.Fail("Failed to read model.");
+                            return model;
+                        }
                         reader.BaseStream.Seek(cmOffset.Item1[0], SeekOrigin.Begin);
                         //Console.WriteLine("Compiled Mesh OFFSET: " + cmOffset.Item1[0]);
 
                         // Compiled Mesh block
-                        if (reader.ReadUInt32() != (uint)ResourceType.COMPILED_MESH)
+                        if (reader.ReadUInt32() != (uint)ResourceIdentifier.COMPILED_MESH)
                         {
                             Message.Fail("Failed to read model.");
-                            return new Model();
+                            return model;
                         }
                         reader.BaseStream.Seek(22, SeekOrigin.Current);
                         CompiledMeshBlock compiledMesh = new CompiledMeshBlock
@@ -617,7 +711,7 @@ namespace Blacksmith.Games
                         if (compiledMesh.Unknown2 != 0)
                         {
                             int unknown0DataSize = reader.ReadInt32();
-                            //reader.BaseStream.Seek(unknown0DataSize, SeekOrigin.Current);
+                            reader.BaseStream.Seek(unknown0DataSize, SeekOrigin.Current);
                         }
                         else
                         {
@@ -626,6 +720,8 @@ namespace Blacksmith.Games
 
                         // Vertex block
                         //Console.WriteLine("Vertex OFFSET: " + reader.BaseStream.Position);
+                        if (reader.BaseStream.Position >= reader.BaseStream.Length)
+                            return model;
                         int vertexDataSize = reader.ReadInt32();
                         int actualVertexTableSize = compiledMesh.VertexTableSize != 8 && compiledMesh.VertexTableSize != 16 ? compiledMesh.VertexTableSize : compiledMesh.Unknown1; // this variable now holds the true vertex table size
                         long vertexOffset = reader.BaseStream.Position;
@@ -643,15 +739,18 @@ namespace Blacksmith.Games
                             reader.BaseStream.Seek(vertexWeightDataSize, SeekOrigin.Current);
                         }
 
+                        // Unknown1 block
+                        if (compiledMesh.Unknown2 != 0)
+                        {
+                            int unknown1DataSize = reader.ReadInt32();
+                            reader.BaseStream.Seek(unknown1DataSize, SeekOrigin.Current);
+                        }
+
                         // Face block
-                        //Console.WriteLine("Face OFFSET: " + reader.BaseStream.Position);
+                        Console.WriteLine("Face OFFSET: " + reader.BaseStream.Position);
                         int faceDataSize = reader.ReadInt32();
                         long faceOffset = reader.BaseStream.Position;
                         reader.BaseStream.Seek(faceDataSize, SeekOrigin.Current);
-
-                        // Unknown1 block
-                        int unknown1DataSize = reader.ReadInt32();
-                        reader.BaseStream.Seek(unknown1DataSize, SeekOrigin.Current);
 
                         // Unknown2 block
                         int unknown2DataSize = reader.ReadInt32();
@@ -661,17 +760,19 @@ namespace Blacksmith.Games
                         int unknown3DataSize = reader.ReadInt32();
                         reader.BaseStream.Seek(unknown3DataSize, SeekOrigin.Current);
 
+                        // Unknown4 block
+                        int unknown4DataSize = reader.ReadInt32();
+                        reader.BaseStream.Seek(unknown4DataSize, SeekOrigin.Current);
+
                         // go to the Mesh Data
                         reader.BaseStream.Seek(23, SeekOrigin.Current);
-                        //Tuple<int[], long> mdOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceType.MESH_DATA));
+                        //Tuple<int[], long> mdOffset = Helpers.LocateBytes(reader, BitConverter.GetBytes((uint)ResourceIdentifier.MESH_DATA));
                         //reader.BaseStream.Position = mdOffset.Item2;
                         //reader.BaseStream.Seek(mdOffset.Item1[0] + 10, SeekOrigin.Begin); // skip the identifier and 6 bytes
                         //Console.WriteLine("Mesh Data OFFSET: " + (reader.BaseStream.Position));
 
                         // Mesh Data block
                         uint meshCount = reader.ReadUInt32();
-                        Console.WriteLine(reader.BaseStream.Position);
-
                         int totalVertices = 0;
                         for (int i = 0; i < meshCount; i++)
                         {
@@ -709,7 +810,7 @@ namespace Blacksmith.Games
                                     }
                                 };
 
-                                int scaleFactor;
+                                short scaleFactor;
                                 switch (actualVertexTableSize)
                                 {
                                     case 12:
@@ -718,13 +819,15 @@ namespace Blacksmith.Games
                                         break;
                                     case 16:
                                         scaleFactor = reader.ReadInt16();
-                                        v.Position /= scaleFactor;
+                                        if (scaleFactor > 0)
+                                            v.Position /= scaleFactor;
                                         reader.BaseStream.Seek(4, SeekOrigin.Current);
                                         v.TextureCoordinate = new Vector2(reader.ReadInt16(), reader.ReadInt16());
                                         break;
                                     case 20:
                                         scaleFactor = reader.ReadInt16();
-                                        v.Position /= scaleFactor;
+                                        if (scaleFactor > 0)
+                                            v.Position /= scaleFactor;
                                         v.Normal = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16());
                                         reader.BaseStream.Seek(2, SeekOrigin.Current);
                                         v.TextureCoordinate = new Vector2(reader.ReadInt16(), reader.ReadInt16());
@@ -737,7 +840,8 @@ namespace Blacksmith.Games
                                         break;
                                     case 28:
                                         scaleFactor = reader.ReadInt16();
-                                        v.Position /= scaleFactor;
+                                        if (scaleFactor > 0)
+                                            v.Position /= scaleFactor;
                                         v.Normal = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16());
                                         reader.BaseStream.Seek(6, SeekOrigin.Current);
                                         v.TextureCoordinate = new Vector2(reader.ReadInt16(), reader.ReadInt16());
@@ -795,7 +899,7 @@ namespace Blacksmith.Games
                                         break;
                                 }
                                 
-                                v.TextureCoordinate = new Vector2(v.TextureCoordinate.X / 65536 * 32, 1 - (v.TextureCoordinate.Y / 65536 * 32));
+                                //v.TextureCoordinate = new Vector2(v.TextureCoordinate.X / 65536 * 32, 1 - (v.TextureCoordinate.Y / 65536 * 32));
                                 mesh.Vertices.Add(v);
                                 //mesh.Normals.Add(v.Normal);
                             }
@@ -887,7 +991,7 @@ namespace Blacksmith.Games
                 {
                     DatafileHeader file = new DatafileHeader
                     {
-                        ResourceType = reader.ReadInt32(),
+                        ResourceIdentifier = reader.ReadUInt32(),
                         FileSize = reader.ReadInt32(),
                         FileNameSize = reader.ReadInt32()
                     };

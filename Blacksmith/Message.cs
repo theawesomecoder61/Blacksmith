@@ -8,6 +8,10 @@ namespace Blacksmith
 
         public static DialogResult Fail(string text) => Properties.Settings.Default.hidePopups == 1 || Properties.Settings.Default.hidePopups == 2 ? DialogResult.None : MessageBox.Show(text, "Failure");
 
+        public static DialogResult Fail(string text, MessageBoxButtons buttons) => Properties.Settings.Default.hidePopups == 1 || Properties.Settings.Default.hidePopups == 2 ? DialogResult.None : MessageBox.Show(text, "Failure", buttons);
+
+        public static DialogResult Show(string text) => MessageBox.Show(text);
+
         public static DialogResult Show(string text, string caption, MessageBoxButtons buttons) => MessageBox.Show(text, caption, buttons);
     }
 }

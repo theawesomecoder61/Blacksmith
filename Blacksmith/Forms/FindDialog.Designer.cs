@@ -33,21 +33,30 @@
             this.label1 = new System.Windows.Forms.Label();
             this.findAllBtn = new System.Windows.Forms.Button();
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.NameCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PathCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showInListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.filterByComboBox = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.forgeComboBox = new System.Windows.Forms.ComboBox();
             this.filterComboBox = new System.Windows.Forms.ComboBox();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.resultsToolStripLabel = new System.Windows.Forms.ToolStripLabel();
+            this.NameCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PathCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.ContentPanel.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // queryTextBox
@@ -69,9 +78,9 @@
             // 
             // findAllBtn
             // 
-            this.findAllBtn.Location = new System.Drawing.Point(354, 12);
+            this.findAllBtn.Location = new System.Drawing.Point(354, 15);
             this.findAllBtn.Name = "findAllBtn";
-            this.findAllBtn.Size = new System.Drawing.Size(120, 47);
+            this.findAllBtn.Size = new System.Drawing.Size(120, 68);
             this.findAllBtn.TabIndex = 3;
             this.findAllBtn.Text = "Find All";
             this.findAllBtn.UseVisualStyleBackColor = true;
@@ -100,31 +109,10 @@
             this.dataGridView.RowHeadersVisible = false;
             this.dataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView.Size = new System.Drawing.Size(484, 385);
+            this.dataGridView.Size = new System.Drawing.Size(484, 309);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
             this.dataGridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseUp);
-            // 
-            // NameCol
-            // 
-            this.NameCol.HeaderText = "Name";
-            this.NameCol.Name = "NameCol";
-            this.NameCol.ReadOnly = true;
-            this.NameCol.Width = 60;
-            // 
-            // SizeCol
-            // 
-            this.SizeCol.HeaderText = "Size (bytes)";
-            this.SizeCol.Name = "SizeCol";
-            this.SizeCol.ReadOnly = true;
-            this.SizeCol.Width = 86;
-            // 
-            // PathCol
-            // 
-            this.PathCol.HeaderText = "Path";
-            this.PathCol.Name = "PathCol";
-            this.PathCol.ReadOnly = true;
-            this.PathCol.Width = 54;
             // 
             // contextMenuStrip
             // 
@@ -150,6 +138,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.filterByComboBox);
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.forgeComboBox);
             this.splitContainer1.Panel1.Controls.Add(this.filterComboBox);
@@ -160,10 +150,33 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView);
+            this.splitContainer1.Panel2.Controls.Add(this.toolStripContainer1);
             this.splitContainer1.Size = new System.Drawing.Size(484, 461);
-            this.splitContainer1.SplitterDistance = 72;
+            this.splitContainer1.SplitterDistance = 98;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // filterByComboBox
+            // 
+            this.filterByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.filterByComboBox.FormattingEnabled = true;
+            this.filterByComboBox.Items.AddRange(new object[] {
+            "None",
+            "Mesh/3D Model",
+            "Texture Map",
+            "LOD Selector"});
+            this.filterByComboBox.Location = new System.Drawing.Point(64, 66);
+            this.filterByComboBox.Name = "filterByComboBox";
+            this.filterByComboBox.Size = new System.Drawing.Size(284, 21);
+            this.filterByComboBox.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 70);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(47, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Filter By:";
             // 
             // label2
             // 
@@ -199,6 +212,62 @@
             this.filterComboBox.Size = new System.Drawing.Size(162, 21);
             this.filterComboBox.TabIndex = 2;
             // 
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.BottomToolStripPanel
+            // 
+            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.toolStrip1);
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Controls.Add(this.dataGridView);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(484, 309);
+            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(484, 359);
+            this.toolStripContainer1.TabIndex = 1;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resultsToolStripLabel});
+            this.toolStrip1.Location = new System.Drawing.Point(3, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(59, 25);
+            this.toolStrip1.TabIndex = 0;
+            // 
+            // resultsToolStripLabel
+            // 
+            this.resultsToolStripLabel.Name = "resultsToolStripLabel";
+            this.resultsToolStripLabel.Size = new System.Drawing.Size(56, 22);
+            this.resultsToolStripLabel.Text = "Results: 0";
+            // 
+            // NameCol
+            // 
+            this.NameCol.HeaderText = "Name";
+            this.NameCol.Name = "NameCol";
+            this.NameCol.ReadOnly = true;
+            this.NameCol.Width = 60;
+            // 
+            // SizeCol
+            // 
+            this.SizeCol.HeaderText = "Compressed Size (bytes)";
+            this.SizeCol.Name = "SizeCol";
+            this.SizeCol.ReadOnly = true;
+            this.SizeCol.Width = 147;
+            // 
+            // PathCol
+            // 
+            this.PathCol.HeaderText = "Path";
+            this.PathCol.Name = "PathCol";
+            this.PathCol.ReadOnly = true;
+            this.PathCol.Width = 54;
+            // 
             // FindDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -206,11 +275,13 @@
             this.ClientSize = new System.Drawing.Size(484, 461);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.KeyPreview = true;
             this.Name = "FindDialog";
             this.ShowIcon = false;
             this.Text = "Find";
             this.Load += new System.EventHandler(this.FindDialog_Load);
             this.Shown += new System.EventHandler(this.FindDialog_Shown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FindDialog_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.contextMenuStrip.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -218,6 +289,13 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ContentPanel.ResumeLayout(false);
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -234,6 +312,11 @@
         private System.Windows.Forms.ToolStripMenuItem showInListToolStripMenuItem;
         private System.Windows.Forms.ComboBox forgeComboBox;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripLabel resultsToolStripLabel;
+        private System.Windows.Forms.ComboBox filterByComboBox;
+        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn PathCol;

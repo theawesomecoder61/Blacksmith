@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Blacksmith.Forms
 {
@@ -17,6 +9,12 @@ namespace Blacksmith.Forms
             InitializeComponent();
         }
 
+        private void ResourceViewer_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
         public void LoadNode(EntryTreeNode node)
         {
             foreach (EntryTreeNode child in node.Nodes)
@@ -25,7 +23,7 @@ namespace Blacksmith.Forms
 
                 DataGridViewTextBoxCell type = new DataGridViewTextBoxCell
                 {
-                    Value = child.ResourceType
+                    Value = Helpers.FormatNicely(child.ResourceIdentifier)
                 };
                 row.Cells.Add(type);
 
