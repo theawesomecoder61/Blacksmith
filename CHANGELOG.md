@@ -24,10 +24,35 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.6 [FUTURE VERSION] (4/1X/2019)
-- Just you wait...
+### Version 1.6 [CURRENT VERSION] (4/20/2019)
+- Added
+  - "Multifile Entry" support, any entry that contains additional files (Build Table, LOD Selector, to name a couple)
+    - **found by right-clicking an entry or subentry and selecting `Multifile Entry > Extract Contained Files`, which reveals the Multifile Entry Exporter**
+  - `Tools > Show File in the Viewers` and `Tools > Export 3D Viewer Contents`; both features are self-explanatory
+  - number of results displays in the Find window
+  - `Filter By` in the Find window (easily locate 3D models and textures)
+  - automatic normal map fixing feature (flips blue channel; credit to @cire992), can be turned off in the Settings
+  - 500+ new Resource Identifiers
+  - if the entry is under 2 MB (compressed), all located Resource Identifiers will be displayed; otherwise, only the first Resource Identifier will be displayed
+  -- **note: extraction may take slightly longer as a result**
+- Updated
+  - you can now press Escape to close any popup/dialog
+  - renamed "ResourceType" to "ResourceIdentifier"
+  - replaced the teapot with a cube until I feel like fixing the OBJ importer
+  - rewrote the logic of the texture map importers
+  - Blacksmith now employs a custom version of texconv (inverty was replaced with invertz)
+  - DDS generation logic
+  - cleaned up code
+- Fixed
+  - a temporary file path will be created and set if the user did not set one
+  - 3D models with skeletons and skeleton-related data are handled better with both AC games
+  - OBJ exporter; now you can import models into your preferred software without errors, though UVs do not always come out properly
+  - the Resource Identifiers Viewer would not open if the user right-clicked on a subentry/Resource Identifier
+  - the Image Viewer would show its previous image by changing to zoom level if a different (3D or text) asset was loaded
+  - a crash caused by opening a GlobalMetaFile from Steep
+  - various issues
 
-### Version 1.5.1 [CURRENT VERSION] (4/1/2019)
+### Version 1.5.1 (4/1/2019)
 - Added
   - an option to exclude normals of 3D models in `Save As...` dialog
   - a setting to suppress success, warning, and failure popups
