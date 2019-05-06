@@ -90,3 +90,8 @@ Blacksmith is licensed under the MIT License.
 - Zstandard.Net
 
 Blacksmith icon by Krisada from the Noun Project
+
+# Donate
+If you appreciate the work I put into Blacksmith, would you care to contribute to the development of Blacksmith financially? I would greatly appreciate any contribution. Non-obligatory.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/pineapples721)
