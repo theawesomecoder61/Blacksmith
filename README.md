@@ -33,14 +33,14 @@ PC versions of:
 - The main features are viewing and extraction of:
   - .forge files
   - 3D models
-    - conversion to: .obj
-    - planned: .dae, .smd, .stl
+    - conversion to: `obj`
+    - planned: `dae`, `smd`, `stl`
   - textures
-    - conversion to: .bmp, .dds, .png, .tga
+    - conversion to: `dds`, `png`, `tga`, `tiff`
   - sounds
-    - conversion to: .ogg
+    - conversion to: `ogg`
 - Also:
-  - extraction of sounds and soundbanks from .pck files
+  - extraction of sounds and soundbanks from `pck` files
   - creation of filelists from .forge files
   - extraction of all entries from .forge files
 
@@ -48,13 +48,8 @@ PC versions of:
 1. Download the latest version from below.
 2. Upon opening Blacksmith, click `Settings` and set the Game Paths and Temporary Path.
 
-## Usage
-1. After setting the game paths, click the plus icon next to a game (on the left) to see all of the game's files.
-2. Click the plus icon next to a .forge and wait to see all of the .forge's entries.
-3. Click the plus icon next to a .forge entry to see all subentries.
-> Doing this will extract and decompress that entry. The result is a `.acod`, `.acor`, or `.stp` file found in the Temporary Path with the same name.
-
-> If there is a `Texture Map` or `Mesh` subentry, Blacksmith will try to load these in one of the Viewers.
+## Documentation
+[Go here.](https://github.com/theawesomecoder61/Blacksmith/wiki/Documentation)
 
 ## Downloads
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
@@ -92,6 +87,6 @@ Blacksmith is licensed under the MIT License.
 Blacksmith icon by Krisada from the Noun Project
 
 # Donate
-If you appreciate the work I put into Blacksmith, would you care to contribute to the development of Blacksmith financially? I would greatly appreciate any contribution. Non-obligatory.
+If you appreciate the work I put into Blacksmith, would you care to contribute to the development of Blacksmith financially? I would greatly appreciate any contribution. Non-obligatory and one-time.
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/pineapples721)
