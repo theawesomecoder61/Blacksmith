@@ -24,6 +24,10 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
+### Version 1.7 (5/2x/2019)
+- Added
+- Updated
+- Fixed
 ### Version 1.6 [CURRENT VERSION] (4/20/2019)
 - Added
   - Texture Set support, data will display in the Text Viewer
