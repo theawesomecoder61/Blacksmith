@@ -24,7 +24,7 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.7 (5/2x/2019)
+### Version 1.7 (5/22/2019)
 - Added
 - Updated
 - Fixed
