@@ -188,7 +188,8 @@
   - Find feature works
   - various UI improvements
 
-### Version 1.3.1 (2/9/2019)
+### Version 1.3.1
+- (2/9/2019)
 - Fixed
   - extraction and loading issues regarding textures with TopMips/Mips
   - a crash that would arise after the user selects "No" from the "Warning" message when attempting to load a .forge with over 20,000 entries
@@ -201,7 +202,8 @@
   - the Tag property of the EntryTreeNode class has been superseded by the Path property
   - the 3D Viewer will not respond to camera movements unless Blacksmith is forefront and focused
 
-### Version 1.3 (2/18/2019)
+### Version 1.3
+- (2/18/2019)
 - Added
   - the 3D Viewer is all set to go
   - extensions for decompressed data for each game (.acod, .acor, .stp)
