@@ -2,25 +2,25 @@
 ### Textures
 | Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |--------------|---------------------------|---------------------------|-------|
-| Diffuse      | 🗸                        | 🗸                         | 🗸     |
-| Normal       | 🗸                        | 🗸                         | 🗸     |
-| Mask         | 🗸                        | 🗸                         | 🗸     |
-| Specular     | 🗸                        | 🗸                         | 🗸     |
-| UI/HUD       | 🗸                        | 🗸                         | 🗸     |
+| Diffuse      | ✔️                        | 🗸                         | 🗸     |
+| Normal       | ✔️                        | 🗸                         | 🗸     |
+| Mask         | ✔️                        | 🗸                         | 🗸     |
+| Specular     | ✔️                        | 🗸                         | 🗸     |
+| UI/HUD       | ✔️                        | 🗸                         | 🗸     |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | 🗸                         | 🗸                        | X     |
-| Normals             | 🗸                         | 🗸                        | X     |
-| UVs                 | 🗸                         | 🗸 (partial)              | X     |
+| Geometry            | 🗸                         | ✔️                        | X     |
+| Normals             | 🗸                         | ✔️                        | X     |
+| UVs                 | 🗸                         | ✔️ (partial)              | X     |
 | Skeleton            | X                         | X                         | X     |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |------------|---------------------------|---------------------------|-------|
-| Soundpacks | 🗸                         | 🗸                        | 🗸     |
-| Soundbanks | 🗸                         | 🗸                        | 🗸     |
+| Soundpacks | ✔️                         | ✔️                        | ✔️     |
+| Soundbanks | ✔️                         | ✔️                        | ✔️     |
 
 ## Changelog
 ### Version 1.7.1
