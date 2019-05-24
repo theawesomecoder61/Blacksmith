@@ -11,10 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | 🗸                         | 🗸                         | X     |
-| Normals             | 🗸                         | 🗸                         | X     |
-| UVs                 | 🗸                        | 🗸                         | X     |
-| UV sets             | X                         | X                         | X     |
+| Geometry            | 🗸                         | 🗸                        | X     |
+| Normals             | 🗸                         | 🗸                        | X     |
+| UVs                 | 🗸                         | 🗸 (partial)              | X     |
 | Skeleton            | X                         | X                         | X     |
 
 ### Other
@@ -24,12 +23,70 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.7 (5/23/2019)
-- Added
-- Updated
-- Fixed
+### Version 1.7.1 (5/2x/2019)
+- ?
 
-### Version 1.6 [CURRENT VERSION] (4/20/2019)
+### Version 1.7 [CURRENT VERSION] (5/24/2019)
+- Added
+  - 3DS, DAE, FBX (7.5 Binary), and STL (ASCII) export
+  - partial Material support
+  - "Remember last-used Find parameters", found in Settings
+  - added a Multifile Entry will display its contents, the contents will display their subentries (this eases extracting embedded materials, models, etc. without opening the Multifile Entry Exporter)
+  - proper UV support for Odyssey
+  - Flip X & Flip Y options in the Save As window for textures (flips textures upon conversion)
+  - link to external documentation
+  - "Entity", "Material", and "Texture Set" to "Filter By" in the Find dialog
+  - icons from the Visual Studio 2017 Image Library to the treeview
+  - "Welcome to Blacksmith", a setup wizard that will show to first-time users
+  - "Donate/Support this Project" dialog and "More > Donate/Support this Project" menu
+  - "Experimental Features" option in the Settings (you should try it out!)
+  - safeguard to protect against incorrect .ini files from being loaded in the Settings
+  - "(Debug)/(Release)" label in the "About" dialog, indicating that I released a development version or a final version
+  - the Aspose.3D library
+- Updated
+  - the teapot model is no longer included in Blacksmith - a cube is the new default model
+  - major 3D Viewer improvements
+    - now Blacksmith renders the model with a texture (instead of displaying the normals)
+    - new controls: (added mouse support)
+      - left-click drag: rotate model
+      - right-click drag: move model
+      - scroll wheel: zoom model
+      - hold "Left Shift" key + W/A/S/D - move camera faster
+      - hold "Left Shift" key + scroll wheel = zoom model faster
+      - "R" key: reset camera and model transformation
+      - "Q" key: move camera down
+      - "E" key: move camera up
+    - wireframe mode is proper (now renders triangles instead of quads)
+    - camera adjustment fixes
+    - adjust mouse sensitivity in the Settings
+  - new temporary file structure
+  - significantly improved Odyssey's and Origins' 3D model importers
+  - "Show File in the Viewer" now scales down the 3D model
+  - exported model scale
+  - exported models (in OBJ) will contain groups with the model's name
+  - AC texture importers
+  - better detection and DDS generation
+  - the Find window
+  - a success message shows if the user saves the texture as a DDS
+  - "Combine Meshes into Single File" is invisible (I did this because Aspose.3D has a limitation to saving multiple scenes at once)
+  - visible meshes in the 3D Viewer will be the only meshes exported
+  - results count is now comma-separated
+  - time taken displays the total search time in seconds
+  - "Toggle Alpha/Transparency" is now in the form of a dropdown with White as a new background color
+  - NLog and ZStandard.Net versions
+  - removed TextRenderer
+  - About window
+  - removed the DAE and DAEWriter classes
+  - numerous other internal changes
+- Fixed
+  - the mesh scaling issue
+  - incorrect model rotation
+  - recompiled texconv (as Release and not Debug this time) - no more DLL errors
+  - typos in the popups after saving raw and decompressed data
+  - the context menu of `forge` entries will no longer display all menus
+  - a default temp path 
+
+### Version 1.6 (4/20/2019)
 - Added
   - Texture Set support, data will display in the Text Viewer
   - "Multifile Entry" support, any entry that contains additional files (Build Table, LOD Selector, to name a couple)
