@@ -23,10 +23,12 @@
 | Soundbanks | 🗸                         | 🗸                        | 🗸     |
 
 ## Changelog
-### Version 1.7.1 (5/2x/2019)
+### Version 1.7.1
+- (5/2x/2019)
 - ?
 
-### Version 1.7 [CURRENT VERSION] (5/24/2019)
+### Version 1.7
+- [CURRENT VERSION] (5/24/2019)
 - Added
   - 3DS, DAE, FBX (7.5 Binary), and STL (ASCII) export
   - partial Material support
@@ -86,7 +88,8 @@
   - the context menu of `forge` entries will no longer display all menus
   - a default temp path 
 
-### Version 1.6 (4/20/2019)
+### Version 1.6
+- (4/20/2019)
 - Added
   - Texture Set support, data will display in the Text Viewer
   - "Multifile Entry" support, any entry that contains additional files (Build Table, LOD Selector, to name a couple)
@@ -116,7 +119,8 @@
   - a crash caused by opening a GlobalMetaFile from Steep
   - various issues
 
-### Version 1.5.1 (4/1/2019)
+### Version 1.5.1
+- (4/1/2019)
 - Added
   - an option to exclude normals of 3D models in `Save As...` dialog
   - a setting to suppress success, warning, and failure popups
@@ -136,7 +140,8 @@
   - a crash caused by loading a Steep 3D model (support will come in Version 1.6)
   - OBJ exporter again
 
-### Version 1.5 (preview) (3/31/2019)
+### Version 1.5 (preview)
+- (3/31/2019)
 - Added
   - initial Odyssey model support
   - the checkbox list next to the 3D Viewer - this allows you to toggle individuals meshes
@@ -156,7 +161,8 @@
   - OBJ exporter
 - **Texture conversion will sit out on this version. texconv is not being friendly.** Expect this fixed in the next version.
 
-### Version 1.4 (3/8/2019)
+### Version 1.4
+- (3/8/2019)
 - Added
   - *initial Origins 3D model support!*
   > Supported features: geometry, normals, texture coordinates (UVs)
@@ -218,7 +224,8 @@
   - zoom works with all images
   - any issue that arises when you browse multiple .forge files at once
 
-### Version 1.2 (2/3/2019)
+### Version 1.2
+- (2/3/2019)
 - Added
   - **Texture conversion support for all games**
   - *Partial* Steep texture extraction and viewing support
@@ -244,7 +251,8 @@
   - Decompress File now asks for a save location
   - The Path status label will no longer show paths within .forge files
 
-### Version 1.1 (1/23/2019)
+### Version 1.1
+- (1/23/2019)
 - Added
   - Initial Steep support! (do not expect full texture support until Version 1.2)
   - Support for ***viewing of textures*** in Odyssey
@@ -262,7 +270,8 @@
   - More preparation for the 3D Viewer (no word on its release)
   - More undocumented changes
 
-### Version 1.0 (1/19/2019)
+### Version 1.0
+- (1/19/2019)
 - Initial version
 - Known issues:
   - 3D Viewer does not show anything, yet
