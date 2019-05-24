@@ -15,6 +15,13 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 
 ----
 
+# Update regarding the repo
+I will no longer be updating the repo with the source code of 1.7 and later. This is now a donation perk. I have migrated away from GitHub due to the amount of effort and time I have put into development. Sorry guys.
+
+However, the changelog and Releases page will still be updated. The repo will stay online and will not be deleted.
+
+----
+
 ### Remember ARchive_neXt?
 Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games or Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
 
