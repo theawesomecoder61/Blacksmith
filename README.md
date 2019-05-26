@@ -16,9 +16,9 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 ----
 
 # Update regarding the repo
-I will no longer be updating the repo with the source code of 1.7 and later. This is now a donation perk. I have migrated away from GitHub due to the amount of effort and time I have put into development. Sorry guys.
+I will no longer be updating the repo with the source code of 1.7 and later. Access to the source code is now a donation perk. I have migrated away from GitHub due to the amount of effort and time I have put into development. Sorry guys.
 
-However, the changelog and Releases page will still be updated. The repo will stay online and will not be deleted.
+However, the readme, changelog, and Releases page will still be updated. The repo will stay online and will not be deleted.
 
 ----
 
@@ -40,8 +40,7 @@ PC versions of:
 - The main features are viewing and extraction of:
   - .forge files
   - 3D models
-    - conversion to: `obj`
-    - planned: `dae`, `smd`, `stl`
+    - conversion to: `dae`, `fbx`, `obj`, `stl`
   - textures
     - conversion to: `dds`, `png`, `tga`, `tiff`
   - sounds
@@ -81,6 +80,7 @@ You will need:
 Blacksmith is licensed under the MIT License.
 
 ## Third-Party Software
+- Aspose.3D
 - ini-parser
 - libzstd
 - lzo
@@ -88,6 +88,7 @@ Blacksmith is licensed under the MIT License.
 - OodleSharp
 - OpenTK
 - texconv
+- winsparkle
 - ww2ogg
 - Zstandard.Net
 
