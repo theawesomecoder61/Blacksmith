@@ -24,8 +24,8 @@
 
 ## Changelog
 ### Version 1.7.1
-- (5/2x/2019)
-- ?
+- (5/??/2019)
+- This version was available for a short time, then was taken down.
 
 ### Version 1.7
 - [CURRENT VERSION] (5/24/2019)
