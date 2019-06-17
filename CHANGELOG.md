@@ -14,7 +14,6 @@
 | Geometry            | ✔️                        | ✔️                       | X     |
 | Normals             | ✔️                        | ✔️                       | X     |
 | UVs                 | ✔️                        | ✔️ (partial)             | X     |
-| Skeleton            | X                          | X                        | X     |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
