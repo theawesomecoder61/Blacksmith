@@ -22,12 +22,81 @@
 | Soundbanks | ✔️                       | ✔️                        | ✔️    |
 
 ## Changelog
+### Version 1.8
+- (7/9/2019)
+- added
+  - "Save As" to the 3D Viewer
+  - "<All Loaded Forges>" in the "Forge to search in" - guess what it does?
+  - the user can now search by a file ID in the Find window (check the "Is File ID?" checkbox)
+  - "Auto-Rotate" in the 3D Viewer
+  - the Blacksmith icon in the Windows Taskbar will display progress, if a task (extraction, decompression) is ongoing
+  - glTF (1.0 binary) support for saving models
+  - winsparkle - a framework for checking and automatically installing updates
+  - Blacksmith will scan each entry/file loaded from `Tools > Show File in the Viewers` and check if it has Packed Entries
+- updated
+  - renamed "Multifile Entries" to "Packed Entries"
+  - the donate window will not show up upon the first launch
+  - the Settings window
+    - added "File Types to Show within Forges" (Miscellaneous) allows the user to filter (like in the Find window) which file types he wants to see
+    - added "Invert Mouse Y" (found in the 3D Viewer section in the Settings)
+    - added "Do Not Unload Forges After Collapsing Them" (Miscellaneous) - this does not freeze the UI; any collapsed and loaded forge entry will turn green
+    - added "Image Viewer" box
+- updated
+  - Settings save upon changing any value
+  - Origins 3D model importer - implemented the other known type of mesh structure
+  - removed the mouse-locking feature of the 3D Viewer
+  - toned down the Welcome window (it was too angry, a user said)
+  - the logic of the forge unloading - now the green background indicates that the forge was loaded and all its entries have been created - the background reverts to white if the forge was unloaded (collapsed) and the "Do not unload..." is unchecked
+  - the checkbox lists in the 3D Viewer and Settings are more responsive
+  - file-writing in the Temporary File Path (file names now include the file ID)
+  - loading, saving, and handling the settings (now settings are written to settings.ini in the Temporary File Path upon closing the Settings window, and is read at launch)
+  - 3D Viewer
+    - added a grid
+    - moved Render Mode from Settings (no longer saves in Settings) to the toolbar
+    - new key: hold Left Control to make the camera move slow
+    - improved rendering and camera mechanics
+    - new default camera position and rotation
+  - Image Viewer
+    - scroll the mouse wheel to zoom (enable/disable in the Settings)
+    - click and drag the middle mouse button/mouse wheel to pan
+    - zooming is now a lot quicker, for two reasons
+      - no more smoothing (pixelated appearance)
+      - the original image is stored in memory, instead of being pulled from the file upon each zoom increment
+  - Find feature and window
+    - added File ID to the results table
+    - results in the window will show icons (just as you see in the file list) and the overarching Resource Identifier
+    - improved the result of the "Time Taken" in the Find window
+    - the entry's file ID will appear in the extracted file to avoid conflicts with duplicate names
+    - in the "Filter By" dropdown, "Mesh (3D model)" is now "Mesh"
+    - "Show in List" now searches by file ID, instead of name
+    - improved overall Find mechanics
+  - the Welcome dialog
+    - added "Actually, I have a Settings.ini file", which allows the user to load a settings.ini file previously saved from another version of Blacksmith
+  - the progress bar on the bottom is more meaningful, and shows proper loading/extraction/decompression progress
+  - model information is no logner printed to the Text Viewer (or anywhere)
+  - error messages
+  - updated UI (3D Viewer, About window, etc.)
+  - renamed Helpers to Helper and moved it to Blacksmith.Helpers
+  - renamed Cube class to Box, and updated its constructor
+  - cleaned up code
+- fixed
+  - Odyssey 3D model importer, that broke after reading UVs and after reading certain models with SubmeshBlendShapeID data
+  - Odyssey & Origins importers that dealt with Packed Entries
+  - incorrect name of decompressed file while using `Tools > Decompress File`
+  - models were flipped
+  - LOD Selectors would use the icon for Materials
+  - "Show in List" (or double-clicking a result) does not work while "<All Loaded Forges>" is selected in the Find window
+  - Find was unable to search in DLC forges
+  - the 3D Viewer would receive mouse events while the menu was open and mouse events occurred on the menu
+  - subentries (entries within the forge file) that are numbers are now omitted
+  - the experimental feature crashed Blacksmith
+
 ### Version 1.7.1
 - (5/??/2019)
 - This version was available for a short time, then was taken down.
 
 ### Version 1.7
-- [CURRENT VERSION] (5/24/2019)
+- (5/24/2019)
 - Added
   - 3DS, DAE, FBX (7.5 Binary), and STL (ASCII) export
   - partial Material support
