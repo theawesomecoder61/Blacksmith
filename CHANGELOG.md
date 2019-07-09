@@ -23,7 +23,7 @@
 
 ## Changelog
 ### Version 1.8
-- (7/9/2019)
+- [CURRENT VERSION] (7/9/2019)
 - added
   - "Save As" to the 3D Viewer
   - "<All Loaded Forges>" in the "Forge to search in" - guess what it does?
