@@ -29,7 +29,8 @@
   - the inner-workings of translation support
   - Russian translation (credit: MediAsylum)
   - I18N-Portable, a library to help with localization
-- updated the Save As dialog no longer is a modal (always visible until it is closed)
+- updated
+  - the Save As dialog no longer is a modal (always visible until it is closed)
   - the Settings window with a new Behavior section
   - did more things with the upcoming filelists feature
   - Forge class
