@@ -20,6 +20,8 @@ I will no longer be updating the repo with the source code of 1.7 and later. Acc
 
 However, the readme, changelog, and Releases page will still be updated. The repo will stay online and will not be deleted.
 
+[You can learn more about donating here.](http://t-poses.com/bs/donators/)
+
 ----
 
 ### Remember ARchive_neXt?
