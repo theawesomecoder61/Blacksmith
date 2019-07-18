@@ -22,8 +22,28 @@
 | Soundbanks | ✔️                       | ✔️                        | ✔️    |
 
 ## Changelog
+### Version 1.8.1
+- [CURRENT VERSION] (7/18/2019)
+- added
+  - Show Grid in the 3D Viewer
+  - the inner-workings of translation support
+  - Russian translation (credit: MediAsylum)
+  - I18N-Portable, a library to help with localization
+- updated the Save As dialog no longer is a modal (always visible until it is closed)
+  - the Settings window with a new Behavior section
+  - did more things with the upcoming filelists feature
+  - Forge class
+  - renamed "Form1" to "MainWindow" and moved it to Blacksmith.Forms
+  - the TextureSet reading logic in Odyssey uses ulongs instead of longs
+- fixed
+  - camera issues (credit: hypermorphic/jjj)
+  - model scaling issues
+  - after clicking the "Actually, I have..." button (in the Welcome window),  the file chooser dialog would not allow the user to select an .ini file
+  - incorrect World resource identifier icon and Terrain Node Data did not have an icon (but it was still located in the files)
+  - the Resource Identifier named "CellDataBlock" does not exist, the correct name is "GridCellDataBlock"
+
 ### Version 1.8
-- [CURRENT VERSION] (7/9/2019)
+- (7/9/2019)
 - added
   - "Save As" to the 3D Viewer
   - "<All Loaded Forges>" in the "Forge to search in" - guess what it does?
