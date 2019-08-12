@@ -7,7 +7,7 @@ A program for viewing, extracting, and converting (textures, 3D models, and soun
 
 >> **Another note**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
 
->>> **Last note**: Blacksmith *DOES NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
+>>> **Last note**: I *DO NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
 
 ----
 
@@ -49,12 +49,12 @@ PC versions of:
     - conversion to: `ogg`
 - Also:
   - extraction of sounds and soundbanks from `pck` files
-  - creation of filelists from .forge files
-  - extraction of all entries from .forge files
+  - creation of filelists from `forge` files
+  - extraction of all entries from `forge` files
 
 ## First Time Setup
 1. Download the latest version from below.
-2. Upon opening Blacksmith, click `Settings` and set the Game Paths and Temporary Path.
+2. Upon opening Blacksmith, complete the Welcome guide.
 
 ## Documentation
 [Go here.](https://github.com/theawesomecoder61/Blacksmith/wiki/Documentation)
@@ -68,7 +68,7 @@ PC versions of:
 ## Research
 Are you curious about the file structures of these games and my discoveries? Check out the [Wiki](https://github.com/theawesomecoder61/Blacksmith/wiki).
 
-## Building
+## Building (if you wish to)
 You will need:
 - Visual Studio 2017
 - .NET Framework 4.6
