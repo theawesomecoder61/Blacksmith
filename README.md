@@ -1,7 +1,7 @@
 ![Blacksmith icon](https://i.imgur.com/F3nfeLe.png)
 
 # Blacksmith
-A program for viewing, extracting, and converting (textures, 3D models, and sounds) from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep. It is in early stages, and this repo will be updated constantly with additional support.
+Blacksmith is a tool for viewing, extracting, and converting textures, 3D models, and sounds from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep.
 
 > **Note**: Blacksmith is NOT a repacker.
 
