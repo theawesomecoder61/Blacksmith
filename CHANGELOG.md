@@ -26,7 +26,7 @@
 - added
   - partial Steep 3D model support
   - GlobalMetaFile support for all three games (Steep's GlobalMetaFiles do not have unhashed names, but instead will use a list of known hashes)
-  - German (credit: xBaebsae), Portugese, Swedish, and Ukranian translations
+  - German (credit: xBaebsae) translations
   - Table Viewer
   - "Tools > Convert > WEM --> OGG"
   - "Skeleton" and "Material Template" to the Forge Filter (Settings) and Filter By (Find)
