@@ -24,7 +24,8 @@
 | Texture Sets | ✔️                     | ✔️                        | ✔️    |
 
 ## Changelog
-### Version 1.9 (8/16/2019)
+### Version 1.9
+- [CURRENT VERSION] (8/16/2019)
 - added
   - partial Steep 3D model support
   - GlobalMetaFile support for all three games (Steep's GlobalMetaFiles do not have unhashed names, but instead will use a list of known hashes)
