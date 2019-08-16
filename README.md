@@ -42,7 +42,7 @@ PC versions of:
 - The main features are viewing and extraction of:
   - .forge files
   - 3D models
-    - conversion to: `dae`, `fbx`, `obj`, `stl`
+    - conversion to: `3ds`, `dae`, `fbx`, `glb (glTF)`, `obj`, `stl`
   - textures
     - conversion to: `dds`, `png`, `tga`, `tiff`
   - sounds
