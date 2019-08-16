@@ -18,8 +18,10 @@
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |------------|---------------------------|---------------------------|-------|
+| Materials  | ✔️                       | ✔️                        | ✔️    |
 | Soundpacks | ✔️                       | ✔️                        | ✔️    |
 | Soundbanks | ✔️                       | ✔️                        | ✔️    |
+| Texture Sets | ✔️                     | ✔️                        | ✔️    |
 
 ## Changelog
 ### Version 1.9 (8/16/2019)
