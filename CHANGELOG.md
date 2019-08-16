@@ -20,17 +20,20 @@
 |------------|---------------------------|---------------------------|-------|
 | GlobalMetaFile | ✔️                   | ✔️                        | ✔️    |
 | Materials  | ✔️                       | ✔️                        | ✔️    |
-| Soundpacks | ✔️                       | ✔️                        | ✔️    |
 | Soundbanks | ✔️                       | ✔️                        | ✔️    |
+| Soundpacks | ✔️                       | ✔️                        | ✔️    |
 | Texture Sets | ✔️                     | ✔️                        | ✔️    |
 
 ## Changelog
 ### Version 1.9
 - [CURRENT VERSION] (8/16/2019)
 - added
-  - partial Steep 3D model support
+  - Steep
+    - partial 3D model support
+    - Material support
+    - Texture Set support
   - GlobalMetaFile support for all three games (Steep's GlobalMetaFiles do not have unhashed names, but instead will use a list of known hashes)
-  - German (credit: xBaebsae) translations
+  - German translations (credit: xBaebsae)
   - Table Viewer
   - "Tools > Convert > WEM --> OGG"
   - "Skeleton" and "Material Template" to the Forge Filter (Settings) and Filter By (Find)
@@ -55,7 +58,7 @@
   - FastTreeView and EntryTreeNode are now in Blacksmith.Controls
   - ConvertDialog is now SaveAsDialog
   - sped up reading raw data for each game
-  - **cleaned up Find-related code in MainWindow and Helper**
+  - cleaned up Find-related code in MainWindow and Helper
   - removed the usused and hidden "Tools > Decompress Localization Data"
 - fixed
   - saving/converting a texture failed
