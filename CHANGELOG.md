@@ -72,7 +72,7 @@
   - a "Blacksmith" folder would appear in the Documents folder after upgrading to a new version
 
 ### Version 1.8.1
-- [CURRENT VERSION] (7/18/2019)
+- (7/18/2019)
 - added
   - Show Grid in the 3D Viewer
   - the inner-workings of translation support
