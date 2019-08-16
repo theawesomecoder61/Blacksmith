@@ -11,9 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | ✔️                        | ✔️                       | ❌ (1.9) |
-| Normals             | ✔️                        | ✔️                       | ❌ (1.9) |
-| UVs                 | ✔️                        | ✔️ (partial)             | ❌ (1.9) |
+| Geometry            | ✔️                        | ✔️                       | ✔️ |
+| Normals             | ✔️                        | ✔️                       | ✔️ |
+| UVs                 | ✔️                        | ✔️ (partial)             | ✔️ |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
@@ -22,6 +22,52 @@
 | Soundbanks | ✔️                       | ✔️                        | ✔️    |
 
 ## Changelog
+### Version 1.9 (8/16/2019)
+- added
+  - partial Steep 3D model support
+  - GlobalMetaFile support for all three games (Steep's GlobalMetaFiles do not have unhashed names, but instead will use a list of known hashes)
+  - German (credit: xBaebsae), Portugese, Swedish, and Ukranian translations
+  - Table Viewer
+  - "Tools > Convert > WEM --> OGG"
+  - "Skeleton" and "Material Template" to the Forge Filter (Settings) and Filter By (Find)
+  - Material reports are generated when a Material is selected from the entries list (hierarchy)
+  - icons for each game
+  - shortcut to "Tools > Export 3D Viewer Contents", Ctrl+Shift+E
+  - new Settings to the Behavior section: Default Model Format, Default Normals Mode, Default Texture Format
+    - these preload the values for the formats and Normals Mode in the Save As window, so that it saves you time when exporting files
+  - Blacksmith.IO.Reader, an extension to BinaryReader
+- updated
+  - "Tools > Show File in the Viewers" was moved to "File > Open File..." (shortcut: Ctrl+O)
+  - Materials and Texture Sets yield better reports
+  - moved "Tools > Decompress File" and "Tools > Decompress Folder" to "Tools > Decompress > ..."
+  - "Tools > Decompress > ..." supports LZO (1X, 1C, 2A) compression (which means data from older AC games [III, Black Flag, Unity, Syndicate, etc.] can be decompressed, NOT READ)
+  - Lang.Form1 is now Lang.MainWindow, reflected also in MainWindow
+  - updated "excess" shaders were removed from this (and future) releases of Blacskmith; donators have access to all removed shaders in the source code
+  - popups that were not translated before are now translated
+  - how icons are located
+  - text size of the Text Viewer
+  - Settings, internally and externally (UI)
+  - the Welcome window
+  - FastTreeView and EntryTreeNode are now in Blacksmith.Controls
+  - ConvertDialog is now SaveAsDialog
+  - sped up reading raw data for each game
+  - **cleaned up Find-related code in MainWindow and Helper**
+  - removed the usused and hidden "Tools > Decompress Localization Data"
+- fixed
+  - saving/converting a texture failed
+  - user was able to create duplicates of the Save As window
+  - Save Query (Settings) did nothing, now it does
+  - after auto-texturing worked its magic, it would generate files without a file ID - this has been fixed
+  - searching by file ID yielded no results when "<All Loaded Forges>" was selected
+  - Find menu item was not translated
+  - after closing the Settings, the language would change to a different one
+  - the Render Modes were not translated
+  - Steep's file IDs were incorrect
+  - Steep's forges were not recognized by the Find window
+  - all popups were "hidden" or not directly apparent to the user when they appeared
+  - the grid would be counted in the total vertices and meshes
+  - a "Blacksmith" folder would appear in the Documents folder after upgrading to a new version
+
 ### Version 1.8.1
 - [CURRENT VERSION] (7/18/2019)
 - added
