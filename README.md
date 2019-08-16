@@ -3,11 +3,11 @@
 # Blacksmith
 Blacksmith is a tool for viewing, extracting, and converting textures, 3D models, and sounds from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep.
 
-> **Note**: Blacksmith is NOT a repacker.
+> **Note 1**: Blacksmith is NOT a repacker.
 
->> **Another note**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
+> **Note 2**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
 
->>> **Last note**: I *DO NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
+> **Note 3**: I *DO NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
 
 ----
 
@@ -15,7 +15,7 @@ Blacksmith is a tool for viewing, extracting, and converting textures, 3D models
 
 ----
 
-# Update regarding the repo
+# ➡ Update regarding the repo ⬅
 I will no longer be updating the repo with the source code of 1.7 and later. Access to the source code is now a donation perk. I have migrated away from GitHub due to the amount of effort and time I have put into development. Sorry guys.
 
 However, the readme, changelog, and Releases page will still be updated. The repo will stay online and will not be deleted.
@@ -25,7 +25,7 @@ However, the readme, changelog, and Releases page will still be updated. The rep
 ----
 
 ### Remember ARchive_neXt?
-Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games or Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
+Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games nor Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
 
 ![Version 1.3.1](https://i.imgur.com/0qQpFHP.png)
 ![Version 1.4](https://i.imgur.com/t0XB38m.png)
