@@ -18,6 +18,7 @@
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |------------|---------------------------|---------------------------|-------|
+| GlobalMetaFile | ✔️                   | ✔️                        | ✔️    |
 | Materials  | ✔️                       | ✔️                        | ✔️    |
 | Soundpacks | ✔️                       | ✔️                        | ✔️    |
 | Soundbanks | ✔️                       | ✔️                        | ✔️    |
