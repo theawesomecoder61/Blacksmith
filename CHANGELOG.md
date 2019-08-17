@@ -38,6 +38,7 @@
   - "Tools > Convert > WEM --> OGG"
   - "Skeleton" and "Material Template" to the Forge Filter (Settings) and Filter By (Find)
   - Material reports are generated when a Material is selected from the entries list (hierarchy)
+  - after loading a model, look in the Table Viewer to see if Materials referenced by the model were found (for all games)
   - icons for each game
   - shortcut to "Tools > Export 3D Viewer Contents", Ctrl+Shift+E
   - new Settings to the Behavior section: Default Model Format, Default Normals Mode, Default Texture Format
