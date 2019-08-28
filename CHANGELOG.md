@@ -26,7 +26,7 @@
 
 ## Changelog
 ### Version 1.9
-- [CURRENT VERSION] (8/1X/2019)
+- [CURRENT VERSION] (8/27/2019)
 - added
   - Steep
     - partial 3D model support
