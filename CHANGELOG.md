@@ -11,7 +11,7 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | ✔️                        | ✔️                       | ✔️ |
+| Geometry            | ✔️                        | ✔️                       | ✔️ (partial) |
 | Normals             | ✔️                        | ✔️                       | ✔️ |
 | UVs                 | ✔️                        | ✔️ (partial)             | ✔️ |
 
@@ -34,9 +34,10 @@
     - Texture Set support
   - GlobalMetaFile support for all three games (Steep's GlobalMetaFiles do not have unhashed names, but instead will use a list of known hashes)
   - German translations (credit: xBaebsae)
-  - Table Viewer
+  - Portugese (Portugal) translations (credit: Messias)
+  - Table Viewer (used by Texture Sets and Meshes now)
   - "Tools > Convert > WEM --> OGG"
-  - "Skeleton" and "Material Template" to the Forge Filter (Settings) and Filter By (Find)
+  - "Compiled Texture Map", "Mip", "Skeleton", and "Material Template" to the Forge Filter (Settings) and Filter By (Find)
   - Material reports are generated when a Material is selected from the entries list (hierarchy)
   - after loading a model, look in the Table Viewer to see if Materials referenced by the model were found (for all games)
   - icons for each game
@@ -45,6 +46,7 @@
     - these preload the values for the formats and Normals Mode in the Save As window, so that it saves you time when exporting files
   - Blacksmith.IO.Reader, an extension to BinaryReader
 - updated
+  - **"Forge Filter" is now called "Resource Types to Display"** to avoid further confusion
   - "Tools > Show File in the Viewers" was moved to "File > Open File..." (shortcut: Ctrl+O)
   - Materials and Texture Sets yield better reports
   - moved "Tools > Decompress File" and "Tools > Decompress Folder" to "Tools > Decompress > ..."
@@ -73,8 +75,7 @@
   - Steep's file IDs were incorrect
   - Steep's forges were not recognized by the Find window
   - all popups were "hidden" or not directly apparent to the user when they appeared
-  - the grid would be counted in the total vertices and meshes
-  - a "Blacksmith" folder would appear in the Documents folder after upgrading to a new version
+  - the grid would be counted in the total vertices and meshes in the 3D Viewer
 
 ### Version 1.8.1
 - (7/18/2019)
