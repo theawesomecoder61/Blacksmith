@@ -28,7 +28,7 @@
 ### Version 1.9
 - [CURRENT VERSION] (8/27/2019)
 - added
-  - Steep
+  - Steep ⛷ 🏂
     - partial 3D model support
     - Material support
     - Texture Set support
@@ -52,7 +52,8 @@
   - moved "Tools > Decompress File" and "Tools > Decompress Folder" to "Tools > Decompress > ..."
   - "Tools > Decompress > ..." supports LZO (1X, 1C, 2A) compression (which means data from older AC games [III, Black Flag, Unity, Syndicate, etc.] can be decompressed, NOT READ)
   - Lang.Form1 is now Lang.MainWindow, reflected also in MainWindow
-  - updated "excess" shaders were removed from this (and future) releases of Blacskmith; donators have access to all removed shaders in the source code
+  - updated "excess" shaders were removed from this and future releases of Blacskmith
+    - donators still have access to all removed shaders in the source code
   - popups that were not translated before are now translated
   - how icons are located
   - text size of the Text Viewer
@@ -76,6 +77,7 @@
   - Steep's forges were not recognized by the Find window
   - all popups were "hidden" or not directly apparent to the user when they appeared
   - the grid would be counted in the total vertices and meshes in the 3D Viewer
+  - Resource Types to Display (a.k.a. Forge Filters) will adapt if the newer version has a different amount of resource types
 
 ### Version 1.8.1
 - (7/18/2019)
