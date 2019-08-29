@@ -63,7 +63,7 @@ PC versions of:
 [Found here.](https://github.com/theawesomecoder61/Blacksmith/releases)
 
 ## Changelog
-[View the changelog here.](https://github.com/theawesomecoder61/Blacksmith/blob/master/Changelog.md)
+[View the changelog here.](https://github.com/theawesomecoder61/Blacksmith/blob/master/CHANGELOG.md)
 
 ## Research
 Are you curious about the file structures of these games and my discoveries? Check out the [Wiki](https://github.com/theawesomecoder61/Blacksmith/wiki).
