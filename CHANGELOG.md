@@ -11,9 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
 |---------------------|---------------------------|---------------------------|-------|
-| Geometry            | ✔️                        | ✔️                       | ✔️ (partial) |
+| Geometry            | ✔️ (not 100%)             | ✔️                       | ✔️ (partial) |
 | Normals             | ✔️                        | ✔️                       | ✔️ |
-| UVs                 | ✔️                        | ✔️ (partial)             | ✔️ |
+| UVs                 | ✔️                        | ✔️                      | ✔️ |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep |
