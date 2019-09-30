@@ -25,8 +25,17 @@
 | Texture Sets | ✔️                     | ✔️                        | ✔️    |
 
 ## Changelog
+### Version 1.9.1
+- [CURRENT VERSION] (9/29/2019)
+- updated
+  - updated Oodle's binary to the latest version
+- fixed
+  - UVs were incorrect on certain meshes with external UV data - affects Odyssey and Origins
+  - Blacksmith threw a fit if the user loaded an ini file from an older version on the Welcome dialog - issue with the "Lang" property not found
+  - improper scaling if the user set the DPI scaling (in Display settings) greater than 100%
+
 ### Version 1.9
-- [CURRENT VERSION] (8/27/2019)
+- (8/27/2019)
 - added
   - Steep ⛷ 🏂
     - partial 3D model support
