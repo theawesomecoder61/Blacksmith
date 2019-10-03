@@ -25,8 +25,24 @@
 | Texture Sets | ✔️                     | ✔️                        | ✔️    |
 
 ## Changelog
+### Version 1.9.2
+- [CURRENT VERSION] (10/3/2019)
+- added
+  - Blacksmith will flash orange in the taskbar upon completing a successful task (regardless of the "Hide Popups" setting)
+- updated
+  - the Save As window will close after saving
+  - the number of vertices, faces, and meshes are no longer updated every 1/60 sec. (16.6 ms.), instead are updated only when the model changes
+  - FlashWindow and Message classes now belong to Blacksmith.Helpers
+- fixed
+  - stretched-out 3D Viewer
+  - a result found in the list, by double-clicking (or right-clicking > Show in List), could lose focus in the list
+    - the fix is that the result will appear green in Blacksmith
+  - Find window UI fixes
+    - the splitter covered "Filter By"
+    - the column headers covered the column text
+    
 ### Version 1.9.1
-- [CURRENT VERSION] (9/29/2019)
+- (9/29/2019)
 - updated
   - updated Oodle's binary to the latest version
 - fixed
