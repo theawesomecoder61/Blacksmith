@@ -2,27 +2,27 @@
 ### Textures
 | Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
 |--------------|---------------------------|---------------------------|-------|------------------------|
-| Diffuse      | ✔️                        | ✔️                       | ✔️    | 2.0                    |
-| Normal       | ✔️                        | ✔️                       | ✔️    | 2.0                    |
-| Mask         | ✔️                        | ✔️                       | ✔️    | 2.0                    |
-| Specular     | ✔️                        | ✔️                       | ✔️    | 2.0                    |
-| UI/HUD       | ✔️                        | ✔️                       | ✔️    | 2.0                    |
+| Diffuse      | ✔️                        | ✔️                       | ✔️    | future                 |
+| Normal       | ✔️                        | ✔️                       | ✔️    | future                 |
+| Mask         | ✔️                        | ✔️                       | ✔️    | future                 |
+| Specular     | ✔️                        | ✔️                       | ✔️    | future                 |
+| UI/HUD       | ✔️                        | ✔️                       | ✔️    | future                 |
 
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
 |---------------------|---------------------------|---------------------------|-------|------------------------|
-| Geometry            | ✔️ (not 100%)             | ✔️                       | ✔️ (partial) | 2.0            |
-| Normals             | ✔️                        | ✔️                       | ✔️ | 2.0                      |
-| UVs                 | ✔️                        | ✔️                      | ✔️ | 2.0                       |
+| Geometry            | ✔️ (not 100%)             | ✔️                       | ✔️ (partial) | future         |
+| Normals             | ✔️                        | ✔️                       | ✔️ | future                   |
+| UVs                 | ✔️                        | ✔️                      | ✔️ | future                    |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
 |------------|---------------------------|---------------------------|-------|------------------------|
-| GlobalMetaFile | ✔️                   | ✔️                        | ✔️    | 2.0                    |
-| Materials  | ✔️                       | ✔️                        | ✔️    | 2.0                    |
-| Soundbanks | ✔️                       | ✔️                        | ✔️    | 2.0                    |
-| Soundpacks | ✔️                       | ✔️                        | ✔️    | 2.0                    |
-| Texture Sets | ✔️                     | ✔️                        | ✔️    | 2.0                    |
+| GlobalMetaFile | ✔️                   | ✔️                        | ✔️    | future                 |
+| Materials  | ✔️                       | ✔️                        | ✔️    | future                 |
+| Soundbanks | ✔️                       | ✔️                        | ✔️    | future                 |
+| Soundpacks | ✔️                       | ✔️                        | ✔️    | future                 |
+| Texture Sets | ✔️                     | ✔️                        | ✔️    | future                 |
 
 ## Changelog
 ### Version 1.9.2
