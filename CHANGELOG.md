@@ -30,6 +30,7 @@
 - added
   - a meter (next to the Save As button) that ticks down the number of exports left in a session
     - the value resets each time you open Blacksmith
+    ![meter](http://t-poses.com/static/img/1.9.3-meter.png)
 - fixed
   - certain head models from Origins could not be loaded
 
