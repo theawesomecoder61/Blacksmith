@@ -37,7 +37,8 @@ PC versions of:
 - Assassin's Creed: Odyssey
 - Assassin's Creed: Origins
 - Steep
-- Ghost Recon Breakpoint (in version 2.0)
+- Ghost Recon: Breakpoint (sometime after 2.0's release)
+- Ghost Recon: Wildlands (sometime after 2.0's release)
 
 ## Functionality
 - The main features are viewing and extraction of:
