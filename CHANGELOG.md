@@ -25,8 +25,16 @@
 | Texture Sets | ✔️                     | ✔️                        | ✔️    | future                 |
 
 ## Changelog
+### Version 1.9.3
+- [CURRENT VERSION] (4/2/2020)
+- added
+  - a meter (next to the Save As button) that ticks down the number of exports left in a session
+    - the value resets each time you open Blacksmith
+- fixed
+  - certain head models from Origins could not be loaded
+
 ### Version 1.9.2
-- [CURRENT VERSION] (10/3/2019)
+- (10/3/2019)
 - added
   - Blacksmith will flash orange in the taskbar upon completing a successful task (regardless of the "Hide Popups" setting)
 - updated
