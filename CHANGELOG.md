@@ -11,9 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
 |---------------------|---------------------------|---------------------------|-------|------------------------|
-| Geometry            | ✔️ (not 100%)             | ✔️                       | ✔️ (partial) | future         |
+| Geometry            | ✔️ (nearly 100%)          | ✔️                       | ✔️  | future                  |
 | Normals             | ✔️                        | ✔️                       | ✔️ | future                   |
-| UVs                 | ✔️                        | ✔️                      | ✔️ | future                    |
+| UVs                 | ✔️                        | ✔️                       | ✔️ | future                   |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
@@ -25,6 +25,37 @@
 | Texture Sets | ✔️                     | ✔️                        | ✔️    | future                 |
 
 ## Changelog
+## 1.9.4 Public Beta (9/16/2020)
+- updated
+  - (3D Viewer) models and grid are proper scaling in meters
+  - (3D Viewer) the model will not longer be adjusted in any form after reading the data and manipulating it once
+  - (3D Viewer) vastly improved camera and controls (now a modified arcball camera)
+  - (3D Viewer) new control: Z - Move Down, and flipped actions of the Q and E keys
+  - (3D Viewer) replaced `Show Grid` with `Model Size`, which reports the size of the current model
+  - (Save As) the format dropdowns will now default to the user's default model and texture settings
+  - (Save As) removed the elusive "Combine Meshes into a Single File" completely
+  - no more extra scaling, even to exported models
+  - reduced overall camera speed
+  - removed the UV Viewer, too slow and prone to failing
+  - (Donate Window) now uses a webview to display the text (IE 11)
+  - removed AxisGizmo
+  - removed "Use 1.7 and Older Camera" setting
+  - removed glTF support (it never worked properly)
+   - if you had the "Default Model Format" setting set to glTF, it will be switched to 3ds
+  - UI changes & strings
+  - removed some unneeded logging
+- fixed
+  - Odyssey model importing logic (help from hypermorphic/jjj)
+    - Steep model and texture problems were also fixed
+  - proper Resource Identifier names
+  - (Save As) FBX 7.5 Binary now saves in Binary
+  - (Welcome) "AC: Origins - Set" and "Steep - Set" messages now show on each game's respective button
+  - (Welcome) patched a "not enough memory resources" issue
+  - (Welcome) additional fixes & changes
+  - File ID on the bottom toolbar shows up more reliably when loading a file from *File > Open File*
+  - "None" will no longer show under a forge entry
+  - texconv's window will no longer show
+
 ### Version 1.9.3
 - [CURRENT VERSION] (4/2/2020)
 - added
