@@ -25,7 +25,8 @@
 | Texture Sets | ✔️                     | ✔️                        | ✔️    | future                 |
 
 ## Changelog
-## 1.9.4 Public Beta (9/16/2020)
+## 1.9.4 Public Beta
+- 9/16/2020
 - updated
   - (3D Viewer) models and grid are proper scaling in meters
   - (3D Viewer) the model will not longer be adjusted in any form after reading the data and manipulating it once
