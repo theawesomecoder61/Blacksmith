@@ -11,9 +11,9 @@
 ### 3D Models
 |  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
 |---------------------|---------------------------|---------------------------|-------|------------------------|
-| Geometry            | ✔️ (nearly 100%)          | ✔️                       | ✔️  | future                  |
-| Normals             | ✔️                        | ✔️                       | ✔️ | future                   |
-| UVs                 | ✔️                        | ✔️                       | ✔️ | future                   |
+| Geometry            | ✔️ (nearly 100%)          | ✔️ (partial)             | ✔️   | future                  |
+| Normals             | ✔️                        | ✔️                       | ✔️   | future                  |
+| UVs                 | ✔️                        | ✔️                       | ✔️   | future                  |
 
 ### Other
 |    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
