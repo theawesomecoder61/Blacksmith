@@ -30,7 +30,7 @@ Blacksmith tries to serve as a successor to ARchive_neXt, since development has 
 ![](https://t-poses.com/static/img/3.png)
 ![](https://t-poses.com/static/img/7.png)
 ![](https://t-poses.com/static/img/6.png)
-![]https://t-poses.com/static/img/1.png)
+![](https://t-poses.com/static/img/1.png)
 
 ## Supported Games
 PC versions of:
