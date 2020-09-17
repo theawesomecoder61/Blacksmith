@@ -27,10 +27,10 @@ However, the readme, changelog, and Releases page will still be updated. The rep
 ### Remember ARchive_neXt?
 Blacksmith tries to serve as a successor to ARchive_neXt, since development has seemingly ceased, and it does not support the two latest Assassin's Creed games nor Steep. I designed the functionality of Blacksmith to be identical to that of ARchive_neXt.
 
-![Version 1.3.1](https://i.imgur.com/0qQpFHP.png)
-![Version 1.4](https://i.imgur.com/t0XB38m.png)
-![Version 1.3.1](https://i.imgur.com/wLcQ1qf.png)
-![Version 1.3.1](https://i.imgur.com/nj28fQv.png)
+![](https://t-poses.com/static/img/3.png)
+![](https://t-poses.com/static/img/7.png)
+![](https://t-poses.com/static/img/6.png)
+![]https://t-poses.com/static/img/1.png)
 
 ## Supported Games
 PC versions of:
