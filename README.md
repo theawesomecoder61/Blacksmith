@@ -1,7 +1,7 @@
 ![Blacksmith icon](https://i.imgur.com/F3nfeLe.png)
 
 # Blacksmith
-Blacksmith is a tool for viewing, extracting, and converting textures, 3D models, and sounds from Assassin's Creed: Odyssey, Assassin's Creed: Origins, and Steep.
+Blacksmith is a tool for viewing, extracting, and converting textures, 3D models, and sounds from Assassin's Creed: Odyssey, Assassin's Creed: Origins, Assassin's Creed: Valhalla, and Steep.
 
 > **Note 1**: Blacksmith is NOT a repacker.
 
@@ -36,6 +36,7 @@ Blacksmith tries to serve as a successor to ARchive_neXt, since development has 
 PC versions of:
 - Assassin's Creed: Odyssey
 - Assassin's Creed: Origins
+- Assassin's Creed: Valhalla
 - Steep
 - Ghost Recon: Breakpoint (sometime after 2.0's release)
 - Ghost Recon: Wildlands (sometime after 2.0's release)
@@ -44,7 +45,7 @@ PC versions of:
 - The main features are viewing and extraction of:
   - .forge files
   - 3D models
-    - conversion to: `3ds`, `dae`, `fbx`, `glb (glTF)`, `obj`, `stl`
+    - conversion to: `3ds`, `dae`, `fbx`, `obj`, `stl`
   - textures
     - conversion to: `dds`, `png`, `tga`, `tiff`
   - sounds
