@@ -3,9 +3,9 @@
 # Blacksmith
 Blacksmith is a tool for viewing, extracting, and converting textures, 3D models, and sounds from Assassin's Creed: Odyssey, Assassin's Creed: Origins, Assassin's Creed: Valhalla, and Steep.
 
-> **Note 1**: Blacksmith is NOT a repacker.
+> **Note 1**: Blacksmith is NOT a repacker. It **CANNOT MODIFY, INJECT, NOR REPLACE** files.
 
-> **Note 2**: Blacksmith supports ALL VERSIONS (past, latest, and future versions) of each game
+> **Note 2**: Blacksmith supports ALL VERSIONS (past and latest) of each game
 
 > **Note 3**: I *DO NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
 
