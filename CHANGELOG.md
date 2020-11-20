@@ -1,31 +1,35 @@
 ## Current Support
 ### Textures
-| Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
-|--------------|---------------------------|---------------------------|-------|------------------------|
-| Diffuse      | ✔️                        | ✔️                       | ✔️    | future                 |
-| Normal       | ✔️                        | ✔️                       | ✔️    | future                 |
-| Mask         | ✔️                        | ✔️                       | ✔️    | future                 |
-| Specular     | ✔️                        | ✔️                       | ✔️    | future                 |
-| UI/HUD       | ✔️                        | ✔️                       | ✔️    | future                 |
+| Texture Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Assassin's Creed: Valhalla |
+|-|-|-|-|-|
+| Diffuse | ✔️ | ✔️ | ✔️ | ✔️ |
+| Normal | ✔️ | ✔️ | ✔️ | ✔️ |
+| Mask | ✔️ | ✔️ | ✔️ | ✔️ |
+| Specular | ✔️ | ✔️ | ✔️ | ✔️ |
+| UI/HUD | ✔️ | ✔️ | ✔️ | ✔️ |
+| DiffuseAlphaMap | partial | partial | partial | partial |
 
 ### 3D Models
-|  3D Model Features  | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
-|---------------------|---------------------------|---------------------------|-------|------------------------|
-| Geometry            | ✔️ (nearly 100%)          | ✔️ (partial)             | ✔️   | future                  |
-| Normals             | ✔️                        | ✔️                       | ✔️   | future                  |
-| UVs                 | ✔️                        | ✔️                       | ✔️   | future                  |
+| 3D Model Features | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Assassin's Creed: Valhalla |
+|-|-|-|-|-|
+| Geometry | ✔️ (>90%) | ✔️ (~50%) | ✔️ | ✔️ (>90%) |
+| Normals | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) |
+| UV0 | ✔️ | ✔️ | ✔️ | ✔️ |
+| UV1 | partial | partial | N/A | partial |
 
 ### Other
-|    Type    | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Ghost Recon Breakpoint |
-|------------|---------------------------|---------------------------|-------|------------------------|
-| GlobalMetaFile | ✔️                   | ✔️                        | ✔️    | future                 |
-| Materials  | ✔️                       | ✔️                        | ✔️    | future                 |
-| Soundbanks | ✔️                       | ✔️                        | ✔️    | future                 |
-| Soundpacks | ✔️                       | ✔️                        | ✔️    | future                 |
-| Texture Sets | ✔️                     | ✔️                        | ✔️    | future                 |
+| Type | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Assassin's Creed: Valhalla |
+|-|-|-|-|-|
+| GlobalMetaFile | ✔️ | ✔️ | ✔️ | ✔️ |
+| LODSelectors | ✔️ | ✔️ | ✔️ | ✔️ |
+| Materials (parts of it) | ✔️ | ✔️ | ✔️ | ✔️ |
+| Soundbanks | ✔️ | ✔️ | ✔️ | ✔️ |
+| Soundpacks | ✔️ | ✔️ | ✔️ | ✔️ |
+| TextureMapSpecs | N/A | N/A | N/A | ✔️ |
+| TextureSets | ✔️ | ✔️ | ✔️ | ✔️ |
 
 ## Changelog
-## 1.9.4 Final
+## 1.9.4 Final Release
 - 11/19/2020
 - added
 	- preliminary Valhalla support (INITIAL SUPPORT for models, textures, TextureMapSpec, and sounds - EXPECT ERRORS)
