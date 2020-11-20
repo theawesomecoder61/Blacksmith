@@ -42,17 +42,17 @@
 	- brought back the UV Viewer, with the ability to view UV0 and UV1 (if the model has a valid UV1 channel)
  	- UV1 support in exported models is not possible, due to the limitations placed by the 3D library
 	- heavily experimental batch extraction, called the Queue (conversions will fail often)
- 	- limitations
-  	- models: up to 50 items, deducts from global counter [3D Viewer > Save As (50 saves left)]
-   	- restart Blacksmith to reset the counter
-  	- textures and other files: unlimited
- 	- Queue window: a place to view and manage the Queue
- 	- how to access
-  	- right-click a forge entry or forge subentry and select "Add to Queue"
-  	- (Find window) "Add All to Queue" button
+ 		- limitations
+  			- models: up to 50 items, deducts from global counter [3D Viewer > Save As (50 saves left)]
+   				- restart Blacksmith to reset the counter
+  			- textures and other files: unlimited
+ 		- Queue window: a place to view and manage the Queue
+ 			- how to access
+  				- right-click a forge entry or forge subentry and select "Add to Queue"
+  				- (Find window) "Add All to Queue" button
 	- shortcut keys for the Find and Queue windows
- 	- Ctrl+F: Find
- 	- Ctrl+Shift+Q: Queue (Ctrl+Q coincides with the camera)
+ 		- Ctrl+F: Find
+ 		- Ctrl+Shift+Q: Queue (Ctrl+Q coincides with the camera)
 	- (Welcome & Setting windows) added support for loading settings from a user.config file
 	- partial DiffuseAlphaMap support for all games
 	- Tools > Decompress > Oodle and Tools > Decompress > Zstd - you can decompress a file containing only Oodle or Zstd data, if you know the decompressed size
