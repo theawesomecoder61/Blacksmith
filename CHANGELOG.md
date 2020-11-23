@@ -12,7 +12,7 @@
 ### 3D Models
 | 3D Model Features | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Assassin's Creed: Valhalla |
 |-|-|-|-|-|
-| Geometry | ✔️ (>90%) | ✔️ (~50%) | ✔️ | ✔️ (>90%) |
+| Geometry | ✔️ (>90%) | ✔️ (~50%) | ✔️ (~80%) | ✔️ (>90%) |
 | Normals | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) |
 | UV0 | ✔️ | ✔️ | ✔️ | ✔️ |
 | UV1 | partial | partial | N/A | partial |
