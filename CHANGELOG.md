@@ -37,9 +37,9 @@
 		- partial model type 3 support
   			- for now, these models are treated as having one all-encompassing mesh each
   			- SharedGroup00 > Hair_ACK_Eivor_MF_01_LOD0 (1962990526045) can be exported
-		- support for the addditional forge raw data format
- 		- (Valhalla only) filelist-based CompiledMip/TopMip searching, extraction, and loading
-  			- other games will follow once I get around to work on them
+		- support for the additional forge raw data format
+	- (Valhalla only) filelist-based CompiledMip/TopMip searching, extraction, and loading
+		- other games will follow once I get around to work on them
 	- ability to brute-force TextureMap, in the case Blacksmith cannot interpret it
  		- how to access
 			- right-click a TextureMap node (one that reads "TextureMap") and select Texture > Brute-Force
