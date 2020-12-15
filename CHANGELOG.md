@@ -12,7 +12,7 @@
 ### 3D Models
 | 3D Model Features | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Assassin's Creed: Valhalla |
 |-|-|-|-|-|
-| Geometry | ✔️ (>90%) | ✔️ (~50%) | ✔️ (~80%) | ✔️ (>90%) |
+| Geometry | ✔️ (>90%) | ✔️ (~50%) | ✔️ (>90%) | ✔️ (>90%) |
 | Normals | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) |
 | UV0 | ✔️ | ✔️ | ✔️ | ✔️ |
 | UV1 | partial | partial | N/A | partial |
@@ -29,6 +29,54 @@
 | TextureSets | ✔️ | ✔️ | ✔️ | ✔️ |
 
 ## Changelog
+## 1.9.5
+- 12/15/2020
+- added
+	- (Save As) option to choose which UV to export, default is 0
+	- Valhalla support additions and improvements, including
+		- partial model type 3 support
+  			- for now, these models are treated as having one all-encompassing mesh each
+  			- SharedGroup00 > Hair_ACK_Eivor_MF_01_LOD0 (1962990526045) can be exported
+		- support for the addditional forge raw data format
+ 		- (Valhalla only) filelist-based CompiledMip/TopMip searching, extraction, and loading
+  			- other games will follow once I get around to work on them
+	- ability to brute-force TextureMap, in the case Blacksmith cannot interpret it
+ 		- how to access
+			- right-click a TextureMap node (one that reads "TextureMap") and select Texture > Brute-Force
+   			- find a TextureMap Blacksmith fails to interpret & convert, and click OK in the popup
+    				-*also, the "Failed to convert the texture" is no longer a failure popup, for it now has a special purpose*
+		- this behaves identically to brute-forcing a CompiledMip/TopMip, as introduced in the previous update
+	- added File > Quick Save Contents of Active Viewer (Ctrl+S), this skips to the file dialog
+	- added File > Save Contents of Active Viewer (Ctrl+Shift+S), this shows the Save As window
+	- references to Immortals: Fenyx Rising - no support yet, depending on demand
+- updated
+	- improved Steep model support, can now handle models without ClusteredMesh, without failing
+		- known issue: helicopter LOD2 fails to load
+ 	- (3D Viewer) Blacksmith will no longer render the viewport under these conditions:
+  		- if the window is minimized
+  		- if the active Viewer is not the 3D Viewer
+ 	- (3D Viewer) I restored mouse controls in 1.9.4; they were disabled for testing
+  		- **note: you must hold down Left Alt in order to use mouse controls**
+ 	- (Image Viewer) added a Save As button
+	- 3D model normals adjustment in all games
+ 	- games are alphabetically sorted in the hierarchy
+ 	- removed Tools > Save 3D Viewer Contents
+ 	- slightly more Rainbow Six Siege support: ability to decompress & extract files (still no mesh or texture support)
+ 	- strings
+- fixed
+	- texture saving issue which affected all games, especially Valhalla
+ 	- issue with applying saved panel distances
+	- issues with context-menu > Datafile > Save Raw Data and Save Decompressed Data
+	- files exported from context-menu > Datafile > Saw Raw Data and Save Decompressed Data would not overwrite existing files (saving was too cautious)
+	- Vallaha-related issues
+ 		- diffuse map conversion
+ 		- inability to read TextureSets and Materials due to errors
+		- CompiledMip DDS generation
+		- (Save As, Find, Brute-Force) sometimes, these windows would never show again after closing them
+	- (Find Window) the order of elements when cycling through them using the Tab key
+	- if an image file (jpg, png, etc.) was selected, the dimensions did not update
+ 	- context menu > Forge > Extract All did not extract to the user-specified folder
+
 ## 1.9.4 Final Release
 - 11/19/2020
 - added
