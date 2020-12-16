@@ -78,6 +78,8 @@
 	- upon opening a file from the File > Open menu, the Type label did not show the human-readable version
 - known issues
 	- (CRITICAL) TextureMaps are not always interpreted after loading from a file (File > Open)
+		- however, models work
+		- I should do something to speed up this process
 	- (Steep) helicopter LOD2 fails to load
 	
 ## 1.9.4 Final Release
