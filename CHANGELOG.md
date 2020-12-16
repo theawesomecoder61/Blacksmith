@@ -51,7 +51,6 @@
 	- references to Immortals: Fenyx Rising - no support yet, depending on demand
 - updated
 	- improved Steep model support, can now handle models without ClusteredMesh, without failing
-		- known issue: helicopter LOD2 fails to load
  	- (3D Viewer) Blacksmith will no longer render the viewport under these conditions:
   		- if the window is minimized
   		- if the active Viewer is not the 3D Viewer
@@ -76,7 +75,11 @@
 	- (Find Window) the order of elements when cycling through them using the Tab key
 	- if an image file (jpg, png, etc.) was selected, the dimensions did not update
  	- context menu > Forge > Extract All did not extract to the user-specified folder
-
+	- upon opening a file from the File > Open menu, the Type label did not show the human-readable version
+- known issues
+	- (CRITICAL) TextureMaps are not always interpreted after loading from a file (File > Open)
+	- (Steep) helicopter LOD2 fails to load
+	
 ## 1.9.4 Final Release
 - 11/19/2020
 - added
