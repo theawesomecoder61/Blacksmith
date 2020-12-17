@@ -22,7 +22,7 @@
 |-|-|-|-|-|
 | GlobalMetaFile | ✔️ | ✔️ | ✔️ | ✔️ |
 | LODSelectors | ✔️ | ✔️ | ✔️ | ✔️ |
-| Materials (parts of it) | ✔️ | ✔️ | ✔️ | ✔️ |
+| Materials (partial) | ✔️ | ✔️ | X | ✔️ |
 | Soundbanks | ✔️ | ✔️ | ✔️ | ✔️ |
 | Soundpacks | ✔️ | ✔️ | ✔️ | ✔️ |
 | TextureMapSpecs | N/A | N/A | N/A | ✔️ |
