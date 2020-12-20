@@ -12,7 +12,7 @@
 ### 3D Models
 | 3D Model Features | Assassin's Creed: Odyssey | Assassin's Creed: Origins | Steep | Assassin's Creed: Valhalla |
 |-|-|-|-|-|
-| Geometry | ✔️ (>90%) | ✔️ (~50%) | ✔️ (>90%) | ✔️ (>90%) |
+| Geometry | ✔️ (>90%) | ✔️ (>75%) | ✔️ (>90%) | ✔️ (>90%) |
 | Normals | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) | ✔️ (may be incorrect) |
 | UV0 | ✔️ | ✔️ | ✔️ | ✔️ |
 | UV1 | partial | partial | N/A | partial |
@@ -29,6 +29,10 @@
 | TextureSets | ✔️ | ✔️ | ✔️ | ✔️ |
 
 ## Changelog
+## 1.9.6
+- 12/20/2020
+- to-do
+
 ## 1.9.5
 - 12/15/2020
 - added
@@ -174,7 +178,7 @@
   - texconv's window will no longer show
 
 ### Version 1.9.3
-- [CURRENT VERSION] (4/2/2020)
+- (4/2/2020)
 - added
   - a meter (next to the Save As button) that ticks down the number of exports left in a session
     - the value resets each time you open Blacksmith
