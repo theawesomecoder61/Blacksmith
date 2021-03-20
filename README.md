@@ -9,6 +9,10 @@ Blacksmith is a tool for viewing, extracting, and converting textures, 3D models
 
 > **Note 3**: I *DO NOT CONDONE PIRACY*. The program assumes that you have access to the games' files.
 
+## Discord
+Join the Discord server to engage with other fans of Assassin's Creed (and other supported games), and for quick support.
+[<img src="https://discord.com/assets/e4923594e694a21542a489471ecffa50.svg" width="256px">](https://discord.gg/tjyCvcP)
+
 ----
 
 ***Check the [Current Support section](https://github.com/theawesomecoder61/Blacksmith/blob/master/CHANGELOG.md#current-support) to see what is supported.***
