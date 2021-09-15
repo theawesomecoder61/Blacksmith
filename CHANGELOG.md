@@ -30,8 +30,14 @@
 
 ## Changelog
 ## 1.9.6
-- 1/?/2021
-- to-do
+- Late 2021
+
+## 1.9.5.1
+- 9/15/2021
+- added
+	- (Welcome window) path to Assassin's Creed: Valhalla button
+- fixed
+	- (Valhalla) supports files introduced in game version 1.3.1
 
 ## 1.9.5
 - 12/15/2020
